@@ -75,11 +75,35 @@ export function warpSample(point,strokes,freeze=()=>0,index=null){
  }
  return {x,y};
 }
-export function bodyWarps(handles,mode,amount){
- if(handles.length!==2)throw new Error('Hãy đặt hai điểm điều khiển trên ảnh trước.');
- const [a,b]=handles,radius=Math.max(20,Math.hypot(b.x-a.x,b.y-a.y)*.8),strength=.65,value=clamp(amount,0,100)/100;
- if(['waist','shoulder'].includes(mode)){const center=(a.x+b.x)/2;return [a,b].map(p=>({from:{...p},to:{x:p.x+(center-p.x)*value*.28,y:p.y},radius,strength,mode:'push'}));}
- const bottom=a.y>b.y?a:b;return [{from:{...bottom},to:{x:bottom.x,y:bottom.y+Math.abs(b.y-a.y)*value*(mode==='height'?.18:.25)},radius,strength,mode:'push'}];
+export function bodyWarps(handles,mode,amount,freezeCount){
+ if(!Array.isArray(handles)||handles.length!==2)throw new Error('Hãy đặt hai điểm điều khiển trên ảnh trước.');
+ const [a,b]=handles,span=Math.hypot(b.x-a.x,b.y-a.y),radius=Math.max(20,span*.8),strength=.65,value=clamp(amount,-100,100)/100;
+ const extra=freezeCount!==undefined?{freezeCount:Math.max(0,Math.floor(freezeCount))}:{};
+ if(['waist','shoulder','legs'].includes(mode)){
+  const center=(a.x+b.x)/2,r=mode==='legs'?Math.max(20,span*.65):radius,factor=mode==='legs'?.24:.28;
+  return [a,b].map(p=>({from:{...p},to:{x:p.x+(center-p.x)*value*factor,y:p.y},radius:r,strength,mode:'push',...extra}));
+ }
+ if(mode==='arms'){
+  const dx=b.x-a.x,dy=b.y-a.y,len=Math.max(1,Math.hypot(dx,dy)),nx=-dy/len,ny=dx/len;
+  const armHalf=Math.max(12,len*.22),r=Math.max(16,len*.38),warps=[];
+  for(const t of [0.28,0.55,0.82]){
+   const cx=a.x+dx*t,cy=a.y+dy*t;
+   const p1={x:cx+nx*armHalf,y:cy+ny*armHalf},p2={x:cx-nx*armHalf,y:cy-ny*armHalf};
+   warps.push(
+    {from:p1,to:{x:p1.x-nx*armHalf*value*.36,y:p1.y-ny*armHalf*value*.36},radius:r,strength:.58,mode:'push',...extra},
+    {from:p2,to:{x:p2.x+nx*armHalf*value*.36,y:p2.y+ny*armHalf*value*.36},radius:r,strength:.58,mode:'push',...extra}
+   );
+  }
+  return warps;
+ }
+ if(mode==='curve'){
+  const top=a.y<=b.y?a:b,bottom=a.y<=b.y?b:a,r=Math.max(22,span*.72),dir=bottom.x>=top.x?1:-1,shift=Math.max(18,span*.24)*value;
+  return [
+   {from:{...top},to:{x:top.x-dir*shift*.85,y:top.y},radius:r*.85,strength:.6,mode:'push',...extra},
+   {from:{...bottom},to:{x:bottom.x+dir*shift*.95,y:bottom.y},radius:r,strength:.62,mode:'push',...extra}
+  ];
+ }
+ const bottom=a.y>b.y?a:b;return [{from:{...bottom},to:{x:bottom.x,y:bottom.y+Math.abs(b.y-a.y)*value*(mode==='height'?.18:.25)},radius,strength,mode:'push',...extra}];
 }
 export function faceMeshWarps(handles,feature='face',amount=40,freezeCount=0){
  if(!Array.isArray(handles)||handles.length<2)throw new Error('Hãy đặt hai điểm điều khiển trên khuôn mặt trước.');

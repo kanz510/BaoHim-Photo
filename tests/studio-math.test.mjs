@@ -73,3 +73,24 @@ test('Phase 2 faceMeshWarps generates localized mesh warps for all 9 facial feat
  // Frozen point inside the mesh is completely protected
  assert.deepEqual(m.warpSample({x:140,y:200},jawWarps,()=>1),{x:140,y:200});
 });
+
+test('Phase 3 bodyWarps supports waist, shoulder, arms, legs, stretch, height, and curve while protecting frozen background lines',()=>{
+ const horiz=[{x:120,y:300},{x:280,y:300}],vert=[{x:200,y:200},{x:200,y:420}];
+ for(const mode of ['waist','shoulder','legs']){
+  const w=m.bodyWarps(horiz,mode,55,2);
+  assert.equal(w.length,2);
+  assert.ok(w[0].to.x>120&&w[1].to.x<280,`${mode} contracts symmetrically toward center`);
+  assert.equal(w[0].freezeCount,2);
+ }
+ const armWarps=m.bodyWarps([{x:100,y:200},{x:100,y:340}],'arms',50,1);
+ assert.equal(armWarps.length,6,'arms places 3 bilateral contraction pairs along arm segment');
+ assert.ok(armWarps.every(w=>w.freezeCount===1));
+ const curveWarps=m.bodyWarps([{x:160,y:260},{x:175,y:360}],'curve',60,1);
+ assert.equal(curveWarps.length,2,'curve sculpts waist inward and hip outward');
+ assert.ok(curveWarps[0].to.x<160&&curveWarps[1].to.x>175);
+ // Straight vertical door/wall line at x=80 protected by a freeze pin is not distorted
+ const freezes=[{points:[{x:80,y:300}],radius:35,hardness:.9}];
+ const waistWithPin=m.bodyWarps([{x:100,y:300},{x:300,y:300}],'waist',80,1);
+ const doorPoint=m.warpSample({x:80,y:300},waistWithPin,(pt,s)=>m.freezeCoverage(pt,freezes,s.freezeCount));
+ assert.deepEqual(doorPoint,{x:80,y:300},'pinned background wall/door line stays completely straight');
+});

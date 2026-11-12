@@ -488,3 +488,29 @@ test('Phase 2 Face Reshape places control points, previews slider mesh deformati
   assert.ok(f.basePhotoLayer().studio.warps.length>=2,'redo restores face mesh warps');
  }finally{await app.close();}
 });
+
+test('Phase 3 Body Reshape exposes all 7 body modes, background pin lock, and anchor handle application with Undo/Redo',async()=>{
+ const app=await boot();
+ try{
+  const {ui,facade:f}=app.w.Studio;
+  await ui.switchTool('reshape');
+  app.w.document.querySelector('[data-reshape-group="body"]').click();
+  await new Promise(r=>setTimeout(r,10));
+  for(const mode of ['waist','shoulder','arms','legs','stretch','height','curve']){
+   assert.ok(app.w.document.querySelector(`[data-brush="${mode}"]`),`Body mode button ${mode} exists`);
+  }
+  assert.ok(app.w.document.querySelector('[data-action="body-pin"]'),'background pin button exists');
+  await ui.action('body-pin');
+  assert.equal(ui.router.placingPin,true);
+  await f.addStroke({type:'freeze',points:[{x:80,y:300}],radius:35,hardness:.88,strength:1});
+  assert.equal(f.basePhotoLayer().studio.freezes.length,1);
+  app.w.document.querySelector('[data-brush="curve"]').click();
+  await new Promise(r=>setTimeout(r,10));
+  ui.router.bodyHandles=[{x:150,y:260},{x:170,y:380}];
+  await ui.action('apply-body');
+  assert.equal(f.basePhotoLayer().studio.warps.length,2);
+  assert.equal(f.basePhotoLayer().studio.warps[0].freezeCount,1,'body warp honors background freeze pin');
+  await f.undo();
+  assert.equal(f.basePhotoLayer().studio.warps.length,0);
+ }finally{await app.close();}
+});

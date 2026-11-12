@@ -32,7 +32,7 @@ export class StudioUI{
  }
  async updateProjectCount(){try{$('#project-count').textContent=(await this.f.repository.list()).length;}catch{}}
  async switchTool(tool){
-  await this.commitDraft();this.router?.cancel();if(this.router){this.router.placingBody=false;this.router.placingFace=false;}this.tool=tool;document.querySelectorAll('.nav-tool').forEach(b=>{b.classList.toggle('active',b.dataset.tool===tool);b.setAttribute('aria-pressed',b.dataset.tool===tool);});
+  await this.commitDraft();this.router?.cancel();if(this.router){this.router.placingBody=false;this.router.placingFace=false;this.router.placingPin=false;}this.tool=tool;document.querySelectorAll('.nav-tool').forEach(b=>{b.classList.toggle('active',b.dataset.tool===tool);b.setAttribute('aria-pressed',b.dataset.tool===tool);});
   $('#stage-mode').textContent=tools[tool][0];$('#studio-inspector').classList.remove('minimized');
   if(['beauty','adjust','filters','reshape','makeup','draw'].includes(tool))await this.f.selectPhoto();
   this.f.activate(tool==='geometry'?'crop':['beauty','reshape','makeup','draw'].includes(tool)?'studio':'select');
@@ -113,7 +113,7 @@ export class StudioUI{
      const id=button.dataset.brush;this.brush.axis=undefined;this.reshapePreset=undefined;
      if(this.tool==='makeup'&&['lips','blush','eyes','highlight'].includes(id)){this.makeupMode=id;this.brush.mode='makeup';const colors={lips:'#a8415c',blush:'#df9296',eyes:'#8f586c',highlight:'#f2d4bc'};this.brush.color=colors[id];this.brush.strength=id==='lips'?55:35;this.brush.blend=id==='lips'?'multiply':'soft-light';}
      else{this.brush.mode=id;if(id==='blemish'&&this.router)this.router.cloneSource=null;}
-     if(this.router){this.router.placingBody=false;this.router.placingFace=false;}this.f.activate('studio');this.renderPanel();return;
+     if(this.router){this.router.placingBody=false;this.router.placingFace=false;this.router.placingPin=false;}this.f.activate('studio');this.renderPanel();return;
     }
     if(button.dataset.beautyGroup){
      document.querySelectorAll('[data-beauty-group]').forEach(b=>b.classList.toggle('active',b===button));
@@ -140,7 +140,7 @@ export class StudioUI{
   document.addEventListener('input',event=>{
    const el=event.target;if(el.dataset.range){const value=Number(el.value);el.style.setProperty('--range',((value-Number(el.min))/(Number(el.max)-Number(el.min))*100)+'%');el.closest('.slider-field')?.querySelector('output')?.replaceChildren(document.createTextNode(String(value)));
     const key=el.dataset.range,group=el.dataset.group;
-    if(group==='brush'){this.brush[key]=key==='hardness'?100-value:value;this.router?.updateCursor();}
+    if(group==='brush'){this.brush[key]=key==='hardness'?100-value:value;this.router?.updateCursor();if(key==='strength'&&this.router?.placingBody&&this.router.bodyHandles.length===2)this.scheduleBodyPreview();}
     if(group==='adjust'){this.draft.adjustments={...this.f.photoLayer()?.studio.adjustments,...this.draft.adjustments,[key]:value};this.schedulePreview();}
     if(group==='filter'||group==='geometry'){this.draft[key]=value;this.schedulePreview();}
     if(group==='levels'){this.draft.levels={black:0,white:255,gamma:1,...this.f.photoLayer()?.studio.levels,...this.draft.levels,[key]:value};this.schedulePreview();}
@@ -203,6 +203,14 @@ export class StudioUI{
   if(['nose','chin','forehead','ratio'].includes(feature))return [{x:Math.round(W*.5),y:Math.round(H*.38)},{x:Math.round(W*.5),y:Math.round(H*.58)}];
   return [{x:Math.round(W*.36),y:Math.round(H*.48)},{x:Math.round(W*.64),y:Math.round(H*.48)}];
  }
+ scheduleBodyPreview(){
+  clearTimeout(this.bodyPreviewTimer);
+  this.bodyPreviewTimer=setTimeout(()=>this.safely(async()=>{
+   const layer=this.f.photoLayer();if(!layer||!this.router?.bodyHandles||this.router.bodyHandles.length<2)return;
+   const warps=bodyWarps(this.router.bodyHandles,this.brush.mode,this.brush.strength,layer.studio.freezes?.length||0);
+   await this.f.preview({warps:[...(layer.studio.warps||[]),...warps]});
+  }),45);
+ }
  scheduleText(){this.pendingTextLayerId??=this.f.config.layer?.id;clearTimeout(this.textTimer);this.textTimer=setTimeout(()=>this.safely(()=>this.flushText()),320);}
  async flushText(){clearTimeout(this.textTimer);const changes=this.pendingText,id=this.pendingTextLayerId;this.pendingText={};this.pendingTextLayerId=null;if(id&&Object.keys(changes).length)await this.f.updateText(changes,id);}
  showLoading(active){const node=$('#studio-loading');node.hidden=!active;node.textContent=active?'Đang mở ảnh của bạn…':'';$('#mobile-shell')?.setAttribute('aria-busy',String(active));}
@@ -223,8 +231,9 @@ export class StudioUI{
   if(action==='dialog-close'){this.closeDialog();return;}
   if(action==='clone-source'){this.router.clonePicking=true;f.activate('studio');this.toast('Chạm lên ảnh để chọn vùng nguồn.');return;}
   if(action==='add-text'){await f.addText();this.renderPanel();return;}
-  if(action==='body-place'){this.router.cancel();this.router.placingFace=false;this.router.bodyHandles=[];this.router.placingBody=true;await f.activate('studio');this.toast(this.brush.mode==='waist'?'Chạm hai bên eo trên ảnh, rồi kéo các điểm để căn vị trí.':'Chạm điểm bắt đầu và kết thúc vùng chân, rồi kéo để căn vị trí.');return;}
-  if(action==='apply-body'){await f.addWarp(bodyWarps(this.router.bodyHandles,this.brush.mode,this.brush.strength));this.router.placingBody=false;this.toast('Đã chỉnh vùng do bạn đặt. Có thể hoàn tác từng lần.');return;}
+  if(action==='body-place'){this.router.cancel();this.router.placingFace=false;this.router.placingPin=false;this.router.bodyHandles=[];this.router.placingBody=true;await f.activate('studio');this.toast(this.brush.mode==='waist'?'Chạm hai bên eo trên ảnh, rồi kéo các điểm để căn vị trí.':'Chạm điểm bắt đầu và kết thúc vùng cần chỉnh, rồi kéo để căn vị trí.');return;}
+  if(action==='body-pin'){this.router.cancel();this.router.placingFace=false;this.router.placingBody=false;this.router.placingPin=!this.router.placingPin;await f.activate('studio');this.renderPanel();this.toast(this.router.placingPin?'Chạm lên đường thẳng, khung cửa hoặc tường phía sau để ghim khóa vùng nền.':'Đã tắt chế độ ghim nền.');return;}
+  if(action==='apply-body'){clearTimeout(this.bodyPreviewTimer);await f.addWarp(bodyWarps(this.router.bodyHandles,this.brush.mode,this.brush.strength,f.photoLayer()?.studio.freezes?.length||0));this.router.placingBody=false;this.toast('Đã chỉnh vùng do bạn đặt. Có thể hoàn tác từng lần.');return;}
   if(action==='face-place'){this.router.cancel();this.router.placingBody=false;this.router.placingFace=true;this.router.faceLayerId=f.photoLayer()?.id;if(this.router.faceHandles.length<2)this.router.faceHandles=this.defaultFaceHandles(this.reshapePreset||'face');await f.activate('studio');f.config.need_render=true;this.renderPanel();this.scheduleFaceMeshPreview();this.toast('Kéo hai điểm điều khiển trên khuôn mặt và trượt mức độ để xem trước.');return;}
   if(action==='apply-face'){clearTimeout(this.faceMeshTimer);const layer=f.photoLayer();if(!this.router.faceHandles||this.router.faceHandles.length<2)this.router.faceHandles=this.defaultFaceHandles(this.reshapePreset||'face');const warps=faceMeshWarps(this.router.faceHandles,this.reshapePreset||'face',this.faceAmount??40,layer?.studio.freezes?.length||0);if(warps.length)await f.addWarp(warps);this.router.placingFace=false;f.config.need_render=true;this.renderPanel();this.toast('Đã áp dụng chỉnh khuôn mặt theo lưới điểm điều khiển. Có thể hoàn tác.');return;}
   if(action==='clear-freeze'){await f.updateStudio({freezes:[...(f.photoLayer()?.studio.freezes||[]),{clear:true}]});this.toast('Đã xóa vùng bảo vệ cho những nét chỉnh tiếp theo.');return;}
