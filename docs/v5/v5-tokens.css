@@ -1,0 +1,28 @@
+/* BaoHim Photo V5 — reference design tokens only; do not import globally until namespaced */
+:root {
+  --v5-bg: #141416;
+  --v5-bg-elevated: #1D1D21;
+  --v5-surface: #242429;
+  --v5-surface-hover: #2D2D34;
+  --v5-text: #F5F3F2;
+  --v5-text-secondary: #A9A8B0;
+  --v5-text-muted: #777780;
+  --v5-accent: #C46890;
+  --v5-accent-active: #E27FAB;
+  --v5-accent-soft: rgba(196, 104, 144, .16);
+  --v5-border: rgba(255,255,255,.11);
+  --v5-divider: rgba(255,255,255,.08);
+  --v5-success: #8EBDA7;
+  --v5-danger: #EE8D9A;
+  --v5-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+  --v5-radius-sm: 10px;
+  --v5-radius-card: 14px;
+  --v5-radius-panel: 20px;
+  --v5-radius-pill: 999px;
+  --v5-header-height: 52px;
+  --v5-compact-dock-height: 196px;
+  --v5-touch-min: 44px;
+  --v5-thumb: 62px;
+  --v5-ease: cubic-bezier(.2,.7,.2,1);
+  --v5-motion: 170ms;
+}
