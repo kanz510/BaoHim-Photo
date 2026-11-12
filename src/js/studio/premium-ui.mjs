@@ -9,8 +9,16 @@ const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const names={home:'Chỉnh ảnh',beauty:'Làm đẹp',adjust:'Ánh sáng & màu',filters:'Bộ lọc màu',reshape:'Chỉnh đường nét',makeup:'Trang điểm',text:'Typography',stickers:'Sticker',frames:'Khung ảnh',collage:'Ghép ảnh',templates:'Mẫu thiết kế',layers:'Các lớp',geometry:'Cắt & căn chỉnh',draw:'Vẽ & xóa'};
 const adjustmentGroups={light:[['exposure','Phơi sáng',-2,2,.05],['brightness','Độ sáng',-100,100,1],['contrast','Tương phản',-100,100,1],['highlights','Vùng sáng',-100,100,1],['shadows','Vùng tối',-100,100,1]],color:[['temperature','Nhiệt độ',-100,100,1],['tint','Sắc độ',-100,100,1],['saturation','Bão hòa',-100,100,1]],detail:[['blur','Làm mờ',0,100,1],['sharpen','Sắc nét',0,100,1],['grain','Hạt film',0,100,1],['vignette','Viền tối',0,100,1]]};
-const roles={lips:['Môi','makeup','#a8415c','multiply'],blush:['Má','heart','#df9296','soft-light'],eyes:['Mắt','eye','#8f586c','multiply'],brows:['Mày','brush','#614337','multiply'],highlight:['Bắt sáng','sun','#f2d4bc','soft-light']};
+const roles={lips:['Môi','makeup','#a8415c','multiply'],blush:['Má','heart','#df9296','soft-light'],eyes:['Mắt','eye','#8f586c','multiply'],eyeliner:['Eyeliner','brush','#2c2227','multiply'],brows:['Mày','brush','#614337','multiply'],highlight:['Sáng mắt','sun','#f2d4bc','soft-light'],hair:['Màu tóc','brush','#6e473b','soft-light']};
 const palette=['#a8415c','#c76b83','#df9296','#8f586c','#b5826c','#f2d4bc'];
+const hairPalette=['#6e473b','#8c624c','#9e4738','#78596e','#6e7075','#242c38','#c49a5c'];
+export const MAKEUP_PRESETS={
+ natural:{label:'Tự nhiên',role:'lips',color:'#c97482',opacity:65,blend:'soft-light',strength:38},
+ peach:{label:'Đào phai',role:'blush',color:'#e89587',opacity:72,blend:'soft-light',strength:42},
+ douyin:{label:'Douyin',role:'lips',color:'#b53852',opacity:85,blend:'multiply',strength:58},
+ korean:{label:'Hàn Quốc',role:'eyes',color:'#a8766c',opacity:68,blend:'soft-light',strength:36},
+ velvet:{label:'Đỏ rượu',role:'lips',color:'#7d2438',opacity:88,blend:'multiply',strength:62}
+};
 const fontNames=FONT_BANK.map(f=>f.family);
 const tabs=(items,active,attr)=>`<div class="v2-tabs">${items.map(([id,label])=>`<button ${attr}="${id}" class="${id===active?'active':''}">${label}</button>`).join('')}</div>`;
 const miniNote=text=>`<p class="v2-tool-note">${text}</p>`;
@@ -88,8 +96,13 @@ export class PremiumUI extends MobilePreviewUI{
   return `${tabs([['face','Đường nét / Liquify'],['body','Vóc dáng']],this.reshapeMode,'data-reshape-group')}<div class="v2-tool-strip">${body?bodyCards:this.card('Đẩy','push','reshape')+this.card('Thu gọn','pinch','pinch')+this.card('Làm đầy','bulge','expand')}${this.card('Bảo vệ','freeze','shield')}${this.card('Phục hồi','restore-warp','eraser')}</div>${!body?`<div class="pro-effect-list">${Object.entries(RESHAPE_PRESETS).map(([id,p])=>`<button data-v2-reshape-preset="${id}" class="${id===this.reshapePreset?'active':''}">${p.label}</button>`).join('')}</div>`:''}${faceMeshSlider}${this.brushSlider()}${bodyActions||faceActions||miniNote(this.brush.mode==='freeze'?'Tô vùng cần giữ nguyên trước khi chỉnh đường nét':'Kéo nhẹ trên ảnh · Mỗi thao tác đều có thể hoàn tác')}${this.expanded?'<button class="v2-inline-action" data-action="clear-freeze">Xóa vùng bảo vệ</button>':''}`;
  }
  makeupPanel(){
-  const layer=this.f.activeMakeupLayer(),role=layer?.studio.makeup.role||this.makeupMode,restore=this.brush.mode==='restore';
-  return `<div class="v2-makeup-roles">${Object.entries(roles).map(([id,[name,ic]])=>`<button data-v2-makeup-role="${id}" class="${id===role&&!restore?'active':''}">${icon(ic)}${name}</button>`).join('')}<button data-v2-action="makeup-erase" class="${restore?'active':''}">${icon('eraser')}Tẩy</button></div><div class="palette v2-makeup-palette">${palette.map(c=>`<button data-color="${c}" class="swatch ${c===this.brush.color?'active':''}" style="background:${c}" aria-label="Màu ${c}"></button>`).join('')}<input class="color-input" type="color" value="${this.brush.color}" data-makeup-color aria-label="Chọn màu riêng"></div>${this.brushSlider()}<div class="v2-mask-status"><span>${icon('layers')}${layer?esc(layer.name):'Chọn vùng để tạo lớp màu'}</span><button data-v2-action="makeup-layers">Quản lý lớp ${icon('chevronRight')}</button></div>${this.expanded&&layer?`${this.slider('Độ trong suốt lớp','opacity',layer.opacity??100,0,100,1,'layer')}<label class="field-label">Hòa trộn lớp<select class="studio-field" id="layer-blend">${this.blendOptions(layer.composition)}</select></label><button class="v2-inline-action" data-v2-action="new-makeup">${icon('plus')}Thêm một lớp màu ${roles[role]?.[0]||'mới'}</button>`:''}`;
+  const layer=this.f.activeMakeupLayer(),role=layer?.studio.makeup.role||this.makeupMode,restore=this.brush.mode==='restore',isHair=role==='hair';
+  const swatches=isHair?hairPalette:palette;
+  const presetsRow=!isHair?`<div class="pro-effect-list">${Object.entries(MAKEUP_PRESETS).map(([id,p])=>`<button data-v2-makeup-preset="${id}" class="${this.makeupPreset===id?'active':''}">${p.label}</button>`).join('')}</div>`:'';
+  const hairKey=this.hairKey||'brightness',hairLabels={brightness:'Độ sáng tóc',saturation:'Độ bão hòa tóc',highlights:'Highlight tóc',shadows:'Shadow tóc'},hairAdj={...DEFAULT_ADJUSTMENTS,...layer?.studio.adjustments,...this.draft.adjustments};
+  const hairControls=isHair?`<div class="v2-hair-controls">${tabs([['brightness','Độ sáng'],['saturation','Bão hòa'],['highlights','Highlight'],['shadows','Shadow']],hairKey,'data-v2-hair-key')}${this.slider(hairLabels[hairKey],hairKey,hairAdj[hairKey]||0,-100,100,1,'adjust')}</div>`:'';
+  const layerControls=layer?`<div class="v2-makeup-layer-props">${this.slider('Độ trong suốt lớp','opacity',layer.opacity??100,0,100,1,'layer')}<label class="field-label">Hòa trộn lớp<select class="studio-field" id="layer-blend">${this.blendOptions(layer.composition)}</select></label>${this.expanded?`<button class="v2-inline-action" data-v2-action="new-makeup">${icon('plus')}Thêm một lớp màu ${roles[role]?.[0]||'mới'}</button>`:''}</div>`:'';
+  return `<div class="v2-makeup-roles">${Object.entries(roles).map(([id,[name,ic]])=>`<button data-v2-makeup-role="${id}" class="${id===role&&!restore?'active':''}">${icon(ic)}${name}</button>`).join('')}<button data-v2-action="makeup-erase" class="${restore?'active':''}">${icon('eraser')}Tẩy</button></div>${presetsRow}<div class="palette v2-makeup-palette">${swatches.map(c=>`<button data-color="${c}" class="swatch ${c===this.brush.color?'active':''}" style="background:${c}" aria-label="Màu ${c}"></button>`).join('')}<input class="color-input" type="color" value="${this.brush.color}" data-makeup-color aria-label="Chọn màu riêng"></div>${hairControls}${this.brushSlider()}<div class="v2-mask-status"><span>${icon('layers')}${layer?esc(layer.name):'Chọn vùng để tạo lớp màu'}</span><button data-v2-action="makeup-layers">Quản lý lớp ${icon('chevronRight')}</button></div>${layerControls}`;
  }
  textPanel(){
   const layer=this.f.config.layer?.type==='text'?this.f.config.layer:null,meta=layer?.data?.[0]?.[0]?.meta||{},ty=layer?.studio?.typography||{},tab=this.textTab||'content';
@@ -152,7 +165,21 @@ export class PremiumUI extends MobilePreviewUI{
  async updateDraftThumbnail(){if(this.thumbnailBusy||!this.f.id||this.f.loadingDocument||this.f.historyJumping)return;this.thumbnailBusy=true;const id=this.f.id,revision=this.f.revision;try{const blob=await this.f.exportImage({format:'jpeg',quality:.7,scale:Math.min(1,240/Math.max(this.f.config.WIDTH,this.f.config.HEIGHT))});if(this.f.id===id&&this.f.revision===revision){await this.preferences.saveThumbnail(id,blob);if(this.libraryVisible)await this.renderHome();}}finally{this.thumbnailBusy=false;}}
  async savePersonalLook(name){await this.commitDraft();const look=lookFromStudio(this.f.basePhotoLayer()?.studio||{},name);await this.preferences.saveLook(look);this.looks=await this.preferences.listLooks();return look;}
  selectMakeupRole(role,options={}){return this.navigate(()=>this.openMakeupRole(role,options));}
- async openMakeupRole(role,{fresh=false}={}){if(!roles[role])return;await this.commitDraft();const parent=this.f.basePhotoLayer();this.makeupMode=role;this.router?.cancel();const existing=!fresh&&this.f.config.layers.findLast(l=>l.studio?.makeup?.targetId===parent?.id&&l.studio.makeup.role===role);if(existing)await this.f.chooseMakeupLayer(existing.id);else await this.f.newMakeupLayer(role);this.brush.mode='makeup';this.brush.color=roles[role][2];this.brush.blend='source-over';this.brush.strength=role==='lips'?55:30;this.f.activate('studio');this.renderPanel();}
+ async openMakeupRole(role,{fresh=false}={}){if(!roles[role])return;await this.commitDraft();const parent=this.f.basePhotoLayer();this.makeupMode=role;this.router?.cancel();const existing=!fresh&&this.f.config.layers.findLast(l=>l.studio?.makeup?.targetId===parent?.id&&l.studio.makeup.role===role);if(existing)await this.f.chooseMakeupLayer(existing.id);else await this.f.newMakeupLayer(role);this.brush.mode='makeup';this.brush.color=roles[role][2];this.brush.blend='source-over';this.brush.strength=role==='lips'?55:role==='eyeliner'?65:role==='hair'?45:30;if(role==='hair')this.brush.feather=55;if(role==='eyeliner')this.brush.size=24;this.f.activate('studio');this.renderPanel();}
+ async applyMakeupPreset(presetId){
+  const p=MAKEUP_PRESETS[presetId];if(!p)return;
+  this.makeupPreset=presetId;
+  await this.openMakeupRole(p.role);
+  this.brush.color=p.color;this.brush.strength=p.strength;
+  const layer=this.f.activeMakeupLayer();
+  if(layer){
+   await this.f.updateLayer({opacity:p.opacity,composition:p.blend});
+   if(layer.studio.strokes?.length){
+    await this.f.updateStudio({strokes:layer.studio.strokes.map(s=>s.type==='makeup'?{...s,color:p.color}:s)},layer);
+   }
+  }
+  this.renderPanel();
+ }
  async loadProject(project){await this.commitDraft();this.router?.cancel();this.showLoading(true);try{await this.f.restore(project);this.draft={};this.closeDialog();await this.closeSheet();this.showEditor();}catch(error){await this.showHome(this.homeTab||'studio');throw error;}finally{this.showLoading(false);}}
  showLoading(active){super.showLoading(active);if(this.mobileViewport){$('#mobile-nav').inert=active;$('#studio-inspector').inert=active;document.querySelectorAll('.mobile-header button').forEach(b=>b.disabled=active);}if(!active&&this.pendingOpen){const pending=this.pendingOpen;this.pendingOpen=null;if(this.f.id!==pending.id&&pending.chosen)queueMicrotask(()=>this.safely(async()=>{if(pending.look)await this.f.applyLook(pending.look.recipe);if(pending.tool)await this.switchTool(pending.tool);else{await this.closeSheet();this.showEditor();}await this.f.fit();}));}}
  confirmComposition(kind,id){this.pendingComposition={kind,id,epoch:this.f.epoch};this.dialog('Tạo bố cục mới?',`<p>Bố cục mới sẽ sắp xếp lại ảnh và giữ các lớp trang điểm đi kèm. Chữ, sticker và khung hiện có sẽ được thay thế. Bạn có thể hoàn tác để quay lại.</p><button class="v2-primary v2-wide" data-v2-action="apply-composition">Tạo bố cục</button>`);}
@@ -164,7 +191,7 @@ export class PremiumUI extends MobilePreviewUI{
   if(action==='projects'){await this.showHome('projects');return;}
   if(action==='add-text'){await this.commitDraft();await this.f.addText();this.textTab='content';this.renderPanel();this.sheet.set('compact');$('#studio-text')?.focus();return;}
   if(action==='reset'&&this.tool==='frames'){await this.f.framePhoto(this.frameStyle||'paper',0);this.renderPanel();return;}
-  if(action==='reset'&&this.tool==='makeup'){const layer=this.f.activeMakeupLayer();if(!layer){this.toast('Chọn một lớp trang điểm trước.');return;}await this.f.updateStudio({strokes:[]},layer);this.renderPanel();return;}
+  if(action==='reset'&&this.tool==='makeup'){const layer=this.f.activeMakeupLayer();if(!layer){this.toast('Chọn một lớp trang điểm trước.');return;}await this.f.updateStudio({strokes:[],adjustments:{}},layer);this.renderPanel();return;}
   if(action==='reset'&&this.tool==='text'){await this.commitDraft();await this.f.updateText({meta:{family:'Manrope',bold:false,italic:false,underline:false,stroke_size:0,kerning:0,leading:10},typography:{arc:0,shadow:0,glow:0,depth:0,bubble:'none',gradient:{enabled:false,from:'#ffffff',to:'#d96792',angle:0}}});this.renderPanel();return;}
   if(action==='apply'&&this.tool==='geometry'&&this.geometryTab!=='crop'){await this.commitDraft();await this.closeSheet();return;}
   if(action==='apply'&&this.tool==='frames'){await this.closeSheet();return;}
@@ -199,6 +226,8 @@ export class PremiumUI extends MobilePreviewUI{
     if(d.v2Project){const project=await this.f.repository.load(d.v2Project);if(project)await this.loadProject(project);return;}
     if(d.v2Layer){await this.commitDraft();this.f.workLayerId=null;await this.f.select(d.v2Layer);await this.f.activate(this.f.config.layer?.studio?.makeup||this.f.config.layer?.studio?.canvasFrame?'studio':'select');this.renderPanel();return;}
     if(d.v2MakeupRole){await this.selectMakeupRole(d.v2MakeupRole);return;}
+    if(d.v2MakeupPreset){await this.navigate(()=>this.applyMakeupPreset(d.v2MakeupPreset));return;}
+    if(d.v2HairKey){await this.commitDraft();this.hairKey=d.v2HairKey;this.renderPanel();return;}
     if(d.v2TextEffect){await this.commitDraft();this.textEffect=d.v2TextEffect;this.renderPanel();return;}
     if(d.v2Bubble){await this.commitDraft();await this.f.updateText({typography:{bubble:d.v2Bubble}});this.renderPanel();return;}
     if(d.v2TextTab){await this.commitDraft();this.textTab=d.v2TextTab;this.renderPanel();return;}

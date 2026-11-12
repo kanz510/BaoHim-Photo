@@ -514,3 +514,36 @@ test('Phase 3 Body Reshape exposes all 7 body modes, background pin lock, and an
   assert.equal(f.basePhotoLayer().studio.warps.length,0);
  }finally{await app.close();}
 });
+
+test('Phase 4 Makeup & Hair Studio creates dedicated eyeliner and hair layers, applies makeup presets, and grades hair highlights/shadows',async()=>{
+ const app=await boot();
+ try{
+  const {ui,facade:f}=app.w.Studio;
+  await ui.switchTool('makeup');
+  for(const role of ['lips','blush','eyes','eyeliner','brows','highlight','hair']){
+   assert.ok(app.w.document.querySelector(`[data-v2-makeup-role="${role}"]`),`Makeup role button ${role} exists`);
+  }
+  // Apply Douyin makeup preset
+  await ui.applyMakeupPreset('douyin');
+  const lipsLayer=f.activeMakeupLayer();
+  assert.equal(lipsLayer.studio.makeup.role,'lips');
+  assert.equal(lipsLayer.opacity,85);
+  assert.equal(lipsLayer.composition,'multiply');
+  // Create eyeliner layer
+  await ui.selectMakeupRole('eyeliner');
+  const eyelinerLayer=f.activeMakeupLayer();
+  assert.equal(eyelinerLayer.studio.makeup.role,'eyeliner');
+  assert.notEqual(eyelinerLayer.id,lipsLayer.id,'each makeup type has its own independent layer');
+  // Switch to Hair Studio role, paint feathered hair mask, and adjust hair brightness/saturation/highlights/shadows
+  await ui.selectMakeupRole('hair');
+  const hairLayer=f.activeMakeupLayer();
+  assert.equal(hairLayer.studio.makeup.role,'hair');
+  assert.equal(ui.brush.feather,55,'hair brush defaults to soft feathered boundary');
+  await f.addStroke({type:'makeup',points:[{x:200,y:150}],radius:45,strength:.6,hardness:.4,feather:.55,color:'#6e473b',blend:'soft-light'});
+  await f.updateStudio({adjustments:{brightness:12,saturation:18,highlights:20,shadows:-10}},hairLayer);
+  assert.equal(hairLayer.studio.adjustments.highlights,20);
+  const project=await f.portableProject();
+  assert.ok(project.layers.some(l=>l.studio?.makeup?.role==='eyeliner'));
+  assert.ok(project.layers.some(l=>l.studio?.makeup?.role==='hair'));
+ }finally{await app.close();}
+});

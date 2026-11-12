@@ -7,7 +7,7 @@ import {PixelWorkerClient} from './pixel-worker-client.mjs';
 import {HistoryRepository} from './history-repository.mjs';
 import {DocumentSession} from './document-session.mjs';
 const copy=value=>JSON.parse(JSON.stringify(value));
-const makeupRoles={lips:['Môi','multiply'],blush:['Má hồng','soft-light'],eyes:['Mắt','multiply'],brows:['Chân mày','multiply'],highlight:['Bắt sáng','soft-light']};
+const makeupRoles={lips:['Môi','multiply'],blush:['Má hồng','soft-light'],eyes:['Mắt','multiply'],eyeliner:['Eyeliner','multiply'],brows:['Chân mày','multiply'],highlight:['Sáng mắt','soft-light'],hair:['Màu tóc','soft-light']};
 const geometries=['x','y','width','height','rotate'];
 
 export class PremiumFacade extends StudioFacade{

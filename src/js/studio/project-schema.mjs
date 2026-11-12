@@ -82,7 +82,7 @@ export function validateProject(project,{allowBlobs=false}={}){
    }
   }
  }
- for(const layer of project.layers)if(layer.studio?.makeup){const m=layer.studio.makeup,parent=project.layers.find(l=>l.id===m.targetId);if(!Number.isInteger(m.targetId)||!['lips','blush','eyes','brows','highlight'].includes(m.role)||!parent||parent.type!=='image'||parent.studio?.makeup||parent.id===layer.id)throw new Error('Invalid linked makeup layer');}
+ for(const layer of project.layers)if(layer.studio?.makeup){const m=layer.studio.makeup,parent=project.layers.find(l=>l.id===m.targetId);if(!Number.isInteger(m.targetId)||!['lips','blush','eyes','eyeliner','brows','highlight','hair'].includes(m.role)||!parent||parent.type!=='image'||parent.studio?.makeup||parent.id===layer.id)throw new Error('Invalid linked makeup layer');}
  for(const asset of Object.values(project.assets)){
   if(allowBlobs&&typeof Blob!=='undefined'&&asset instanceof Blob)continue;
   if(typeof asset!=='string'||!/^data:image\/(png|jpeg|webp|heic|heif);base64,[A-Za-z0-9+/=]+$/.test(asset))throw new Error('Unsafe or invalid asset');

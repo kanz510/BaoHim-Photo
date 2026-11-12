@@ -42,3 +42,11 @@ test('V2 project extensions reject invalid gradient colors and orphan makeup lin
 test('V2 frame metadata rejects invalid padding and non-frame linked layers',()=>{
  const p=valid();p.layers[0].studio.canvasFrame={style:'paper',percent:5,padding:{left:-1,top:10,right:10,bottom:10}};assert.throws(()=>s.validateProject(p),/frame|khung/i);
 });
+
+test('Phase 4 project schema validates eyeliner and hair linked layers alongside lips/blush/eyes/brows/highlight',()=>{
+ for(const role of ['lips','blush','eyes','eyeliner','brows','highlight','hair']){
+  const p=valid();
+  p.layers.push({id:2,type:'image',name:`Layer ${role}`,x:0,y:0,width:100,height:80,width_original:100,height_original:80,rotate:0,opacity:80,order:2,visible:true,composition:'soft-light',studio:{sourceId:'source-1',sticker:true,makeup:{targetId:1,role},strokes:[{type:'makeup',points:[{x:20,y:20}],radius:12,strength:.5,hardness:.4,feather:.55,color:'#6e473b'}],adjustments:{brightness:10,saturation:15,highlights:12,shadows:-8}}});
+  assert.ok(s.validateProject(p),`validates linked ${role} layer`);
+ }
+});
