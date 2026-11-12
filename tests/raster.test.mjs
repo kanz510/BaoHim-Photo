@@ -71,3 +71,44 @@ test('indexed warping matches every reference pixel through perspective, restore
  const studio={perspectiveX:12,perspectiveY:-8,warps:Array.from({length:20},(_,i)=>({from:{x:25+(i%5)*35,y:35+Math.floor(i/5)*50},to:{x:35+(i%5)*35,y:40+Math.floor(i/5)*50},radius:24,strength:.3,mode:i%7===0?'restore':i%3===0?'pinch':'push',freezeCount:i%3})),freezes:[{radius:20,hardness:.4,points:Array.from({length:30},(_,i)=>({x:20+i*4,y:100}))},{clear:true},{radius:18,hardness:.2,erase:true,points:[{x:100,y:100}]}]};
  const indexed=new RasterService({canvas:(w,h)=>createCanvas(w,h)}),reference=new RasterService({canvas:(w,h)=>createCanvas(w,h),indexedWarp:false}),a=await indexed.render(source,studio,{edge:280}),b=await reference.render(source,studio,{edge:280});assert.deepEqual(a.getContext('2d').getImageData(0,0,220,280).data,b.getContext('2d').getImageData(0,0,220,280).data);
 });
+
+test('Phase 0 ROI rendering caches completed strokes and renders only the active stroke on subsequent edits',async()=>{
+ const source=createCanvas(320,240),ctx=source.getContext('2d');
+ for(let y=0;y<240;y+=20){ctx.fillStyle=`rgb(${80+y/2},${110+y/3},150)`;ctx.fillRect(0,y,320,20);}
+ const renderer=new RasterService({canvas});
+ const strokes=Array.from({length:25},(_,i)=>({
+  type:i%3===0?'smooth':i%3===1?'heal':'tone',
+  radius:14,strength:.65,hardness:.5,color:'#d6a385',
+  cloneSource:{x:40+(i%5)*30,y:40},
+  points:[{x:50+(i%5)*40,y:60+Math.floor(i/5)*30},{x:58+(i%5)*40,y:64+Math.floor(i/5)*30}]
+ }));
+ const first=await renderer.render(source,{strokes:strokes.slice(0,24)},{edge:320});
+ assert.equal(renderer.stats.lastCachedStrokes,0);
+ assert.equal(renderer.stats.lastRenderedStrokes,24);
+ // Adding the 25th stroke renders only 1 stroke using the 24-stroke cached prefix
+ const second=await renderer.render(source,{strokes},{edge:320});
+ assert.equal(renderer.stats.lastCachedStrokes,24);
+ assert.equal(renderer.stats.lastRenderedStrokes,1);
+ // Fresh renderer without prior cache must produce bit-identical pixels
+ const fresh=new RasterService({canvas});
+ const reference=await fresh.render(source,{strokes},{edge:320});
+ assert.deepEqual(second.getContext('2d').getImageData(0,0,320,240).data,reference.getContext('2d').getImageData(0,0,320,240).data);
+ // Undo back to 24 strokes hits the 24-stroke snapshot with 0 re-rendered strokes
+ const undone=await renderer.render(source,{strokes:strokes.slice(0,24)},{edge:320});
+ assert.equal(renderer.stats.lastCachedStrokes,24);
+ assert.equal(renderer.stats.lastRenderedStrokes,0);
+ assert.deepEqual(undone.getContext('2d').getImageData(0,0,320,240).data,first.getContext('2d').getImageData(0,0,320,240).data);
+});
+
+test('Phase 0 tiled grading matches single-pass grading including deterministic grain',async()=>{
+ const source=createCanvas(160,180),ctx=source.getContext('2d');
+ for(let y=0;y<180;y++)for(let x=0;x<160;x++){ctx.fillStyle=`rgb(${(x*5)%255},${(y*3)%255},140)`;ctx.fillRect(x,y,1,1);}
+ const studio={preset:'film',intensity:80,adjustments:{exposure:.2,contrast:15,grain:20},hsl:{red:{hue:10,saturation:15}},levels:{black:10,white:245,gamma:1.1}};
+ const tiled=new RasterService({canvas,tileThreshold:1000,tileHeight:64});
+ const single=new RasterService({canvas,tileThreshold:10000000});
+ const outTiled=await tiled.render(source,studio,{edge:200});
+ const outSingle=await single.render(source,studio,{edge:200});
+ assert.ok(tiled.stats.lastTiles>=3);
+ assert.equal(single.stats.lastTiles,1);
+ assert.deepEqual(outTiled.getContext('2d').getImageData(0,0,160,180).data,outSingle.getContext('2d').getImageData(0,0,160,180).data);
+});

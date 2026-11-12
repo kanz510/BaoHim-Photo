@@ -17,10 +17,22 @@ export async function initStudio(app){
  document.body.classList.add('studio-app');
  try{
   await(document.fonts?.ready||Promise.resolve());let projects=[];try{projects=await facade.repository.list();}catch{}
-  if(projects.length){const project=await facade.repository.load(projects[0].id);await facade.restore(project);}
-  else await facade.openDemo();
+  let restored=false;
+  for(const summary of projects){
+   try{
+    const project=await facade.repository.load(summary.id);
+    if(project){await facade.restore(project);restored=true;break;}
+   }catch{
+    ui.toast('Dự án gần nhất bị hỏng nên đã chuyển về không gian an toàn.');
+   }
+  }
+  if(!restored)await facade.openDemo();
   facade.activate('studio');ui.showLoading(false);ui.renderPanel();await ui.updateProjectCount();await ui.updateDraftThumbnail().catch(()=>{});await ui.showHome('studio');
- }catch(error){ui.showLoading(false);ui.toast(error.message);document.getElementById('save-status').textContent='Mở ảnh để bắt đầu';throw error;}
+ }catch(error){
+  ui.showLoading(false);ui.toast(error.message||'Không thể khôi phục dự án.');
+  const statusEl=document.getElementById('save-status');if(statusEl)statusEl.textContent='Mở ảnh để bắt đầu';
+  try{ui.renderPanel();await ui.showHome('studio');}catch{}
+ }
  finally{document.getElementById('v2-launch').hidden=true;}
  if('serviceWorker'in navigator){navigator.serviceWorker.register('./service-worker.js').then(()=>navigator.serviceWorker.ready).then(()=>{const tag=document.querySelector('.offline-tag');if(tag)tag.innerHTML='<i></i>Sẵn sàng ngoại tuyến';}).catch(()=>{const tag=document.querySelector('.offline-tag');if(tag)tag.innerHTML='<i></i>Xử lý trên thiết bị';});}
  return window.Studio;

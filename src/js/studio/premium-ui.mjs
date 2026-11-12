@@ -28,6 +28,11 @@ export class PremiumUI extends MobilePreviewUI{
   $('#v2-photo-name').textContent=this.f.name||'';$('#v2-photo-size').textContent=`${this.f.config.WIDTH} × ${this.f.config.HEIGHT}`;
  }
  onFacade(type,value){
+  if(type==='worker'){
+   if(value?.state==='restarting')this.toast('Bộ xử lý ảnh đang khởi động lại để giữ ứng dụng mượt…');
+   else if(value?.state==='failed')this.toast('Tác vụ xử lý ảnh lớn đã dừng để tránh treo máy. Hãy thử lại.');
+   return;
+  }
   if(type==='document'){this.showLoading(value.phase==='opening');if(value.phase==='opening'){this.router?.cancel();if(this.router){this.router.cloneSource=null;this.router.bodyHandles=[];}const node=$('#studio-loading');node.textContent=value.label;}return;}
   if(type==='checkpoint-error'){if(!this.checkpointWarning)this.toast('Dự án đã lưu. Chưa lưu được mốc lịch sử trên thiết bị.');this.checkpointWarning=true;}if(type==='checkpoint-saved')this.checkpointWarning=false;
   if(this.f.historyJumping)return;super.onFacade(type,value);if(!this.preferences)return;
@@ -132,7 +137,7 @@ export class PremiumUI extends MobilePreviewUI{
  async savePersonalLook(name){await this.commitDraft();const look=lookFromStudio(this.f.basePhotoLayer()?.studio||{},name);await this.preferences.saveLook(look);this.looks=await this.preferences.listLooks();return look;}
  selectMakeupRole(role,options={}){return this.navigate(()=>this.openMakeupRole(role,options));}
  async openMakeupRole(role,{fresh=false}={}){if(!roles[role])return;await this.commitDraft();const parent=this.f.basePhotoLayer();this.makeupMode=role;this.router?.cancel();const existing=!fresh&&this.f.config.layers.findLast(l=>l.studio?.makeup?.targetId===parent?.id&&l.studio.makeup.role===role);if(existing)await this.f.chooseMakeupLayer(existing.id);else await this.f.newMakeupLayer(role);this.brush.mode='makeup';this.brush.color=roles[role][2];this.brush.blend='source-over';this.brush.strength=role==='lips'?55:30;this.f.activate('studio');this.renderPanel();}
- async loadProject(project){await this.commitDraft();this.router?.cancel();this.showLoading(true);try{await this.f.restore(project);this.draft={};this.closeDialog();await this.closeSheet();this.showEditor();}finally{this.showLoading(false);}}
+ async loadProject(project){await this.commitDraft();this.router?.cancel();this.showLoading(true);try{await this.f.restore(project);this.draft={};this.closeDialog();await this.closeSheet();this.showEditor();}catch(error){await this.showHome(this.homeTab||'studio');throw error;}finally{this.showLoading(false);}}
  showLoading(active){super.showLoading(active);if(this.mobileViewport){$('#mobile-nav').inert=active;$('#studio-inspector').inert=active;document.querySelectorAll('.mobile-header button').forEach(b=>b.disabled=active);}if(!active&&this.pendingOpen){const pending=this.pendingOpen;this.pendingOpen=null;if(this.f.id!==pending.id&&pending.chosen)queueMicrotask(()=>this.safely(async()=>{if(pending.look)await this.f.applyLook(pending.look.recipe);if(pending.tool)await this.switchTool(pending.tool);else{await this.closeSheet();this.showEditor();}await this.f.fit();}));}}
  confirmComposition(kind,id){this.pendingComposition={kind,id,epoch:this.f.epoch};this.dialog('Tạo bố cục mới?',`<p>Bố cục mới sẽ sắp xếp lại ảnh và giữ các lớp trang điểm đi kèm. Chữ, sticker và khung hiện có sẽ được thay thế. Bạn có thể hoàn tác để quay lại.</p><button class="v2-primary v2-wide" data-v2-action="apply-composition">Tạo bố cục</button>`);}
  async action(action,button){

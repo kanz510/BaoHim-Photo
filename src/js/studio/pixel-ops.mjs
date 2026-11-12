@@ -18,3 +18,18 @@ export function healPixels(input,w,h,from,to,radius,lowpass){
  const low=lowpass||blurPixels(input,w,h,Math.max(2,Math.min(40,Math.round(radius*.35)))),out=new Uint8ClampedArray(input.length),dx=Math.round(to.x-from.x),dy=Math.round(to.y-from.y);
  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=(y*w+x)*4,s=(clamp(y-dy,0,h-1)*w+clamp(x-dx,0,w-1))*4;for(let k=0;k<3;k++)out[i+k]=input[s+k]-low[s+k]+low[i+k];out[i+3]=input[i+3];}return out;
 }
+/**
+ * Local ROI healing: blurs only the padded destination and source patches instead of the full image.
+ * Produces bit-identical output inside [rx, rx+rw) x [ry, ry+rh) to full-frame healPixels.
+ */
+export function healRoiFromPatches({dstPixels,dw,dh,dx0,dy0,srcPixels,sw,sh,sx0,sy0,fullW,fullH,from,to,radius,rx,ry,rw,rh}){
+ const blurR=Math.max(2,Math.min(40,Math.round(radius*.35))),dx=Math.round(to.x-from.x),dy=Math.round(to.y-from.y);
+ const dstLow=blurPixels(dstPixels,dw,dh,blurR),srcLow=blurPixels(srcPixels,sw,sh,blurR),out=new Uint8ClampedArray(rw*rh*4);
+ for(let v=0;v<rh;v++)for(let u=0;u<rw;u++){
+  const x=rx+u,y=ry+v,sx=clamp(x-dx,0,fullW-1),sy=clamp(y-dy,0,fullH-1);
+  const di=((y-dy0)*dw+(x-dx0))*4,si=((sy-sy0)*sw+(sx-sx0))*4,oi=(v*rw+u)*4;
+  for(let k=0;k<3;k++)out[oi+k]=srcPixels[si+k]-srcLow[si+k]+dstLow[di+k];
+  out[oi+3]=dstPixels[di+3];
+ }
+ return out;
+}

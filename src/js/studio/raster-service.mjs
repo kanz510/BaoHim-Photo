@@ -1,11 +1,38 @@
 import {fitWithin,mergePreset,clamp} from './math.mjs';
 import {processPixels} from './pixel-pipeline.mjs';
 
+function strokeSignature(s){
+ if(!s)return '';
+ const pts=s.points||[],first=pts[0],last=pts[pts.length-1],mid=pts[pts.length>>1];
+ return `${s.type}:${s.radius}:${s.strength}:${s.hardness??.5}:${s.feather||0}:${s.detail??0}:${s.color||''}:${s.blend||''}:${s.cloneSource?s.cloneSource.x+','+s.cloneSource.y:''}:${pts.length}:${first?first.x+','+first.y:''}:${mid?mid.x+','+mid.y:''}:${last?last.x+','+last.y:''}`;
+}
+function surfaceFingerprint(ctx,w,h){
+ const pts=[[0,0],[w>>1,h>>1],[w-1,h-1],[w>>2,h>>2]];
+ let tag=`${w}x${h}`;
+ for(const [x,y] of pts){const d=ctx.getImageData(Math.max(0,x),Math.max(0,y),1,1).data;tag+=`:${d[0]},${d[1]},${d[2]},${d[3]}`;}
+ return tag;
+}
+
 export class RasterService{
- constructor({canvas,fx=null,filters=null,indexedWarp=true}={}){
+ constructor({canvas,fx=null,filters=null,indexedWarp=true,tileThreshold=4000000,tileHeight=1024}={}){
   this.canvas=canvas||((w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c;});
-  this.fx=fx;this.filters=filters;this.gpu=null;this.gpuUnavailable=false;this.smoothCache=new WeakMap();
-  this.indexedWarp=indexedWarp;
+  this.fx=fx;this.filters=filters;this.gpu=null;this.gpuUnavailable=false;this.smoothCache=new WeakMap();this.strokeCache=new WeakMap();
+  this.indexedWarp=indexedWarp;this.tileThreshold=tileThreshold;this.tileHeight=tileHeight;
+  this.stats={lastRenderedStrokes:0,lastCachedStrokes:0,lastTiles:0};
+ }
+ strokeBounds(stroke,size,scale){
+  const pts=stroke?.points||[];
+  if(!pts.length||!stroke.strength)return null;
+  const r=Math.max(.5,(stroke.radius+(stroke.feather||0))*scale)+2;
+  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+  for(const p of pts){
+   const x=p.x*scale,y=p.y*scale;
+   if(x-r<minX)minX=x-r;if(y-r<minY)minY=y-r;
+   if(x+r>maxX)maxX=x+r;if(y+r>maxY)maxY=y+r;
+  }
+  const x=clamp(Math.floor(minX),0,size.width),y=clamp(Math.floor(minY),0,size.height);
+  const x1=clamp(Math.ceil(maxX),0,size.width),y1=clamp(Math.ceil(maxY),0,size.height);
+  return x1>x&&y1>y?{x,y,width:x1-x,height:y1-y}:null;
  }
  async render(source,studio={}, {edge=1600,signal,key}={}){
   if(signal?.aborted)throw new DOMException('Cancelled','AbortError');
@@ -15,46 +42,95 @@ export class RasterService{
   const original=output;try{ctx.drawImage(source,0,0,size.width,size.height);
   const strokes=studio.strokes||[];
   if(strokes.length){
-   output=this.canvas(size.width,size.height);ctx=output.getContext('2d');ctx.drawImage(original,0,0);
-   const healInput=strokes.some(s=>s.type==='heal')?original.getContext('2d').getImageData(0,0,size.width,size.height):null;
-   let smooth=null;if(strokes.some(s=>s.type==='smooth')){const cached=this.smoothCache.get(source);if(cached?.width===original.width&&cached?.height===original.height)smooth=cached;else{smooth=this.smooth(original);if(Math.max(smooth.width,smooth.height)<=1600)this.smoothCache.set(source,smooth);}}
-   for(const stroke of strokes){
-    if(!stroke.strength)continue;
-    const mask=this.mask(stroke,size,scale),scratch=this.canvas(size.width,size.height),sctx=scratch.getContext('2d');
-    if(stroke.type==='smooth')sctx.drawImage(smooth||original,0,0);
-    else if(stroke.type==='restore')sctx.drawImage(original,0,0);
-    else if(stroke.type==='heal'){
-     const point=stroke.points[0],from=stroke.cloneSource||point,data={data:new Uint8ClampedArray(healInput.data)};
-     const job={kind:'heal',cacheKey:studio.sourceId,pixels:data.data,width:size.width,height:size.height,from:{x:from.x*scale,y:from.y*scale},to:{x:point.x*scale,y:point.y*scale},radius:stroke.radius*scale};
-     const healed=this.worker?await this.worker.run(job,{signal,key:key&&key+':heal',recover:()=>new Uint8ClampedArray(healInput.data)}):processPixels(job);const image=sctx.createImageData(size.width,size.height);image.data.set(healed);sctx.putImageData(image,0,0);
-    }else if(stroke.type==='clone'){
-     const point=stroke.points[0],from=stroke.cloneSource||point;
-     sctx.drawImage(original,(point.x-from.x)*scale,(point.y-from.y)*scale);
-    }else{
-     sctx.fillStyle=['makeup','paint','tone'].includes(stroke.type)?stroke.color:stroke.type==='burn'?'#35262b':'#fff6ea';
-     sctx.fillRect(0,0,size.width,size.height);
+   const origCtx=original.getContext('2d',{willReadFrequently:true});
+   const fp=surfaceFingerprint(origCtx,size.width,size.height);
+   output=this.canvas(size.width,size.height);ctx=output.getContext('2d');
+   let smooth=null;if(strokes.some(s=>s.type==='smooth')){const cached=this.smoothCache.get(source);if(cached?.width===original.width&&cached?.height===original.height&&cached._fp===fp)smooth=cached;else{smooth=this.smooth(original);smooth._fp=fp;if(Math.max(smooth.width,smooth.height)<=1600)this.smoothCache.set(source,smooth);}}
+   const sigs=new Array(strokes.length);let acc='';
+   for(let i=0;i<strokes.length;i++){acc+=(i?'|':'')+strokeSignature(strokes[i]);sigs[i]=acc;}
+   let entry=this.strokeCache.get(source);
+   if(!entry||entry.width!==size.width||entry.height!==size.height||entry.fp!==fp){
+    if(entry?.snapshots)for(const s of entry.snapshots)if(s.canvas)s.canvas.width=1;
+    entry={width:size.width,height:size.height,fp,snapshots:[]};
+    if(Math.max(size.width,size.height)<=2048)this.strokeCache.set(source,entry);
+   }
+   let startIndex=0,bestSnap=null;
+   for(const snap of entry.snapshots){
+    if(snap.count<=strokes.length&&sigs[snap.count-1]===snap.sig&&snap.count>startIndex){startIndex=snap.count;bestSnap=snap;}
+   }
+   if(bestSnap)ctx.drawImage(bestSnap.canvas,0,0);
+   else ctx.drawImage(original,0,0);
+   this.stats.lastCachedStrokes=startIndex;
+   this.stats.lastRenderedStrokes=strokes.length-startIndex;
+   const saveSnapshot=count=>{
+    if(count<1||Math.max(size.width,size.height)>2048)return;
+    const sig=sigs[count-1];if(entry.snapshots.some(s=>s.count===count&&s.sig===sig))return;
+    const snapCanvas=this.canvas(size.width,size.height);snapCanvas.getContext('2d').drawImage(output,0,0);
+    entry.snapshots=entry.snapshots.filter(s=>{if(s.count===count){s.canvas.width=1;return false;}return true;});
+    entry.snapshots.push({count,sig,canvas:snapCanvas});
+    while(entry.snapshots.length>2){const old=entry.snapshots.shift();if(old?.canvas)old.canvas.width=1;}
+   };
+   for(let i=startIndex;i<strokes.length;i++){
+    if(signal?.aborted)throw new DOMException('Cancelled','AbortError');
+    const stroke=strokes[i];
+    if(stroke.strength){
+     const roi=this.strokeBounds(stroke,size,scale);
+     if(roi){
+      const mask=this.mask(stroke,roi,scale),scratch=this.canvas(roi.width,roi.height),sctx=scratch.getContext('2d');
+      if(stroke.type==='smooth')sctx.drawImage(smooth||original,roi.x,roi.y,roi.width,roi.height,0,0,roi.width,roi.height);
+      else if(stroke.type==='restore')sctx.drawImage(original,roi.x,roi.y,roi.width,roi.height,0,0,roi.width,roi.height);
+      else if(stroke.type==='heal'){
+       const point=stroke.points[0],from=stroke.cloneSource||point,toScaled={x:point.x*scale,y:point.y*scale},fromScaled={x:from.x*scale,y:from.y*scale},rScaled=stroke.radius*scale;
+       const blurR=Math.max(2,Math.min(40,Math.round(rScaled*.35))),dx=Math.round(toScaled.x-fromScaled.x),dy=Math.round(toScaled.y-fromScaled.y);
+       const dx0=Math.max(0,roi.x-blurR),dy0=Math.max(0,roi.y-blurR),dx1=Math.min(size.width,roi.x+roi.width+blurR),dy1=Math.min(size.height,roi.y+roi.height+blurR),dw=dx1-dx0,dh=dy1-dy0;
+       const sxMin=clamp(roi.x-dx,0,size.width-1),sxMax=clamp(roi.x+roi.width-1-dx,0,size.width-1),syMin=clamp(roi.y-dy,0,size.height-1),syMax=clamp(roi.y+roi.height-1-dy,0,size.height-1);
+       const sx0=Math.max(0,sxMin-blurR),sy0=Math.max(0,syMin-blurR),sx1=Math.min(size.width,sxMax+1+blurR),sy1=Math.min(size.height,syMax+1+blurR),swPatch=sx1-sx0,shPatch=sy1-sy0;
+       const dstPixels=new Uint8ClampedArray(origCtx.getImageData(dx0,dy0,dw,dh).data),srcPixels=new Uint8ClampedArray(origCtx.getImageData(sx0,sy0,swPatch,shPatch).data);
+       const patch={dw,dh,dx0,dy0,srcPixels,sw:swPatch,sh:shPatch,sx0,sy0,fullW:size.width,fullH:size.height,from:fromScaled,to:toScaled,radius:rScaled,rx:roi.x,ry:roi.y,rw:roi.width,rh:roi.height};
+       const job={kind:'heal-roi',pixels:dstPixels,width:roi.width,height:roi.height,patch};
+       const healed=this.worker?await this.worker.run(job,{signal,key:key&&key+':heal',recover:()=>new Uint8ClampedArray(origCtx.getImageData(dx0,dy0,dw,dh).data)}):processPixels(job);
+       const image=sctx.createImageData(roi.width,roi.height);image.data.set(healed);sctx.putImageData(image,0,0);
+      }else if(stroke.type==='clone'){
+       const point=stroke.points[0],from=stroke.cloneSource||point;
+       sctx.drawImage(original,(point.x-from.x)*scale-roi.x,(point.y-from.y)*scale-roi.y);
+      }else{
+       sctx.fillStyle=['makeup','paint','tone'].includes(stroke.type)?stroke.color:stroke.type==='burn'?'#35262b':'#fff6ea';
+       sctx.fillRect(0,0,roi.width,roi.height);
+      }
+      sctx.globalCompositeOperation='destination-in';sctx.drawImage(mask,0,0);
+      ctx.save();ctx.globalAlpha=clamp(stroke.strength,0,1);
+      if(stroke.type==='restore'){
+       ctx.globalCompositeOperation='destination-out';ctx.drawImage(mask,roi.x,roi.y);ctx.globalCompositeOperation='lighter';ctx.drawImage(scratch,roi.x,roi.y);ctx.restore();scratch.width=1;mask.width=1;
+      }else{
+       ctx.globalCompositeOperation=stroke.type==='erase'?'destination-out':stroke.type==='tone'?'color':stroke.type==='makeup'?(stroke.blend||'soft-light'):
+         stroke.type==='brighten'?'screen':stroke.type==='dodge'?'soft-light':stroke.type==='burn'?'multiply':'source-over';
+       ctx.drawImage(scratch,roi.x,roi.y);ctx.restore();
+       scratch.width=1;mask.width=1;
+      }
+     }
     }
-    sctx.globalCompositeOperation='destination-in';sctx.drawImage(mask,0,0);
-    ctx.save();ctx.globalAlpha=clamp(stroke.strength,0,1);
-    if(stroke.type==='restore'){
-     ctx.globalCompositeOperation='destination-out';ctx.drawImage(mask,0,0);ctx.globalCompositeOperation='lighter';ctx.drawImage(scratch,0,0);ctx.restore();scratch.width=1;mask.width=1;continue;
-    }
-    ctx.globalCompositeOperation=stroke.type==='erase'?'destination-out':stroke.type==='tone'?'color':stroke.type==='makeup'?(stroke.blend||'soft-light'):
-      stroke.type==='brighten'?'screen':stroke.type==='dodge'?'soft-light':stroke.type==='burn'?'multiply':'source-over';
-    ctx.drawImage(scratch,0,0);ctx.restore();
-    scratch.width=1;mask.width=1;
+    if(i===strokes.length-2&&strokes.length>=2)saveSnapshot(strokes.length-1);
+    if(i===strokes.length-1)saveSnapshot(strokes.length);
    }
    if(smooth&&this.smoothCache.get(source)!==smooth)smooth.width=1;
    original.width=1;
+  }else{
+   this.stats.lastCachedStrokes=0;this.stats.lastRenderedStrokes=0;
   }
   if(studio.warps?.length||studio.perspectiveX||studio.perspectiveY)output=await this.warp(output,studio,scale,{signal,key});
   const adjustments=mergePreset(studio.adjustments||{},studio.preset||'original',studio.intensity??100);
   ctx=output.getContext('2d');
   if(Object.values(adjustments).some(Number)||studio.curve?.length||studio.levels||studio.hsl){
-   const pixels=ctx.getImageData(0,0,output.width,output.height);
-   const job={pixels:pixels.data,width:output.width,height:output.height,adjustments,studio:{hsl:studio.hsl,levels:studio.levels,curve:studio.curve}};
-   const data=this.worker?await this.worker.run(job,{signal,key,recover:()=>ctx.getImageData(0,0,output.width,output.height).data}):processPixels(job);
-   const result=ctx.createImageData(output.width,output.height);result.data.set(data);ctx.putImageData(result,0,0);
+   const totalPixels=output.width*output.height;
+   if(totalPixels>this.tileThreshold&&!(adjustments.blur>0)){
+    await this.gradeTiled(ctx,output.width,output.height,adjustments,studio,{signal,key});
+   }else{
+    this.stats.lastTiles=1;
+    const pixels=ctx.getImageData(0,0,output.width,output.height);
+    const job={pixels:pixels.data,width:output.width,height:output.height,adjustments,studio:{hsl:studio.hsl,levels:studio.levels,curve:studio.curve}};
+    const data=this.worker?await this.worker.run(job,{signal,key,recover:()=>ctx.getImageData(0,0,output.width,output.height).data}):processPixels(job);
+    const result=ctx.createImageData(output.width,output.height);result.data.set(data);ctx.putImageData(result,0,0);
+   }
   }
   if(adjustments.sharpen>0||adjustments.clarity>0){
    const sharpened=this.gpuEffect(output,g=>g.unsharpMask(2,clamp((adjustments.sharpen+adjustments.clarity*.5)/70,0,2)))||this.sharpen(output,(adjustments.sharpen+adjustments.clarity*.5)/100);
@@ -73,10 +149,23 @@ export class RasterService{
   return output;
   }catch(error){output.width=1;if(original!==output)original.width=1;throw error;}
  }
- mask(stroke,size,scale){
-  const mask=this.canvas(size.width,size.height),ctx=mask.getContext('2d'),radius=Math.max(.5,stroke.radius*scale),hard=clamp(stroke.hardness??.5,0,.99);
+ async gradeTiled(ctx,width,height,adjustments,studio,{signal,key}={}){
+  const step=Math.max(64,this.tileHeight);let tiles=0;
+  for(let y0=0;y0<height;y0+=step){
+   if(signal?.aborted)throw new DOMException('Cancelled','AbortError');
+   const th=Math.min(step,height-y0),pixels=ctx.getImageData(0,y0,width,th),pixelOffset=y0*width*4;
+   const job={pixels:pixels.data,width,height:th,adjustments,pixelOffset,studio:{hsl:studio.hsl,levels:studio.levels,curve:studio.curve}};
+   const data=this.worker?await this.worker.run(job,{signal,key:key&&`${key}:tile:${y0}`,recover:()=>ctx.getImageData(0,y0,width,th).data}):processPixels(job);
+   const result=ctx.createImageData(width,th);result.data.set(data);ctx.putImageData(result,0,y0);
+   tiles++;
+  }
+  this.stats.lastTiles=tiles;
+ }
+ mask(stroke,bounds,scale){
+  const ox=bounds.x||0,oy=bounds.y||0;
+  const mask=this.canvas(bounds.width,bounds.height),ctx=mask.getContext('2d'),radius=Math.max(.5,(stroke.radius+(stroke.feather||0))*scale),hard=clamp(stroke.hardness??.5,0,.99);
   for(const p of stroke.points||[]){
-   const x=p.x*scale,y=p.y*scale,g=ctx.createRadialGradient(x,y,radius*hard,x,y,radius);
+   const x=p.x*scale-ox,y=p.y*scale-oy,g=ctx.createRadialGradient(x,y,radius*hard,x,y,radius);
    g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(1,'rgba(255,255,255,0)');
    ctx.fillStyle=g;ctx.fillRect(x-radius,y-radius,radius*2,radius*2);
   }

@@ -211,19 +211,28 @@ export class StudioFacade{
   }finally{this.loadingDocument=false;}
   this.id=project.id||crypto.randomUUID();this.name=name(project.name);await this.clearHistory();this.releaseSources(new Set(sources.map(([,r])=>r.id)));await this.renderPreview();this.emit('change');this.emit('selection');await this.save().catch(error=>this.emit('save-error',error));
  }
- async exportImage({format='jpeg',quality=.95,scale=1,layers:inputLayers,documentSnapshot}={}){
+ async exportImage({format='jpeg',quality=.95,scale=1,layers:inputLayers,documentSnapshot,maxMegapixels=12.5,tileSize=2048}={}){
   if(!documentSnapshot){await this.queue;await(document.fonts?.ready||Promise.resolve());}
   const width=Math.round((documentSnapshot?.width??this.config.WIDTH)*scale),height=Math.round((documentSnapshot?.height??this.config.HEIGHT)*scale);
   if(!['jpeg','png','webp'].includes(format)||!Number.isFinite(scale)||scale<=0||width<1||height<1)throw new Error('Thiết lập xuất ảnh không hợp lệ.');
-  if(width*height>12500000)throw new Error('Bản này xuất tối đa 12 MP. Hãy chọn kích thước nhỏ hơn trong phần xuất ảnh.');
+  if(width*height>maxMegapixels*1000000)throw new Error('Bản này xuất tối đa 12 MP. Hãy chọn kích thước nhỏ hơn trong phần xuất ảnh.');
   const layers=(inputLayers||this.config.layers).map(layer=>({...layer,params:clone(layer.params),studio:clone(layer.studio),data:layer.type==='image'?null:clone(layer.data)})).sort((a,b)=>b.order-a.order);
   const records=documentSnapshot?.sources||new Map(this.sources),canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;const ctx=canvas.getContext('2d');
-  if(format==='jpeg'){ctx.fillStyle='#ffffff';ctx.fillRect(0,0,width,height);}ctx.scale(scale,scale);
+  if(format==='jpeg'){ctx.fillStyle='#ffffff';ctx.fillRect(0,0,width,height);}
   const renderedSurfaces=[];
   try{
    for(const layer of layers){if(layer.type!=='image'||!layer.studio)continue;const record=records.get(layer.studio.sourceId);if(record){layer.link_canvas=await this.raster.render(record.image,layer.studio,{edge:Math.ceil(Math.max(layer.width,layer.height)*scale)});renderedSurfaces.push(layer.link_canvas);}}
    const temp=document.createElement('canvas'),requiresClip=layers.some(l=>l.composition==='source-atop');temp.width=requiresClip?width:1;temp.height=requiresClip?height:1;if(requiresClip)temp.getContext('2d').scale(scale,scale);
-   this.app.Layers.render_objects(ctx,temp,layers);
+   if(!requiresClip&&tileSize>0&&(width>tileSize||height>tileSize)){
+    for(let ty=0;ty<height;ty+=tileSize)for(let tx=0;tx<width;tx+=tileSize){
+     const tw=Math.min(tileSize,width-tx),th=Math.min(tileSize,height-ty);
+     ctx.save();ctx.beginPath();ctx.rect(tx,ty,tw,th);ctx.clip();ctx.scale(scale,scale);
+     this.app.Layers.render_objects(ctx,temp,layers);
+     ctx.restore();
+    }
+   }else{
+    ctx.save();ctx.scale(scale,scale);this.app.Layers.render_objects(ctx,temp,layers);ctx.restore();
+   }
    const blob=await new Promise((resolve,reject)=>canvas.toBlob(result=>result?resolve(result):reject(new Error('Không thể xuất ảnh. Hãy chọn kích thước nhỏ hơn.')),`image/${format}`,quality));
    if(blob.type!==`image/${format}`)throw new Error('Trình duyệt chưa xuất được định dạng này. Hãy chọn PNG hoặc JPEG.');return blob;
   }finally{canvas.width=1;for(const surface of renderedSurfaces)surface.width=1;}

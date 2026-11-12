@@ -490,6 +490,13 @@
       "license": "MIT",
       "source": "Original vector geometry; scripts/pro-assets.mjs",
       "sha256": "2154029a29c8b10502f21c84dee793703591d83079d3fe93fbcc1d12a86fd0f3"
+    },
+    {
+      "file": "app-icon-192.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "4bade87aef2b994cf7abf6ce427789f62b8935774dcd5c3de95f038cd0258036",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
     }
   ]
 }

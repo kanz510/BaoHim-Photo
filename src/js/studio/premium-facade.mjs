@@ -13,7 +13,7 @@ const geometries=['x','y','width','height','rotate'];
 export class PremiumFacade extends StudioFacade{
  constructor(app){
   super(app);this.workLayerId=null;this.historyJumping=false;this.raster=new PremiumRaster({fx:this.raster.fx,filters:this.raster.filters});
-  this.raster.worker=new PixelWorkerClient();
+  this.raster.worker=new PixelWorkerClient({onStatus:status=>this.emit('worker',status)});
   this.documentSession=new DocumentSession(status=>this.emit('document',status));
   this.checkpoints=new HistoryRepository();this.checkpointQueue=Promise.resolve();
   const saveProject=this.repository.save.bind(this.repository);this.repository.save=async(project,assets)=>{const result=await saveProject(project,assets);this.checkpointQueue=this.checkpointQueue.then(()=>this.checkpoints.save(project,assets)).then(()=>this.emit('checkpoint-saved')).catch(error=>this.emit('checkpoint-error',error));return result;};

@@ -83,7 +83,23 @@ export class StudioUI{
  dialog(title,body){const el=$('#studio-dialog');$('#dialog-content').innerHTML=`<div class="dialog-header"><h2>${title}</h2><button data-action="dialog-close" aria-label="Đóng">${icon('close')}</button></div><div class="dialog-body">${body}</div>`;if(!el.open){if(el.showModal)el.showModal();else el.setAttribute('open','');}}
  closeDialog(){const d=$('#studio-dialog');if(d.close)d.close();else d.removeAttribute('open');}
  download(blob,filename){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
- async exportDialog(){await this.commitDraft();const layer=this.f.photoLayer(),source=this.f.sources.get(layer?.studio.sourceId),mp=this.f.config.WIDTH*this.f.config.HEIGHT/1e6;this.dialog('Giữ lại khoảnh khắc đẹp',`<div class="export-preview"><img src="${esc(source?.url||'./assets/photos/portrait.jpg')}" alt="Ảnh đang xuất"><div><strong>${esc(this.f.name)}</strong><span>${this.f.config.WIDTH} × ${this.f.config.HEIGHT} px · ${mp.toFixed(1)} MP</span></div></div><label class="field-label" for="export-format">Định dạng</label><select id="export-format" class="studio-field"><option value="jpeg">JPEG · Ảnh chất lượng cao</option><option value="png">PNG · Giữ trong suốt</option><option value="webp">WebP · File nhỏ hơn</option></select><label class="field-label" for="export-scale">Kích thước</label><select id="export-scale" class="studio-field"><option value="${mp>12?Math.sqrt(12/mp):1}">${mp>12?'12 MP':'Kích thước gốc'}</option><option value="${Math.min(1,2048/Math.max(this.f.config.WIDTH,this.f.config.HEIGHT))}">Cạnh dài 2048 px</option><option value="${Math.min(1,1080/Math.max(this.f.config.WIDTH,this.f.config.HEIGHT))}">Cạnh dài 1080 px</option></select><label class="field-label" for="export-quality">Chất lượng JPEG/WebP</label><select id="export-quality" class="studio-field"><option value=".95">95% · Rất cao</option><option value="1">100% · Tối đa</option><option value=".85">85% · Nhẹ hơn</option></select><p>Không watermark. Ảnh được tạo ngay trên thiết bị của bạn.</p><div class="dialog-footer"><button class="button button-outline" data-action="download-project">Lưu file dự án</button><button class="button button-dark" data-action="download-image">${icon('download')}Tải ảnh xuống</button></div>`);}
+ canShareFiles(){return typeof navigator?.share==='function';}
+ async shareOrDownload(blob,filename){
+  if(this.canShareFiles()&&typeof File==='function'){
+   try{
+    const file=new File([blob],filename,{type:blob.type});
+    if(!navigator.canShare||navigator.canShare({files:[file]})){
+     await navigator.share({files:[file],title:this.f.name||'BaoHim Photo'});
+     return 'shared';
+    }
+   }catch(error){
+    if(error?.name==='AbortError')return 'cancelled';
+   }
+  }
+  this.download(blob,filename);
+  return 'downloaded';
+ }
+ async exportDialog(){await this.commitDraft();const layer=this.f.photoLayer(),source=this.f.sources.get(layer?.studio.sourceId),mp=this.f.config.WIDTH*this.f.config.HEIGHT/1e6;this.dialog('Giữ lại khoảnh khắc đẹp',`<div class="export-preview"><img src="${esc(source?.url||'./assets/photos/portrait.jpg')}" alt="Ảnh đang xuất"><div><strong>${esc(this.f.name)}</strong><span>${this.f.config.WIDTH} × ${this.f.config.HEIGHT} px · ${mp.toFixed(1)} MP</span></div></div><label class="field-label" for="export-format">Định dạng</label><select id="export-format" class="studio-field"><option value="jpeg">JPEG · Ảnh chất lượng cao</option><option value="png">PNG · Giữ trong suốt</option><option value="webp">WebP · File nhỏ hơn</option></select><label class="field-label" for="export-scale">Kích thước</label><select id="export-scale" class="studio-field"><option value="${mp>12?Math.sqrt(12/mp):1}">${mp>12?'12 MP':'Kích thước gốc'}</option><option value="${Math.min(1,2048/Math.max(this.f.config.WIDTH,this.f.config.HEIGHT))}">Cạnh dài 2048 px</option><option value="${Math.min(1,1080/Math.max(this.f.config.WIDTH,this.f.config.HEIGHT))}">Cạnh dài 1080 px</option></select><label class="field-label" for="export-quality">Chất lượng JPEG/WebP</label><select id="export-quality" class="studio-field"><option value=".95">95% · Rất cao</option><option value="1">100% · Tối đa</option><option value=".85">85% · Nhẹ hơn</option></select><p>Không watermark. Ảnh được tạo ngay trên thiết bị của bạn.</p><div class="dialog-footer"><button class="button button-outline" data-action="download-project">Lưu file dự án</button><button class="button button-outline" data-action="share-image">Chia sẻ</button><button class="button button-dark" data-action="download-image">${icon('download')}Tải ảnh xuống</button></div>`);}
  async projectsDialog(){await this.commitDraft();await this.f.save().catch(()=>{});const list=await this.f.repository.list();this.dialog('Dự án của tôi',`${list.length?list.map(p=>`<div class="project-row"><button data-open-project="${esc(p.id)}"><strong>${esc(p.name)}</strong><small>${p.width} × ${p.height} px · ${new Date(p.modified).toLocaleDateString('vi-VN')}</small></button><button data-remove-project="${esc(p.id)}" aria-label="Xóa ${esc(p.name)}">${icon('trash')}</button></div>`).join(''):'<div class="empty-message">Những khoảnh khắc của bạn sẽ xuất hiện ở đây.</div>'}<div class="dialog-footer"><button class="button button-outline" data-action="import-project">${icon('folder')}Mở file dự án</button><button class="button button-dark" data-action="download-project">Lưu bản sao</button></div>`);}
  // Event routing and gestures are attached once; panel HTML can be replaced without duplicate listeners.
  bind(){this.bindEvents();}
@@ -227,9 +243,17 @@ export class StudioUI{
    await this.commitDraft();const project=await f.portableProject();this.download(projectFileBlob(project),f.name+'.pbs.json');this.toast('Đã tạo file dự án, giữ đầy đủ lớp và ảnh gốc.');return;
   }
   if(action==='import-project'){$('#project-input').click();return;}
-  if(action==='download-image'){
+  if(action==='download-image'||action==='share-image'){
    button.disabled=true;const text=button.innerHTML;button.textContent='Đang tạo ảnh…';
-   try{const format=$('#export-format').value,blob=await f.exportImage({format,quality:Number($('#export-quality').value),scale:Number($('#export-scale').value)});this.download(blob,f.name+'.'+(format==='jpeg'?'jpg':format));this.closeDialog();this.toast('Ảnh đã sẵn sàng trong mục tải xuống.');}finally{button.disabled=false;button.innerHTML=text;}return;
+   try{
+    const format=$('#export-format').value,blob=await f.exportImage({format,quality:Number($('#export-quality').value),scale:Number($('#export-scale').value)}),filename=f.name+'.'+(format==='jpeg'?'jpg':format);
+    if(action==='share-image'){
+     const outcome=await this.shareOrDownload(blob,filename);
+     if(outcome!=='cancelled'){this.closeDialog();this.toast(outcome==='shared'?'Đã chia sẻ ảnh thành công.':'Trình duyệt chưa hỗ trợ chia sẻ trực tiếp; đã tải ảnh xuống máy.');}
+    }else{
+     this.download(blob,filename);this.closeDialog();this.toast('Ảnh đã sẵn sàng trong mục tải xuống.');
+    }
+   }finally{button.disabled=false;button.innerHTML=text;}return;
   }
   if(action==='more'){this.dialog('Dự án của bạn',`<button class="button button-outline button-wide" data-action="download-project">${icon('download')}Tải file dự án</button><button class="button button-outline button-wide" data-action="import-project" style="margin-top:12px">${icon('folder')}Mở file dự án</button><button class="button button-outline button-wide" data-action="projects" style="margin-top:12px">${icon('layers')}Dự án đã lưu trên thiết bị</button><p>File dự án giữ ảnh gốc, các lớp và tham số chỉnh sửa để bạn có thể tiếp tục sau.</p>`);return;}
   if(action==='about'){this.dialog('Một không gian, dành riêng cho bạn.',`<p>PHOTO BEAUTY STUDIO là không gian chỉnh ảnh và làm đẹp thủ công. Bạn kiểm soát từng nét cọ, từng sắc màu.</p><p>Ảnh được xử lý và lưu ngay trên thiết bị. Không tải ảnh lên server. Sau khi ứng dụng và tài nguyên được lưu lần đầu, bạn có thể dùng các công cụ khi không có mạng.</p><p>Bộ nhớ trình duyệt có thể bị xóa bởi thiết bị. Hãy tải file dự án để giữ bản sao quan trọng.</p><a class="button button-outline button-wide" href="./licenses.html" target="_blank" rel="noopener">Nguồn mở & giấy phép tài nguyên</a>`);}

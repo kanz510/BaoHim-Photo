@@ -13,7 +13,8 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "test": "node --test tests/*.test.mjs",
-    "check": "node scripts/check.mjs"
+    "check": "node scripts/check.mjs",
+    "test:webkit": "node scripts/qa/webkit-smoke.mjs"
   },
   "license": "MIT",
   "devDependencies": {

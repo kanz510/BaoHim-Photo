@@ -1,19 +1,38 @@
 {
-  "name": "PHOTO BEAUTY STUDIO PRO · V2 Preview",
-  "short_name": "Beauty Pro V2",
-  "description": "Bản preview giao diện mobile để duyệt, tách riêng ứng dụng chính.",
+  "name": "BaoHim Photo — Chỉnh ảnh & Làm đẹp Pro",
+  "short_name": "BaoHim Photo",
+  "description": "Ứng dụng chỉnh ảnh chân dung, làm đẹp thủ công, màu film và sáng tạo trên thiết bị.",
   "lang": "vi",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#fdfbfa",
   "theme_color": "#fdfbfa",
   "icons": [
     {
+      "src": "./assets/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
       "src": "./assets/app-icon.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/app-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ]
 }

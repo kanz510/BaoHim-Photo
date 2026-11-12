@@ -404,3 +404,30 @@ test('tool resets clear optional HSL and typography effects and remain undoable'
 test('undo invalidates a delayed color render even when the old neutral recipe is cached',async()=>{const app=await boot();let release;try{const f=app.w.Studio.facade,c=createCanvas(48,48);c.getContext('2d').fillStyle='#222222';c.getContext('2d').fillRect(0,0,48,48);await f.open(new Blob([c.toBuffer('image/png')],{type:'image/png'}),'Delayed color');const layer=f.basePhotoLayer(),render=f.raster.render.bind(f.raster),gate=new Promise(r=>release=r);let started=false;f.raster.render=async(source,studio,options)=>{if(studio.adjustments?.brightness===40){started=true;await gate;}return render(source,studio,options);};const changing=f.updateStudio({adjustments:{brightness:40}});await f.queue;while(!started)await new Promise(r=>setTimeout(r,0));await f.undo();release();await changing;assert.equal(layer.studio.adjustments.brightness,undefined);assert.equal(layer.link_canvas.getContext('2d').getImageData(5,5,1,1).data[0],34);}finally{release?.();await app.close();}});
 
 test('a delayed template cannot add its text to a replacement photo',async()=>{const app=await boot();let release;try{const f=app.w.Studio.facade,render=f.raster.render.bind(f.raster),gate=new Promise(r=>release=r);let started=false;f.raster.render=async(source,studio,options)=>{if(studio.preset==='film'){started=true;await gate;}return render(source,studio,options);};const applying=f.template('editorial'),rejected=assert.rejects(applying,/Dự án|dự án|đổi/);await f.queue;while(!started)await new Promise(r=>setTimeout(r,0));await f.openDemo('muse');release();await rejected;assert.equal(f.config.layers.filter(l=>l.type==='text').length,0);}finally{release?.();await app.close();}});
+
+test('Phase 0 corrupted project restore falls back to Home and Web Share API falls back to download',async()=>{
+ const app=await boot();
+ try{
+  const {ui,facade:f}=app.w.Studio;
+  await ui.closeSheet();ui.showEditor();
+  assert.equal(ui.libraryVisible,false);
+  await assert.rejects(()=>ui.loadProject({format:'photo-beauty-studio',version:1,id:'bad',name:'Corrupted',width:100,height:100,layers:[],assets:{}}));
+  assert.equal(ui.libraryVisible,true,'failed project restore returns safely to Home screen');
+  // Web Share API fallback when navigator.share is absent
+  let downloaded=null;
+  const origDownload=ui.download.bind(ui);
+  ui.download=(blob,name)=>{downloaded={blob,name};};
+  const blob=new app.w.Blob(['jpeg-data'],{type:'image/jpeg'});
+  const res1=await ui.shareOrDownload(blob,'portrait.jpg');
+  assert.equal(res1,'downloaded');
+  assert.equal(downloaded?.name,'portrait.jpg');
+  // Web Share API primary path when navigator.share is available
+  let sharedPayload=null;
+  app.w.navigator.canShare=()=>true;
+  app.w.navigator.share=async data=>{sharedPayload=data;};
+  const res2=await ui.shareOrDownload(blob,'shared.jpg');
+  assert.equal(res2,'shared');
+  assert.equal(sharedPayload?.files?.[0]?.name,'shared.jpg');
+  ui.download=origDownload;
+ }finally{await app.close();}
+});
