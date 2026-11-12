@@ -15,7 +15,7 @@ body.mobile-preview {
 #mobile-shell .mobile-back .studio-icon {width:25px;height:25px;}
 #mobile-shell .mobile-save {height:40px;min-width:62px;padding:8px 18px!important;border-radius:21px;background:var(--rose);color:#fff;font-size:14px;font-weight:600;position:relative;}
 #mobile-shell .mobile-save::before {content:'';position:absolute;inset:-3px 0;}
-#mobile-shell .mobile-workspace {position:absolute;top:var(--topbar);bottom:calc(var(--dock) + var(--sheet-height));left:0;right:0;min-height:0;display:block;transition:bottom .23s cubic-bezier(.2,.7,.2,1);}
+#mobile-shell .mobile-workspace {position:absolute;top:var(--topbar);bottom:calc(var(--dock) + var(--sheet-height));left:0;right:0;min-height:0;display:block;transition:none;}
 #mobile-shell .studio-stage {position:absolute;inset:0;min-height:0;background:#f3f0ef;overflow:hidden;display:block;}
 #mobile-shell #middle_area {position:absolute!important;inset:0!important;width:100%!important;height:100%!important;margin:0!important;border:0!important;overflow:hidden!important;background:none!important;}
 #mobile-shell #main_wrapper {position:absolute!important;inset:0!important;display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important;min-height:0!important;overflow:hidden!important;padding:0!important;touch-action:none;}

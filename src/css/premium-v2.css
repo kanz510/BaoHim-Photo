@@ -12,7 +12,7 @@ body.premium-v2{--pearl:#fcf9f8;--rose:#bd567b;--rose-strong:#aa4166;--rose-wash
 .premium-v2 #mobile-shell #v2-save-state{height:11px;font-size:8px;line-height:11px;color:#9c919b;letter-spacing:.1px}
 .premium-v2 #mobile-shell #v2-save-state[data-state=save-error]{color:#f5a6be}
 .premium-v2 #mobile-shell .mobile-save{min-width:58px;height:34px;padding:5px 14px!important;border-radius:10px;font-size:13px;background:#e5a4bd;color:#33232d;font-weight:650}
-.premium-v2 #mobile-shell .mobile-workspace{transition:bottom .26s cubic-bezier(.22,.72,.23,1)}
+.premium-v2 #mobile-shell .mobile-workspace{transition:none}
 .premium-v2 #mobile-shell .studio-stage{background:#1d1d20}
 .premium-v2 #mobile-shell #main_wrapper{top:26px!important;bottom:54px!important;height:calc(100% - 80px)!important}
 .premium-v2 #mobile-shell #canvas_wrapper{box-shadow:none;border-radius:0}

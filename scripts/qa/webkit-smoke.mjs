@@ -209,6 +209,118 @@ try{
  assert.ok(['worker','cpu'].includes(fallbackCheck.backendDuringLoss),'Lost WebGL context must fall back automatically to worker/CPU');
  assert.equal(fallbackCheck.backendAfterRestore,'webgl2','Restored WebGL context must resume WebGL2 GPU Liquify');
 
+ // 3b. Viewport Zoom & Anchor Stability Regression (iPhone 16 Pro Max 440x956 DPR3)
+ await page.evaluate(async()=>{
+  await window.Studio.facade.openDemo('portrait');
+  await window.Studio.ui.closeSheet();
+  window.Studio.ui.showEditor();
+  await window.Studio.facade.fit();
+ });
+ await page.waitForTimeout(60);
+ const zoomSwitch30=await page.evaluate(async()=>{
+  const {facade:f,ui}=window.Studio;
+  const rafTick=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  const fitZoom=f.config.ZOOM;
+  const canvas=document.getElementById('canvas_minipaint');
+  const fitLabel=document.getElementById('zoom-value').textContent;
+  const sequence=['auto','beauty','reshape','filters','adjust','makeup','text','stickers','frames','geometry','layers','draw'];
+  const zoomTrace=[];
+  for(let i=0;i<30;i++){
+   if(i%5===0){await ui.switchCategory(['auto','face','body','color','creative'][Math.floor(i/5)%5]);}
+   else{await ui.switchTool(sequence[i%sequence.length]);}
+   await rafTick();
+   zoomTrace.push({i,tool:ui.tool,zoom:f.config.ZOOM,label:document.getElementById('zoom-value').textContent,cw:canvas.studioViewportWidth,ch:canvas.studioViewportHeight});
+  }
+  return {fitZoom,fitLabel,zoomTrace};
+ });
+ for(const step of zoomSwitch30.zoomTrace){
+  assert.equal(step.zoom,zoomSwitch30.fitZoom,`30x switch #${step.i} (${step.tool}) changed ZOOM: ${step.zoom} vs ${zoomSwitch30.fitZoom}`);
+  assert.equal(step.label,zoomSwitch30.fitLabel,`30x switch #${step.i} (${step.tool}) changed #zoom-value`);
+ }
+
+ const manual200Stability=await page.evaluate(async()=>{
+  const {facade:f,ui}=window.Studio;
+  const rafTick=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  const canvas=document.getElementById('canvas_minipaint');
+  await f.fit();
+  await f.zoom(2/f.config.ZOOM);
+  f.pan(140,-180);
+  await rafTick();
+  const zBefore=f.config.ZOOM;
+  const labelBefore=document.getElementById('zoom-value').textContent;
+  const centerBefore=f.app.Layers.studioScreenToWorld({x:canvas.studioViewportWidth/2,y:canvas.studioViewportHeight/2});
+
+  // Rapidly switch across Face Reshape, Body Reshape, Makeup, Filter, Typography & 5 more tools + subtools
+  const steps=[];
+  const check=async tag=>{
+   await rafTick();
+   const center=f.app.Layers.studioScreenToWorld({x:canvas.studioViewportWidth/2,y:canvas.studioViewportHeight/2});
+   steps.push({
+    tag,
+    zoom:f.config.ZOOM,
+    label:document.getElementById('zoom-value').textContent,
+    dprBackingOk:canvas.width===Math.round(canvas.studioViewportWidth*3),
+    dx:Math.abs(center.x-centerBefore.x),
+    dy:Math.abs(center.y-centerBefore.y)
+   });
+  };
+  await ui.switchCategory('face');
+  ui.reshapeMode='face';await ui.switchTool('reshape');await check('face-reshape');
+  await ui.switchCategory('body');await check('body-reshape');
+  await ui.switchTool('makeup');await ui.openMakeupRole('lips');await check('makeup-lips');
+  await ui.switchTool('filters');await check('filter');
+  await ui.switchTool('text');ui.textTab='style';ui.renderPanel();await check('typography');
+  await ui.switchTool('adjust');await check('adjust');
+  await ui.switchTool('layers');await check('layers');
+  await ui.switchTool('geometry');ui.geometryTab='rotate';ui.renderPanel();await check('geometry');
+  await ui.switchTool('auto');await check('auto');
+  await ui.switchTool('draw');await check('draw');
+
+  // Bottom sheet detents: peek -> expanded -> compact -> closed
+  ui.sheet.set('peek');await check('sheet-peek');
+  ui.sheet.set('expanded');await check('sheet-expanded');
+  ui.sheet.set('compact');await check('sheet-compact');
+  await ui.closeSheet();await check('sheet-closed');
+  await ui.switchTool('reshape');await check('sheet-reopen-reshape');
+  return {zBefore,labelBefore,centerBefore,steps};
+ });
+ assert.equal(manual200Stability.zBefore,2);
+ assert.equal(manual200Stability.labelBefore,'200%');
+ for(const s of manual200Stability.steps){
+  assert.equal(s.zoom,2,`200% zoom changed at ${s.tag}: ${s.zoom}`);
+  assert.equal(s.label,'200%',`#zoom-value changed at ${s.tag}: ${s.label}`);
+  assert.equal(s.dprBackingOk,true,`DPR3 backing mismatch at ${s.tag}`);
+  assert.ok(s.dx<1&&s.dy<1,`Center anchor drifted at ${s.tag}: dx=${s.dx.toFixed(2)}, dy=${s.dy.toFixed(2)}`);
+ }
+
+ // Real pointer drag on bottom sheet + Safari address-bar height simulation via Playwright at 200% zoom
+ const dragHandle=await page.locator('.sheet-drag-zone').boundingBox();
+ if(dragHandle){
+  const sx=dragHandle.x+dragHandle.width/2,sy=dragHandle.y+dragHandle.height/2;
+  await page.mouse.move(sx,sy);
+  await page.mouse.down();
+  await page.mouse.move(sx,sy-180,{steps:6});
+  await page.mouse.up();
+ }
+ await page.waitForTimeout(80);
+ await page.setViewportSize({width:440,height:860});
+ await page.waitForTimeout(80);
+ await page.setViewportSize({width:440,height:956});
+ await page.waitForTimeout(80);
+ const afterDragAndSafariBar=await page.evaluate(async()=>{
+  const {facade:f,ui}=window.Studio;
+  const c=document.getElementById('canvas_minipaint');
+  const center=f.app.Layers.studioScreenToWorld({x:c.studioViewportWidth/2,y:c.studioViewportHeight/2});
+  const zoomBeforeFit=f.config.ZOOM;
+  await ui.action('fit');
+  const zoomAfterExplicitFit=f.config.ZOOM;
+  return {zoomBeforeFit,label:document.getElementById('zoom-value').textContent,center,zoomAfterExplicitFit};
+ });
+ assert.equal(afterDragAndSafariBar.zoomBeforeFit,2,'Pointer sheet drag + Safari bar resize must keep 200% zoom');
+ assert.ok(Math.abs(afterDragAndSafariBar.center.x-manual200Stability.centerBefore.x)<1.5);
+ assert.ok(Math.abs(afterDragAndSafariBar.center.y-manual200Stability.centerBefore.y)<1.5);
+ assert.ok(afterDragAndSafariBar.zoomAfterExplicitFit<1,'Explicit Vừa khung action must still refit cleanly');
+
  // 4. Full V3 workflow: Zoom/Pan, Orientation Rotate, Auto/Color, Beauty, Heal/Blemish, Face/Body Reshape, Makeup/Hair, Filter/LUT, Creative, Continuous Undo/Redo, Background/Foreground, PNG/JPEG Open & Export
  const editResult=await page.evaluate(async()=>{
   const {facade:f,ui}=window.Studio;

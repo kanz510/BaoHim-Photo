@@ -11,7 +11,8 @@ export class MobileSheet{
  viewportChanged(){
   const vv=window.visualViewport,height=Math.round(vv?.height||window.innerHeight),focused=document.activeElement?.matches('textarea,input:not([type="range"]):not([type="color"]),select');
   this.keyboard=!!focused&&height<window.innerHeight-100;this.root.classList.toggle('keyboard-visible',this.keyboard);this.root.style.setProperty('--app-height',height+'px');this.root.style.top=Math.max(0,vv?.offsetTop||0)+'px';
-  this.write(this.stops()[this.detent]);this.ui.mobileViewport?.schedule();
+  const nextHeight=this.stops()[this.detent],changed=this.lastViewportHeight!==height||this.height!==nextHeight;
+  this.lastViewportHeight=height;this.write(nextHeight);if(changed)this.ui.mobileViewport?.schedule();
  }
  set(detent,{render=true}={}){
   if(!['closed','peek','compact','expanded'].includes(detent))return;const previous=this.detent;this.detent=detent;this.el.classList.remove('minimized');this.el.dataset.detent=detent;this.root.classList.toggle('sheet-open',detent!=='closed');this.write(this.stops()[detent]);

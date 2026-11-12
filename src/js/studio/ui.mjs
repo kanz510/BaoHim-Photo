@@ -43,7 +43,6 @@ export class StudioUI{
   this.draft={};this.renderPanel();
   document.querySelector(`[data-tool="${tool}"].nav-tool`)?.scrollIntoView?.({block:'nearest',inline:'nearest',behavior:'smooth'});
   const hint={beauty:'Tô nhẹ lên vùng da bạn muốn chăm chút',reshape:'Kéo nhẹ vùng ảnh cần tinh chỉnh',makeup:'Tô lên vùng muốn thêm màu',text:'Chọn lớp chữ để tinh chỉnh kiểu dáng',geometry:'Kéo trên ảnh để chọn vùng cắt'};$('#workspace-hint').textContent=hint[tool]||'Mọi khoảnh khắc, một dấu ấn riêng';
-  setTimeout(()=>this.f.fit(),40);
  }
  header(){const [title,subtitle]=tools[this.tool];return `<div class="panel-title-row"><h2>${title}</h2>${['beauty','reshape','makeup','draw'].includes(this.tool)?'<span class="manual-badge">Dùng cọ</span>':''}<button class="panel-collapse" data-action="collapse" aria-label="Thu gọn bảng công cụ">${icon('chevronDown')}</button></div><p>${subtitle}</p>`;}
  slider(label,key,value,min=0,max=100,step=1,group='brush',ends=null){
@@ -202,7 +201,7 @@ export class StudioUI{
    if(!['arrowup','arrowdown','arrowleft','arrowright','delete','backspace',' ','escape'].includes(key))event.stopImmediatePropagation();
   },true);
   $('#studio-dialog').addEventListener('click',e=>{if(e.target===$('#studio-dialog'))this.closeDialog();});
-  window.addEventListener('resize',()=>{clearTimeout(this.resizeTimer);this.resizeTimer=setTimeout(()=>this.f.fit(),180);});
+  window.addEventListener('resize',()=>{this.mobileViewport?.schedule?.();});
   document.addEventListener('visibilitychange',()=>{if(document.hidden)this.f.save().catch(()=>{});});
   const stage=$('#studio-stage');stage.addEventListener('dragover',e=>{e.preventDefault();stage.classList.add('drag-over');});stage.addEventListener('dragleave',()=>stage.classList.remove('drag-over'));stage.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();stage.classList.remove('drag-over');if(e.dataTransfer.files[0])this.safely(async()=>{await this.commitDraft();this.router?.cancel();await this.f.open(e.dataTransfer.files[0],e.dataTransfer.files[0].name);this.draft={};this.renderPanel();});},true);
  }
@@ -244,7 +243,7 @@ export class StudioUI{
   if(action==='compare'){await this.commitDraft();await f.setCompare(!f.compare);return;}
   if(action==='export'){await this.exportDialog();return;}if(action==='projects'){await this.projectsDialog();return;}
   if(action==='editor'){this.closeDialog();return;}
-  if(action==='collapse'){$('#studio-inspector').classList.toggle('minimized');setTimeout(()=>f.fit(),220);return;}
+  if(action==='collapse'){$('#studio-inspector').classList.toggle('minimized');this.mobileViewport?.schedule?.();return;}
   if(action==='dialog-close'){this.closeDialog();return;}
   if(action==='clone-source'){this.router.clonePicking=true;f.activate('studio');this.toast('Chạm lên ảnh để chọn vùng nguồn.');return;}
   if(action==='add-text'){await f.addText();this.renderPanel();return;}
