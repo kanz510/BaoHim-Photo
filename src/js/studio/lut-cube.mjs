@@ -1,5 +1,7 @@
 // 3D .cube LUT parser, procedural film/CCD cube generator, and trilinear interpolator.
 import {clamp} from './math.mjs';
+import {applyCubeLut} from './pixel-ops.mjs';
+export {applyCubeLut};
 
 export function parseCubeLut(text,fallbackName='Custom LUT'){
  if(typeof text!=='string'||!text.trim())throw new Error('File LUT .cube trống hoặc không hợp lệ.');
@@ -41,42 +43,6 @@ export function parseCubeLut(text,fallbackName='Custom LUT'){
  }
  if(!size||values.length!==size*size*size*3)throw new Error('Dữ liệu bảng màu 3D LUT .cube không khớp kích thước.');
  return {name,size,table:values};
-}
-
-export function applyCubeLut(input,lut,intensity=100,output=new Uint8ClampedArray(input)){
- if(!lut||!lut.size||!Array.isArray(lut.table)&&!(lut.table instanceof Float32Array)){
-  if(output!==input)output.set(input);
-  return output;
- }
- const n=lut.size,table=lut.table,mix=clamp(Number(intensity)??100,0,100)/100;
- if(mix<=0||table.length!==n*n*n*3){
-  if(output!==input)output.set(input);
-  return output;
- }
- const maxIdx=n-1,n2=n*n;
- for(let i=0;i<input.length;i+=4){
-  const r=clamp(input[i]/255,0,1)*maxIdx;
-  const g=clamp(input[i+1]/255,0,1)*maxIdx;
-  const b=clamp(input[i+2]/255,0,1)*maxIdx;
-  const r0=Math.floor(r),g0=Math.floor(g),b0=Math.floor(b);
-  const r1=Math.min(maxIdx,r0+1),g1=Math.min(maxIdx,g0+1),b1=Math.min(maxIdx,b0+1);
-  const fr=r-r0,fg=g-g0,fb=b-b0;
-  const idx=(ri,gi,bi)=>(bi*n2+gi*n+ri)*3;
-  const i000=idx(r0,g0,b0),i100=idx(r1,g0,b0),i010=idx(r0,g1,b0),i110=idx(r1,g1,b0);
-  const i001=idx(r0,g0,b1),i101=idx(r1,g0,b1),i011=idx(r0,g1,b1),i111=idx(r1,g1,b1);
-  for(let c=0;c<3;c++){
-   const c00=table[i000+c]*(1-fr)+table[i100+c]*fr;
-   const c10=table[i010+c]*(1-fr)+table[i110+c]*fr;
-   const c01=table[i001+c]*(1-fr)+table[i101+c]*fr;
-   const c11=table[i011+c]*(1-fr)+table[i111+c]*fr;
-   const c0=c00*(1-fg)+c10*fg;
-   const c1=c01*(1-fg)+c11*fg;
-   const mapped=(c0*(1-fb)+c1*fb)*255;
-   output[i+c]=clamp(Math.round(input[i+c]*(1-mix)+mapped*mix),0,255);
-  }
-  output[i+3]=input[i+3];
- }
- return output;
 }
 
 function buildProceduralLut(name,size,transform){

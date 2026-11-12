@@ -137,3 +137,47 @@ test('Phase 1 skin tone stroke adjusts warmth and lightness locally inside feath
  assert.ok(center[0]>195&&center[1]>150,'painted skin tone center is brighter and warmer');
  assert.deepEqual(Array.from(corner),[185,140,120,255],'unpainted corner is untouched');
 });
+
+test('warpPixelsWebGLOrFallback preserves strength=0, outside-radius pixels, freeze, perspective and alpha',async()=>{
+ const {warpPixelsWebGLOrFallback,getWebGLWarpStats}=await import('../src/js/studio/webgl-warp.mjs');
+ const {warpPixels}=await import('../src/js/studio/warp-pixels.mjs');
+ const w=32,h=32,input=new Uint8ClampedArray(w*h*4);
+ for(let i=0;i<input.length;i+=4){
+  input[i]=(i*7)%255;
+  input[i+1]=(i*13)%255;
+  input[i+2]=(i*29)%255;
+  input[i+3]=((i/4)%180)+40;
+ }
+ // 1. strength=0 is exact identity
+ const zeroStudio={warps:[{from:{x:16,y:16},to:{x:24,y:16},radius:10,strength:0,mode:'push'}]};
+ assert.deepEqual(warpPixelsWebGLOrFallback(input,w,h,zeroStudio,1),input);
+ // 2. outside radius is untouched and matches reference warpPixels including alpha & freeze & perspective
+ const complexStudio={
+  perspectiveX:8,perspectiveY:-6,
+  warps:[
+   {from:{x:14,y:14},to:{x:19,y:14},radius:8,strength:.55,mode:'push',freezeCount:1},
+   {from:{x:18,y:18},to:{x:18,y:18},radius:6,strength:.35,mode:'pinch',freezeCount:1}
+  ],
+  freezes:[{points:[{x:14,y:14}],radius:7,hardness:.8}]
+ };
+ const out=warpPixelsWebGLOrFallback(input,w,h,complexStudio,1);
+ const ref=warpPixels(input,w,h,complexStudio,1);
+ assert.deepEqual(out,ref);
+ assert.ok(getWebGLWarpStats().cpuFallbacks>=1);
+});
+
+test('RasterService trimMemory releases cached stroke and smooth canvases without breaking subsequent renders',async()=>{
+ const source=createCanvas(120,90),ctx=source.getContext('2d');
+ ctx.fillStyle='rgb(180,140,125)';ctx.fillRect(0,0,120,90);
+ const renderer=new RasterService({canvas});
+ const studio={strokes:[
+  {type:'smooth',points:[{x:30,y:30}],radius:12,strength:.8,hardness:.5},
+  {type:'tone',points:[{x:60,y:45}],radius:10,strength:.7,hardness:.5,color:'#e4b89c'}
+ ]};
+ const first=await renderer.render(source,studio,{edge:120});
+ assert.ok(renderer.trackedEntries.size>=1,'caches populated after stroke render');
+ renderer.trimMemory();
+ assert.equal(renderer.trackedEntries.size,0,'tracked canvas caches released');
+ const afterTrim=await renderer.render(source,studio,{edge:120});
+ assert.deepEqual(afterTrim.getContext('2d').getImageData(0,0,120,90).data,first.getContext('2d').getImageData(0,0,120,90).data);
+});

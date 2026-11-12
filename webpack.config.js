@@ -9,7 +9,7 @@ module.exports = {
 		path: path.resolve(__dirname, 'dist'),
 		filename: 'bundle.js',
 		publicPath: 'auto',
-        chunkFilename: 'studio-pixels.[contenthash:12].js'
+		chunkFilename: 'studio-[name].[contenthash:12].js'
 	},
 	resolve: {
 		extensions: ['.js', '.css'],
@@ -25,7 +25,7 @@ module.exports = {
 					'style-loader',
 					{
 						loader: 'css-loader',
-						options: {url: false}
+						options: {url: false, sourceMap: false}
 					}
 				]
 			},
@@ -36,20 +36,24 @@ module.exports = {
 			},
 		]
 	},
+	optimization: {
+		splitChunks: {
+			chunks: 'async',
+			maxSize: 240000
+		}
+	},
 	plugins: [
 		new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery",
-            "window.jQuery": "jquery"
+			$: "jquery",
+			jQuery: "jquery",
+			"window.jQuery": "jquery"
 		}),
 		new webpack.DefinePlugin({
 			VERSION: JSON.stringify(require("./package.json").version)
 		}),
 	],
-	devtool: "cheap-module-source-map",
+	devtool: false,
 	devServer: {
-		// host: '0.0.0.0',
-		//contentBase: "./",
 		static: {
 			directory: path.resolve(__dirname, "./"),
 		},

@@ -3,8 +3,6 @@ import {ProjectRepository,blobDataURL,loadImage} from './project-repository.mjs'
 import {ensureTextFonts} from './font-registry.mjs';
 import {validateProject} from './project-schema.mjs';
 import {clamp,collageSlots,coverTransform,DEFAULT_ADJUSTMENTS,layerPoint,warpSample,freezeCoverage,perspectiveSample} from './math.mjs';
-import glfx from '../libs/glfx.js';
-import ImageFilters from '../libs/imagefilters.js';
 
 const clone=value=>JSON.parse(JSON.stringify(value));
 const name=value=>String(value||'Ảnh của tôi').replace(/[<>]/g,'').trim().slice(0,120)||'Ảnh của tôi';
@@ -12,7 +10,7 @@ const layerKeys=['id','parent_id','name','type','x','y','width','height','width_
 export class StudioFacade{
  constructor(app){
   this.app=app;this.config=app.Config;this.sources=new Map();this.repository=new ProjectRepository();
-  this.raster=new RasterService({fx:glfx,filters:ImageFilters});this.listeners=new Set();this.renderTokens=new Map();this.cache=new Map();this.renderControllers=new Map();
+  this.raster=new RasterService();this.listeners=new Set();this.renderTokens=new Map();this.cache=new Map();this.renderControllers=new Map();
   this.id=crypto.randomUUID();this.name='Chân dung của tôi';this.revision=0;this.epoch=0;this.saved=false;this.busy=false;this.queue=Promise.resolve();this.stateQueue=Promise.resolve();this.compare=false;
   const notify=()=>{this.revision++;const selected=this.config.layer?.id;if(this.lastSelectedId!==selected){this.lastSelectedId=selected;this.emit('selection');}this.emit('change');this.renderPreview().catch(error=>this.emit('render-error',error));clearTimeout(this.saveTimer);this.saveTimer=setTimeout(()=>this.save().catch(error=>this.emit('save-error',error)),1000);};
   for(const method of ['do_action','undo_action','redo_action']){
@@ -26,6 +24,16 @@ export class StudioFacade{
    if(frame){ctx.beginPath();if(ctx.roundRect)ctx.roundRect(frame.x,frame.y,frame.width,frame.height,frame.radius||0);else ctx.rect(frame.x,frame.y,frame.width,frame.height);ctx.clip();}
    originalRender(ctx,layer,...args);ctx.restore();
   };
+  if(typeof document!=='undefined'&&typeof document.addEventListener==='function'){
+   document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='hidden'){
+     if(this.saveTimer){clearTimeout(this.saveTimer);this.saveTimer=null;this.save().catch(error=>this.emit('save-error',error));}
+     this.raster.trimMemory?.();
+    }else if(document.visibilityState==='visible'&&!this.loadingDocument&&this.config.layers?.some(l=>l.studio)){
+     this.renderPreview().catch(()=>{});
+    }
+   });
+  }
  }
  assertDocument(epoch){if(epoch!==this.epoch||this.loadingDocument)throw new Error('Dự án đã thay đổi. Hãy chọn lại công cụ.');}
  discardSource(record){if(record){URL.revokeObjectURL(record.url);this.sources.delete(record.id);}}
@@ -64,7 +72,7 @@ export class StudioFacade{
   this.saved=false;await this.fit();this.emit('change');await this.renderPreview();await this.save().catch(error=>this.emit('save-error',error));
   }finally{this.loadingDocument=false;}
  }
- releaseSources(keep){for(const controller of this.renderControllers.values())controller.abort();this.renderControllers.clear();for(const [id,record] of this.sources)if(!keep.has(id)){URL.revokeObjectURL(record.url);this.sources.delete(id);}this.cache.clear();this.renderTokens.clear();}
+ releaseSources(keep){for(const controller of this.renderControllers.values())controller.abort();this.renderControllers.clear();for(const [id,record] of this.sources)if(!keep.has(id)){URL.revokeObjectURL(record.url);this.sources.delete(id);}this.cache.clear();this.renderTokens.clear();this.raster.trimMemory?.();}
  imageLayer(asset){return {name:asset.name,type:'image',data:asset.image,x:0,y:0,width:asset.width,height:asset.height,width_original:asset.width,height_original:asset.height,studio:{sourceId:asset.id,adjustments:{},preset:'original',intensity:100,strokes:[],warps:[],freezes:[]}};}
  async openDemo(file='portrait'){
   const response=await fetch(`./assets/photos/${file}.jpg`);if(!response.ok)throw new Error('Không thể mở ảnh mẫu.');

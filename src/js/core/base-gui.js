@@ -14,6 +14,8 @@ import GUI_details_class from './gui/gui-details.js';
 import GUI_menu_class from './gui/gui-menu.js';
 import Tools_translate_class from './../modules/tools/translate.js';
 import Tools_settings_class from './../modules/tools/settings.js';
+import Image_rotate_class from './../modules/image/rotate.js';
+import Image_histogram_class from './../modules/image/histogram.js';
 import Helper_class from './../libs/helpers.js';
 import alertify from './../../../node_modules/alertifyjs/build/alertify.min.js';
 
@@ -77,15 +79,9 @@ class Base_gui_class {
 	}
 
 	load_modules() {
-		var _this = this;
-		var modules_context = require.context("./../modules/", true, /^(?!\.\/file\/)(?!.*(?:content_fill|keypoints)\.js$).*\.js$/);
-		modules_context.keys().forEach(function (key) {
-			if (key.indexOf('Base' + '/') < 0) {
-				var moduleKey = key.replace('./', '').replace('.js', '');
-				var classObj = modules_context(key);
-				_this.modules[moduleKey] = new classObj.default();
-			}
-		});
+		this.modules['image/rotate'] = new Image_rotate_class();
+		this.modules['image/histogram'] = new Image_histogram_class();
+		this.lazy_modules_context = require.context("./../modules/", true, /^(?!\.\/file\/)(?!.*(?:content_fill|keypoints)\.js$).*\.js$/, "lazy-once");
 	}
 
 	load_default_values() {
@@ -171,16 +167,29 @@ class Base_gui_class {
 			var function_name = parts[1];
 			var param = object.parameter ??= null;
 
-			//call module
-			if (this.modules[module] == undefined) {
-				alertify.error('Modules class not found: ' + module);
-				return;
+			const invoke = () => {
+				if (this.modules[module] == undefined) {
+					alertify.error('Modules class not found: ' + module);
+					return;
+				}
+				if (this.modules[module][function_name] == undefined) {
+					alertify.error('Module function not found. ' + module + '.' + function_name);
+					return;
+				}
+				this.modules[module][function_name](param);
+			};
+
+			if (this.modules[module] == undefined && this.lazy_modules_context) {
+				var key = './' + module + '.js';
+				if (this.lazy_modules_context.keys().includes(key)) {
+					this.lazy_modules_context(key).then((classObj) => {
+						this.modules[module] = new classObj.default();
+						invoke();
+					}).catch(() => alertify.error('Modules class not found: ' + module));
+					return;
+				}
 			}
-			if (this.modules[module][function_name] == undefined) {
-				alertify.error('Module function not found. ' + module + '.' + function_name);
-				return;
-			}
-			this.modules[module][function_name](param);
+			invoke();
 		});
 
 		//registerToggleAbility

@@ -1,0 +1,84 @@
+{
+  "timestamp": "2026-11-12T12:59:36.296Z",
+  "environment": {
+    "browser": "Playwright WebKit 26.5",
+    "deviceProfile": "iPhone 16 Pro Max (440x956 CSS px, DPR 3, Touch/Mobile)",
+    "hardwareNote": "Automated Playwright WebKit emulation on Windows 11 x64 workstation (NOT physical iPhone 16 Pro Max hardware)",
+    "os": "win32 x64",
+    "node": "v24.15.0"
+  },
+  "bundleOptimization": {
+    "beforeMainEntrypointKiB": 1812.5,
+    "afterBootstrapEntrypointKiB": 4.53,
+    "lazyChunksVerified": [
+      "studio-makeup",
+      "studio-creative",
+      "studio-lut",
+      "studio-fx",
+      "legacy-open"
+    ],
+    "prematureLazyChunksAtStartup": 0,
+    "externalNetworkRequests": 0
+  },
+  "gpuLiquifyAccuracy": {
+    "strengthZeroMaxDiff": 0,
+    "outsideRadiusMaxDiff": 0,
+    "combinedPushPinchBulgeRestoreFreezePerspectiveAlpha": {
+      "maxChannelDiffLSB": 1,
+      "meanAbsDiffLSB": 0.000034,
+      "exactMatchRatio": 0.999966
+    }
+  },
+  "gpuVsCpuLiquifyBenchmark": {
+    "strokeCount": 8,
+    "preview_1280x1024_1_3MP": {
+      "width": 1280,
+      "height": 1024,
+      "megapixels": 1.31,
+      "gpuMs": 11,
+      "cpuMs": 86,
+      "speedup": 7.82,
+      "maxDiff": 0,
+      "meanAbsDiff": 0
+    },
+    "highRes_2560x2048_5_2MP": {
+      "width": 2560,
+      "height": 2048,
+      "megapixels": 5.24,
+      "gpuMs": 43,
+      "cpuMs": 278,
+      "speedup": 6.47,
+      "maxDiff": 0,
+      "meanAbsDiff": 0
+    }
+  },
+  "photoOperationsMs": {
+    "appBootAndRestoreMs": 1194,
+    "openPngAlphaMs": 189,
+    "openDemoJpegMs": 247,
+    "exportPreviewJpegMs": 465,
+    "exportPreviewPngMs": 406,
+    "photo12MP_4000x3000": {
+      "openAndPreviewMs": 391,
+      "gpuLiquifyAndGradePreviewMs": 267,
+      "tiledExport12MPJpegMs": 706,
+      "exportedBytes": 75378
+    }
+  },
+  "memoryAndResilience": {
+    "backgroundTrimTrackedCanvases": 0,
+    "webglContextLossFallbackBackend": "worker",
+    "webglContextRestoreBackend": "webgl2",
+    "webglStats": {
+      "gpuRuns": 49,
+      "cpuFallbacks": 0,
+      "contextLosses": 1,
+      "contextRestores": 1,
+      "allocatedBytes": 345600,
+      "lastBackend": "webgl2",
+      "contextLost": false,
+      "allocW": 240,
+      "allocH": 180
+    }
+  }
+}

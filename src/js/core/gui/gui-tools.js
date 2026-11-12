@@ -36,7 +36,9 @@ class GUI_tools_class {
 	load_plugins() {
 		var _this = this;
 		var ctx = document.getElementById('canvas_minipaint').getContext("2d");
-		var plugins_context = require.context("./../../tools/", true, /^(?!.*(?:animation|media)\.js$).*\.js$/);
+		this.ctx = ctx;
+		var plugins_context = require.context("./../../tools/", true, /^(?:\.\/(?:select|crop|selection|pick_color|brush)\.js|\.\/shapes\/rectangle\.js)$/);
+		this.lazy_plugins_context = require.context("./../../tools/", true, /^(?!.*(?:animation|media)\.js$).*\.js$/, "lazy-once");
 		plugins_context.keys().forEach(function (key) {
 			if (key.indexOf('Base' + '/') < 0) {
 				var moduleKey = key.replace('./', '').replace('.js', '');
@@ -66,6 +68,31 @@ class GUI_tools_class {
 				}
 			}
 		});
+	}
+
+	async ensure_plugin(key) {
+		if (this.tools_modules[key] || !this.lazy_plugins_context) {
+			return this.tools_modules[key];
+		}
+		var matchKey = this.lazy_plugins_context.keys().find(k => k === './' + key + '.js' || k.endsWith('/' + key + '.js'));
+		if (!matchKey) {
+			return null;
+		}
+		var classObj = await this.lazy_plugins_context(matchKey);
+		var object = new classObj.default(this.ctx);
+		var full_key = matchKey.replace('./', '').replace('.js', '');
+		var title = this.Helper.ucfirst(object.name).replace(/_/, ' ');
+		this.tools_modules[key] = {
+			key: key,
+			full_key: full_key,
+			name: object.name,
+			title: title,
+			object: object,
+		};
+		if (typeof object.load != "undefined") {
+			object.load();
+		}
+		return this.tools_modules[key];
 	}
 
 	render_main_tools() {

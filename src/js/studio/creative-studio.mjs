@@ -1,0 +1,30 @@
+import {icon} from './icons.mjs';
+import {FONT_BANK} from './font-registry.mjs';
+
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const tabs=(items,active,attr)=>`<div class="v2-tabs">${items.map(([id,label])=>`<button ${attr}="${id}" class="${id===active?'active':''}">${label}</button>`).join('')}</div>`;
+const miniNote=text=>`<p class="v2-tool-note">${text}</p>`;
+const fontNames=FONT_BANK.map(f=>f.family);
+
+export const CREATIVE_TYPE_STYLES={
+ editorial:{meta:{family:'Playfair Display',bold:false,italic:false,stroke_size:0},typography:{shadow:0,arc:0,gradient:{enabled:false,from:'#ffffff',to:'#d96792',angle:0}}},
+ signature:{meta:{family:'Dancing Script',bold:false,italic:false,stroke_size:0},typography:{shadow:7,arc:0}},
+ clean:{meta:{family:'Manrope',bold:false,italic:false,kerning:3,stroke_size:0},typography:{shadow:0,arc:0}},
+ outline:{meta:{family:'Manrope',bold:true,fill_color:'#ffffff',stroke_color:'#292329',stroke_size:3},typography:{shadow:0,arc:0}}
+};
+
+export function renderTextPanel(ui){
+ const layer=ui.f.config.layer?.type==='text'?ui.f.config.layer:null,meta=layer?.data?.[0]?.[0]?.meta||{},ty=layer?.studio?.typography||{},tab=ui.textTab||'content';
+ if(!layer)return `<div class="v2-text-empty"><span>Aa</span><div><strong>Lời của bạn. Phong cách của bạn.</strong><p>Chữ nghệ thuật, đường cong, viền và màu chuyển.</p></div></div><button class="v2-primary v2-wide" data-action="add-text">${icon('plus')}Thêm văn bản</button>`;
+ const navigation=tabs([['content','Nội dung'],['font','Phông chữ'],['style','Kiểu chữ'],['color','Màu & viền'],['effects','Hiệu ứng']],tab,'data-v2-text-tab');
+ if(tab==='content')return `${navigation}<textarea id="studio-text" class="studio-field v2-text-editor" lang="vi" spellcheck="true" placeholder="Viết điều bạn muốn giữ lại…">${esc(layer.data.map(line=>line.map(s=>s.text).join('')).join('\n'))}</textarea><div class="v2-inline-row">${['left','center','right'].map(a=>`<button class="${layer.params.halign===a?'active':''}" data-align="${a}">${icon('align'+a)}</button>`).join('')}<button data-action="add-text">${icon('plus')}Thêm chữ</button></div>`;
+ if(tab==='font')return `${navigation}<div class="v2-font-list">${fontNames.map(f=>`<button data-v2-font="${f}" class="${f===(meta.family||'Manrope')?'active':''}" style="font-family:'${FONT_BANK.find(item=>item.family===f)?.download&&f!==meta.family?'Manrope':f}'"><span>${f}</span><small>${FONT_BANK.find(item=>item.family===f)?.sample||f}${FONT_BANK.find(item=>item.family===f)?.download?' · Tải lần đầu':''}</small></button>`).join('')}</div>`;
+ if(tab==='style')return `${navigation}<div class="v2-type-styles">${[['editorial','Editorial'],['signature','Chữ ký'],['clean','Tối giản'],['outline','Nét viền']].map(([id,label])=>`<button data-v2-type-style="${id}" class="type-${id}">Aa<span>${label}</span></button>`).join('')}</div><div class="v2-inline-row">${['bold','italic','underline'].map((k,i)=>`<button data-text-style="${k}" class="${meta[k]?'active':''}">${['<b>B</b>','<i>I</i>','<u>U</u>'][i]}</button>`).join('')}</div>${ui.slider('Cỡ chữ','size',meta.size||72,8,240,1,'text')}${ui.expanded?ui.slider('Giãn chữ','kerning',meta.kerning||0,-5,30,1,'text')+ui.slider('Giãn dòng','leading',meta.leading||0,0,80,1,'text'):''}`;
+ if(tab==='color'){const gradient=ty.gradient||{enabled:false,from:'#ffffff',to:'#d96792',angle:0};return `${navigation}<div class="v2-color-fields"><label>Màu chữ<input type="color" id="text-color" value="${meta.fill_color?.slice(0,7)||'#ffffff'}"></label><label>Màu viền<input type="color" id="text-stroke" value="${meta.stroke_color?.slice(0,7)||'#3b2936'}"></label><label class="v2-toggle-label">Màu chuyển<input id="v2-gradient-enabled" type="checkbox" ${gradient.enabled?'checked':''}></label></div>${gradient.enabled?`<div class="v2-gradient-fields"><input type="color" id="v2-gradient-from" value="${gradient.from}" aria-label="Màu đầu"><span style="background:linear-gradient(90deg,${esc(gradient.from)},${esc(gradient.to)})"></span><input type="color" id="v2-gradient-to" value="${gradient.to}" aria-label="Màu cuối"></div>${ui.slider('Hướng màu','angle',gradient.angle,-180,180,1,'gradient')}`:ui.slider('Độ dày viền','stroke_size',meta.stroke_size||0,0,12,1,'text')}${ui.expanded&&gradient.enabled?ui.slider('Độ dày viền','stroke_size',meta.stroke_size||0,0,12,1,'text'):''}`;}
+ const effect=ui.textEffect||'arc';return `${navigation}${tabs([['arc','Độ cong'],['shadow','Bóng'],['glow','Phát sáng'],['depth','Nổi khối'],['bubble','Bong bóng']],effect,'data-v2-text-effect')}${effect==='bubble'?`<div class="pro-effect-list">${[['none','Không'],['round','Nhãn tròn'],['speech','Lời thoại']].map(([id,label])=>`<button data-v2-bubble="${id}" class="${(ty.bubble||'none')===id?'active':''}">${label}</button>`).join('')}<input type="color" id="pro-bubble-color" aria-label="Màu bong bóng" value="${ty.bubbleColor||'#242229'}"></div>`:ui.slider(({arc:'Độ cong',shadow:'Đổ bóng',glow:'Phát sáng',depth:'Nổi khối'})[effect],effect,ty[effect]||0,effect==='arc'?-100:0,effect==='arc'?100:effect==='depth'?24:60,1,'typography')}${ui.expanded?ui.slider('Giãn chữ','kerning',meta.kerning||0,-5,30,1,'text')+ui.slider('Giãn dòng','leading',meta.leading||0,0,80,1,'text'):miniNote('Mỗi hiệu ứng được lưu trên lớp chữ và có thể hoàn tác')}`;
+}
+
+export function renderFramePanel(ui){
+ const frame=ui.f.config.layers.find(l=>l.studio?.canvasFrame)?.studio.canvasFrame,style=frame?.style||ui.frameStyle||'paper';
+ return `<div class="v2-frame-styles">${[['paper','Giấy ngà'],['blush','Hồng sương'],['charcoal','Charcoal'],['polaroid','Kỷ niệm']].map(([id,label])=>`<button data-v2-frame="${id}" class="${id===style?'active':''}"><span class="v2-frame-thumb frame-${id}"><img src="./assets/photos/muse.jpg" alt=""></span>${label}</button>`).join('')}</div>${ui.slider('Độ rộng khung','percent',frame?.percent??ui.framePercent??5,0,20,1,'frame')}${miniNote('Thả thanh trượt để áp dụng · Khung là một lớp riêng có thể sửa')}`;
+}

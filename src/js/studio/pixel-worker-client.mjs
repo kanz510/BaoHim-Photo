@@ -1,6 +1,8 @@
 import{processPixels}from'./pixel-pipeline.mjs';
 const cancelled=()=>new DOMException('Cancelled','AbortError');
 const pixelCount=job=>Math.max(0,(job.width||0)*(job.height||0));
+const isMemoryError=err=>err instanceof RangeError||/out of memory|allocation failed|array buffer/i.test(String(err?.message||err||''));
+const memoryMessage=()=>new Error('Thiết bị thiếu bộ nhớ tạm thời để xử lý ảnh lớn này. Hãy đóng bớt ứng dụng nền hoặc giảm kích thước ảnh.');
 /**
  * One worker, one active buffer and a short queue; the latest preview replaces its queued predecessor.
  *
@@ -19,19 +21,34 @@ export class PixelWorkerClient{
  get disabled(){return this.unsupported;}
  status(state,detail={}){try{this.onStatus?.({state,pending:this.pending.length,restarts:this.restarts,...detail});}catch{}}
  budget(job){return this.timeoutMs+Math.ceil(pixelCount(job)/1e6)*this.perMegapixelMs;}
- run(job,{signal,key,recover}={}){
+ run(job,{signal,key,recover,recoverSrc}={}){
   if(signal?.aborted)return Promise.reject(cancelled());
   return new Promise((resolve,reject)=>{
-   const item={id:++this.id,job,signal,key,recover,resolve,reject,settled:false,attempts:0};
+   const item={id:++this.id,job,signal,key,recover,recoverSrc,resolve,reject,settled:false,attempts:0};
    item.abort=()=>{if(item.settled)return;item.settled=true;reject(cancelled());this.pending=this.pending.filter(q=>q!==item);};
    signal?.addEventListener('abort',item.abort,{once:true});
    if(key)for(const previous of this.pending.filter(q=>q.key===key))previous.abort();
    this.pending.push(item);this.pump();
   });
  }
- settle(item,error,pixels){item.signal?.removeEventListener('abort',item.abort);if(item.settled)return;item.settled=true;if(error)item.reject(error);else item.resolve(pixels);}
+ settle(item,error,pixels){
+  item.signal?.removeEventListener('abort',item.abort);
+  if(item.settled)return;
+  item.settled=true;
+  if(error)item.reject(isMemoryError(error)?memoryMessage():error);
+  else item.resolve(pixels);
+ }
  /** Restores a transferred buffer from the caller's source surface. */
- refill(item){const job=item.job;if(!job.pixels.byteLength){if(!item.recover)throw Error('Pixel buffer unavailable');job.pixels=item.recover();}}
+ refill(item){
+  const job=item.job;
+  if(!job.pixels.byteLength){
+   if(!item.recover)throw Error('Pixel buffer unavailable');
+   job.pixels=item.recover();
+  }
+  if(job.patch?.srcPixels&&!job.patch.srcPixels.byteLength&&item.recoverSrc){
+   job.patch.srcPixels=item.recoverSrc();
+  }
+ }
  fallback(item){try{this.refill(item);this.fallbacks++;this.settle(item,null,processPixels(item.job));}catch(error){this.settle(item,error);}}
  attach(){
   const worker=this.factory();
@@ -39,9 +56,13 @@ export class PixelWorkerClient{
    if(worker!==this.worker)return;const current=this.active;if(!current||e.data.id!==current.id)return;
    clearTimeout(this.timer);this.active=null;
    if(e.data.error){
-    // The job itself threw inside the worker (not a hang). Small jobs reuse the identical CPU path.
-    if(pixelCount(current.job)<=this.inlineLimit)this.fallback(current);
-    else{this.failures++;this.settle(current,new Error('Không xử lý được ảnh lớn này. Hãy thử lại hoặc giảm kích thước ảnh.'));this.status('failed',{reason:'error'});}
+    if(isMemoryError(e.data.error)){
+     this.failures++;this.settle(current,memoryMessage());this.status('failed',{reason:'oom'});
+    }else if(pixelCount(current.job)<=this.inlineLimit){
+     this.fallback(current);
+    }else{
+     this.failures++;this.settle(current,new Error('Không xử lý được ảnh lớn này. Hãy thử lại hoặc giảm kích thước ảnh.'));this.status('failed',{reason:'error'});
+    }
    }else{this.completed++;this.settle(current,null,e.data.pixels);}
    if(!this.pending.length)this.status('idle');
    this.pump();
@@ -58,7 +79,11 @@ export class PixelWorkerClient{
    this.refill(item);item.attempts++;this.active=item;
    const budget=this.budget(item.job);this.timer=setTimeout(()=>this.recoverWorker('timeout'),budget);
    if(pixelCount(item.job)>2e6)this.status('busy',{attempt:item.attempts});
-   this.worker.postMessage({id:item.id,job:item.job},[item.job.pixels.buffer]);
+   const transfer=[item.job.pixels.buffer];
+   if(item.job.patch?.srcPixels?.buffer&&item.job.patch.srcPixels.buffer!==item.job.pixels.buffer){
+    transfer.push(item.job.patch.srcPixels.buffer);
+   }
+   this.worker.postMessage({id:item.id,job:item.job},transfer);
   }catch(error){this.active=null;clearTimeout(this.timer);this.settle(item,error);this.pump();}
  }
  /** Terminates a hung/crashed worker, then retries the job once in a fresh worker. */
@@ -72,6 +97,11 @@ export class PixelWorkerClient{
    else{this.failures++;this.status('failed',{reason});this.settle(item,new Error(reason==='timeout'?'Xử lý ảnh quá lâu nên đã dừng để giữ ứng dụng mượt. Hãy thử lại hoặc giảm kích thước ảnh.':'Bộ xử lý ảnh gặp lỗi và đã được khởi động lại. Hãy thử lại thao tác.'));}
   }
   this.pump();
+ }
+ cancelAll(){
+  for(const item of this.pending)item.abort();
+  this.pending=[];
+  if(this.active)this.active.abort();
  }
  dispose(){clearTimeout(this.timer);try{this.worker?.terminate();}catch{}this.worker=null;this.unsupported=true;if(this.active)this.settle(this.active,cancelled());for(const item of this.pending)this.settle(item,cancelled());this.active=null;this.pending=[];}
 }

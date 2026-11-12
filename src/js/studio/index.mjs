@@ -1,5 +1,4 @@
 import {PremiumFacade} from './premium-facade.mjs';
-import {PremiumUI} from './premium-ui.mjs';
 import {MobileViewport} from './mobile-viewport.mjs';
 import {PremiumGestureRouter} from './premium-gestures.mjs';
 import {renderTypography} from './typography.mjs';
@@ -7,6 +6,7 @@ import zoomView from '../libs/zoomView.js';
 import {installNativeMobile} from './native-mobile.mjs';
 
 export async function initStudio(app){
+ const {PremiumUI}=await import(/* webpackChunkName: "studio-ui" */ './premium-ui.mjs');
  installNativeMobile(app);
  app.GUI.GUI_tools.tools_modules.studio_text={object:{render:renderTypography}};
  app.Layers.studioScreenToWorld=point=>zoomView.toWorld(point.x,point.y);

@@ -40,3 +40,15 @@ test('Phase 0 watchdog rejects hung large jobs instead of blocking the main thre
  assert.equal(client.fallbacks,0,'large timed-out job must not fall back to the main thread');
  client.dispose();
 });
+
+test('PixelWorkerClient surfaces clear Vietnamese out-of-memory error and supports cancelAll',async()=>{
+ const client=new PixelWorkerClient({
+  workerFactory:()=>({
+   onmessage:null,onerror:null,terminate(){},
+   postMessage({id}){setTimeout(()=>this.onmessage?.({data:{id,error:'RangeError: Array buffer allocation failed'}}),5);}
+  })
+ });
+ const buf=new Uint8ClampedArray(16);
+ await assert.rejects(()=>client.run({pixels:buf,width:2,height:2,adjustments:{},studio:{}}),/thiếu bộ nhớ/);
+ client.dispose();
+});

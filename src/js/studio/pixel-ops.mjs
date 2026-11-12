@@ -8,8 +8,10 @@ export function hslPixels(input,bands={},output=new Uint8ClampedArray(input)){
   const rgb=hh<1?[c,x,0]:hh<2?[x,c,0]:hh<3?[0,c,x]:hh<4?[0,x,c]:hh<5?[x,0,c]:[c,0,x];for(let k=0;k<3;k++)output[i+k]=(rgb[k]+m)*255;output[i+3]=input[i+3];
  }return output;
 }
-export function blurPixels(input,w,h,radius,output=new Uint8ClampedArray(input)){
- const r=Math.max(0,Math.min(100,Math.round(radius)));if(!r){if(output!==input)output.set(input);return output;}const tmp=new Uint8ClampedArray(input.length),span=2*r+1;
+export function blurPixels(input,w,h,radius,output){
+ const r=Math.max(0,Math.min(100,Math.round(radius)));if(!r){if(!output)return new Uint8ClampedArray(input);if(output!==input)output.set(input);return output;}
+ if(!output)output=new Uint8ClampedArray(input.length);
+ const tmp=new Uint8ClampedArray(input.length),span=2*r+1;
  for(let y=0;y<h;y++)for(let c=0;c<3;c++){let sum=0;for(let x=-r;x<=r;x++)sum+=input[(y*w+clamp(x,0,w-1))*4+c];for(let x=0;x<w;x++){tmp[(y*w+x)*4+c]=sum/span;sum+=input[(y*w+Math.min(w-1,x+r+1))*4+c]-input[(y*w+Math.max(0,x-r))*4+c];}}
  for(let x=0;x<w;x++)for(let c=0;c<3;c++){let sum=0;for(let y=-r;y<=r;y++)sum+=tmp[(clamp(y,0,h-1)*w+x)*4+c];for(let y=0;y<h;y++){output[(y*w+x)*4+c]=sum/span;sum+=tmp[(Math.min(h-1,y+r+1)*w+x)*4+c]-tmp[(Math.max(0,y-r)*w+x)*4+c];}}
  for(let i=3;i<input.length;i+=4)output[i]=input[i];return output;
@@ -156,7 +158,7 @@ export function opticalEffectsPixels(input,w,h,adjustments={},output=new Uint8Cl
   if(output!==input)output.set(input);
   return output;
  }
- const work=new Uint8ClampedArray(input);
+ const work=chromatic>0?new Uint8ClampedArray(input):input;
  if(chromatic>0){
   const cx=w*.5,cy=h*.5,maxShift=Math.max(1.2,Math.min(w,h)*.018)*chromatic;
   for(let y=0;y<h;y++){
@@ -217,6 +219,42 @@ export function opticalEffectsPixels(input,w,h,adjustments={},output=new Uint8Cl
    output[i+2]=clamp(Math.round(b),0,255);
    output[i+3]=input[i+3];
   }
+ }
+ return output;
+}
+
+export function applyCubeLut(input,lut,intensity=100,output=new Uint8ClampedArray(input)){
+ if(!lut||!lut.size||!Array.isArray(lut.table)&&!(lut.table instanceof Float32Array)){
+  if(output!==input)output.set(input);
+  return output;
+ }
+ const n=lut.size,table=lut.table,mix=clamp(Number(intensity)??100,0,100)/100;
+ if(mix<=0||table.length!==n*n*n*3){
+  if(output!==input)output.set(input);
+  return output;
+ }
+ const maxIdx=n-1,n2=n*n;
+ for(let i=0;i<input.length;i+=4){
+  const r=clamp(input[i]/255,0,1)*maxIdx;
+  const g=clamp(input[i+1]/255,0,1)*maxIdx;
+  const b=clamp(input[i+2]/255,0,1)*maxIdx;
+  const r0=Math.floor(r),g0=Math.floor(g),b0=Math.floor(b);
+  const r1=Math.min(maxIdx,r0+1),g1=Math.min(maxIdx,g0+1),b1=Math.min(maxIdx,b0+1);
+  const fr=r-r0,fg=g-g0,fb=b-b0;
+  const idx=(ri,gi,bi)=>(bi*n2+gi*n+ri)*3;
+  const i000=idx(r0,g0,b0),i100=idx(r1,g0,b0),i010=idx(r0,g1,b0),i110=idx(r1,g1,b0);
+  const i001=idx(r0,g0,b1),i101=idx(r1,g0,b1),i011=idx(r0,g1,b1),i111=idx(r1,g1,b1);
+  for(let c=0;c<3;c++){
+   const c00=table[i000+c]*(1-fr)+table[i100+c]*fr;
+   const c10=table[i010+c]*(1-fr)+table[i110+c]*fr;
+   const c01=table[i001+c]*(1-fr)+table[i101+c]*fr;
+   const c11=table[i011+c]*(1-fr)+table[i111+c]*fr;
+   const c0=c00*(1-fg)+c10*fg;
+   const c1=c01*(1-fg)+c11*fg;
+   const mapped=(c0*(1-fb)+c1*fb)*255;
+   output[i+c]=clamp(Math.round(input[i+c]*(1-mix)+mapped*mix),0,255);
+  }
+  output[i+3]=input[i+3];
  }
  return output;
 }
