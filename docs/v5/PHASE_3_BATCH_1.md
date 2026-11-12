@@ -14,6 +14,6 @@
 8. Chạy npm run check, npm test, npm run test:webkit, npm run build. Commit push lên main (không PR, không force), xác nhận Pages deploy.
 9. Báo cáo commit SHA, Actions, URL ?ui=v5 thực tế, ảnh screenshot QA, tính năng đã nối và thiếu.
 
-**Ảnh tham chiếu:** 7 concept V5 được duyệt trong cuộc trò chuyện ChatGPT, chưa có bản ảnh lưu trên GitHub; sử dụng mô tả trong DESIGN_SPEC.md nếu không có ảnh gốc. Không tự đoán rồi báo pixel-perfect.
+**Ảnh tham chiếu:** BẮT BUỘC mở đủ 7 ảnh tại [`docs/v5/references/README.md`](./references/README.md) và đối chiếu trực quan với `DESIGN_SPEC.md`. Trang chủ tham chiếu ảnh 04, editor shell tham chiếu ảnh 01–03 và 05–07. Không biến hình minh họa thành chức năng giả. Nếu ảnh và tính năng cũ xung đột, giữ chức năng thật và ghi rõ lựa chọn UI.
 
 **Không làm Đợt 2 trong commit này.** Chờ chủ dự án duyệt shell V5.

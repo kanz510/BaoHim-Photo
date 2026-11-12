@@ -1,9 +1,9 @@
-# BaoHim Photo V5 · CN Edition | Design handoff (text-first)
+# BaoHim Photo V5 · CN Edition | Approved visual references & implementation handoff
 
 **Trạng thái:** Thiết kế đã được chủ dự án duyệt. Đây là tài liệu tham chiếu để triển khai; KHÔNG phải code giao diện đã hoàn thành.
 **Ứng dụng hiện tại:** V4 trên main, engine V3/V4 vẫn phải giữ nguyên.
 **Khổ ưu tiên:** iPhone 16 Pro Max, 440 × 956 CSS px, DPR 3; thử thêm 390 × 844, 375 × 812, landscape.
-**Lưu ý nguồn ảnh:** 7 ảnh concept gốc được duyệt trong hội thoại ChatGPT, CHƯA được upload vào repo bởi tài liệu này. Đừng tuyên bố đã nhìn ảnh gốc từ repo; mô tả dưới đây đủ để làm đợt Shell/Home trước và giữ nhất quán các đợt sau.
+**Ảnh tham chiếu đã duyệt:** Có đủ 7 file WebP trực tiếp tại [`docs/v5/references/`](./references/README.md). Đọc/xem cả ảnh trước khi code; mô tả trong tài liệu này bổ sung yêu cầu tính năng và hành vi. Các ảnh WebP là bản tối ưu dung lượng từ concept PNG được duyệt. Ba màn hình đầu là crop từ layout tổng quan, độ phân giải nhỏ hơn bốn ảnh cuối. Không sao chép pixel-perfect các chi tiết mang tính minh họa như VIP, icon hệ thống, status bar hay chức năng chưa tồn tại.
 
 ## A. Định hướng thị giác đã duyệt
 
