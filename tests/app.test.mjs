@@ -463,3 +463,28 @@ test('Phase 1 beauty retouch UI exposes blemish spot heal, feather, detail and s
   assert.ok(app.w.document.querySelector('[data-v2-tone-setting="saturation"]'));
  }finally{await app.close();}
 });
+
+test('Phase 2 Face Reshape places control points, previews slider mesh deformation and commits with Undo/Redo',async()=>{
+ const app=await boot();
+ try{
+  const {ui,facade:f}=app.w.Studio;
+  await ui.switchTool('reshape');
+  for(const id of ['face','chin','jawline','cheekbone','eyes','nose','lips','forehead','ratio']){
+   assert.ok(app.w.document.querySelector(`[data-v2-reshape-preset="${id}"]`),`UI button for ${id}`);
+  }
+  app.w.document.querySelector('[data-v2-reshape-preset="jawline"]').click();
+  await new Promise(r=>setTimeout(r,10));
+  assert.ok(app.w.document.querySelector('[data-range="faceAmount"]'),'faceAmount slider shown');
+  await ui.action('face-place');
+  assert.equal(ui.router.placingFace,true);
+  assert.equal(ui.router.faceHandles.length,2);
+  ui.faceAmount=55;
+  await ui.action('apply-face');
+  assert.equal(ui.router.placingFace,false);
+  assert.ok(f.basePhotoLayer().studio.warps.length>=2,'mesh warps committed to photo layer');
+  await f.undo();
+  assert.equal(f.basePhotoLayer().studio.warps.length,0,'undo removes face mesh warps');
+  await f.redo();
+  assert.ok(f.basePhotoLayer().studio.warps.length>=2,'redo restores face mesh warps');
+ }finally{await app.close();}
+});

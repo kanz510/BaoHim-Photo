@@ -81,6 +81,58 @@ export function bodyWarps(handles,mode,amount){
  if(['waist','shoulder'].includes(mode)){const center=(a.x+b.x)/2;return [a,b].map(p=>({from:{...p},to:{x:p.x+(center-p.x)*value*.28,y:p.y},radius,strength,mode:'push'}));}
  const bottom=a.y>b.y?a:b;return [{from:{...bottom},to:{x:bottom.x,y:bottom.y+Math.abs(b.y-a.y)*value*(mode==='height'?.18:.25)},radius,strength,mode:'push'}];
 }
+export function faceMeshWarps(handles,feature='face',amount=40,freezeCount=0){
+ if(!Array.isArray(handles)||handles.length<2)throw new Error('Hãy đặt hai điểm điều khiển trên khuôn mặt trước.');
+ const [a,b]=handles,span=Math.max(24,Math.hypot(b.x-a.x,b.y-a.y)),mid={x:(a.x+b.x)/2,y:(a.y+b.y)/2};
+ const v=clamp(Number(amount)||0,-100,100)/100;
+ if(Math.abs(v)<1e-4)return [];
+ const mag=Math.abs(v),sign=v>=0?1:-1,fc=Math.max(0,Math.floor(freezeCount));
+ if(feature==='eyes'){
+  const r=Math.max(18,span*.42),mode=sign>0?'bulge':'pinch',s=clamp(mag*.52,.04,.65);
+  return [
+   {from:{...a},to:{...a},radius:r,strength:s,mode,freezeCount:fc},
+   {from:{...b},to:{...b},radius:r,strength:s,mode,freezeCount:fc}
+  ];
+ }
+ if(feature==='lips'){
+  const r=Math.max(16,span*.55),mode=sign>0?'bulge':'pinch',s=clamp(mag*.48,.04,.65);
+  const lift=-v*span*.12;
+  return [
+   {from:{...mid},to:{...mid},radius:r,strength:s,mode,freezeCount:fc},
+   {from:{...a},to:{x:a.x,y:a.y+lift},radius:r*.7,strength:clamp(mag*.4,.04,.65),mode:'push',freezeCount:fc},
+   {from:{...b},to:{x:b.x,y:b.y+lift},radius:r*.7,strength:clamp(mag*.4,.04,.65),mode:'push',freezeCount:fc}
+  ];
+ }
+ if(feature==='nose'){
+  const top=a.y<=b.y?a:b,tip=a.y<=b.y?b:a,wingSpan=Math.max(14,span*.42),r=Math.max(14,span*.52);
+  const leftWing={x:tip.x-wingSpan*.5,y:tip.y},rightWing={x:tip.x+wingSpan*.5,y:tip.y};
+  return [
+   {from:leftWing,to:{x:leftWing.x+(tip.x-leftWing.x)*v*.34,y:leftWing.y},radius:r,strength:.55,mode:'push',freezeCount:fc},
+   {from:rightWing,to:{x:rightWing.x+(tip.x-rightWing.x)*v*.34,y:rightWing.y},radius:r,strength:.55,mode:'push',freezeCount:fc},
+   {from:{...tip},to:{x:tip.x,y:tip.y+(top.y-tip.y)*v*.18},radius:r*.85,strength:.48,mode:'push',freezeCount:fc}
+  ];
+ }
+ if(feature==='chin'||feature==='forehead'||feature==='ratio'){
+  const top=a.y<=b.y?a:b,bottom=a.y<=b.y?b:a,r=Math.max(22,span*.78);
+  const anchor=feature==='forehead'?top:feature==='ratio'?mid:bottom;
+  const dy=(bottom.y-top.y)*v*(feature==='chin'?-.24:feature==='forehead'?.22:-.18);
+  return [
+   {from:{...anchor},to:{x:anchor.x,y:anchor.y+dy},radius:r,strength:.58,mode:'push',freezeCount:fc}
+  ];
+ }
+ // face, jawline, cheekbone: 3-band mesh contour contraction/expansion along both sides of the face
+ const left=a.x<=b.x?a:b,right=a.x<=b.x?b:a,r=Math.max(24,span*.68),lift=feature==='jawline'?-Math.abs(v)*span*.08:feature==='cheekbone'?-v*span*.06:0;
+ const factor=feature==='jawline'?.3:feature==='cheekbone'?.24:.26;
+ const warps=[];
+ for(const t of [-0.18,0,0.18]){
+  const yOff=span*t,lp={x:left.x,y:left.y+yOff},rp={x:right.x,y:right.y+yOff},w=t===0?1:.72;
+  warps.push(
+   {from:lp,to:{x:lp.x+(mid.x-lp.x)*v*factor*w,y:lp.y+lift*w},radius:r*w,strength:.58,mode:'push',freezeCount:fc},
+   {from:rp,to:{x:rp.x+(mid.x-rp.x)*v*factor*w,y:rp.y+lift*w},radius:r*w,strength:.58,mode:'push',freezeCount:fc}
+  );
+ }
+ return warps;
+}
 export function perspectiveSample(p,width,height,horizontal=0,vertical=0){
  const x=p.x/width*2-1,y=p.y/height*2-1,d=1+clamp(horizontal,-50,50)*.004*x+clamp(vertical,-50,50)*.004*y;
  return {x:(x/d+1)*width/2,y:(y/d+1)*height/2};

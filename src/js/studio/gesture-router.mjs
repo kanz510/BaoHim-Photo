@@ -1,7 +1,7 @@
 import {interpolateStroke,clamp,perspectiveSample} from './math.mjs';
 export class GestureRouter{
  constructor(facade,ui){
-  this.f=facade;this.ui=ui;this.pointers=new Map();this.stroke=null;this.warps=[];this.cloneSource=null;this.clonePicking=false;this.space=false;this.lastPan=null;this.frame=null;this.bodyHandles=[];this.bodyDrag=-1;
+  this.f=facade;this.ui=ui;this.pointers=new Map();this.stroke=null;this.warps=[];this.cloneSource=null;this.clonePicking=false;this.space=false;this.lastPan=null;this.frame=null;this.bodyHandles=[];this.bodyDrag=-1;this.placingFace=false;this.faceHandles=[];this.faceDrag=-1;
   this.canvas=document.getElementById('canvas_minipaint');this.cursor=document.getElementById('brush-cursor');
   this.nativeSnapshot=null;this.suppressNativeTouch=false;this.suppressMouseUntil=0;
   this.canvas.addEventListener('pointerdown',e=>this.down(e),{capture:true});
@@ -42,6 +42,10 @@ export class GestureRouter{
   this.stop(event);this.canvas.setPointerCapture?.(event.pointerId);
   const point=this.f.sourcePoint(event,{warp:this.ui.tool!=='reshape'}),layer=this.f.photoLayer();if(!point||!layer)return;
   if(point.x<0||point.y<0||point.x>layer.width_original||point.y>layer.height_original)return;
+  if(this.ui.tool==='reshape'&&this.placingFace){
+   if(this.faceHandles.length<2){this.faceHandles.push(point);this.faceDrag=this.faceHandles.length-1;}else this.faceDrag=Math.hypot(point.x-this.faceHandles[0].x,point.y-this.faceHandles[0].y)<Math.hypot(point.x-this.faceHandles[1].x,point.y-this.faceHandles[1].y)?0:1;
+   this.faceLayerId=layer.id;this.f.config.need_render=true;if(this.faceHandles.length===2)this.ui.scheduleFaceMeshPreview?.();return;
+  }
   if(this.ui.tool==='reshape'&&this.placingBody){
    if(this.bodyHandles.length<2){this.bodyHandles.push(point);this.bodyDrag=this.bodyHandles.length-1;}else this.bodyDrag=Math.hypot(point.x-this.bodyHandles[0].x,point.y-this.bodyHandles[0].y)<Math.hypot(point.x-this.bodyHandles[1].x,point.y-this.bodyHandles[1].y)?0:1;
    this.bodyLayerId=layer.id;this.f.config.need_render=true;return;
@@ -61,6 +65,7 @@ export class GestureRouter{
   if(this.pointers.size>1||this.space||this.suppressNativeTouch){
    this.stop(event);const now=this.panState();if(this.lastPan){if(now.distance&&this.lastPan.distance)this.f.zoom(clamp(now.distance/this.lastPan.distance,.8,1.25));this.f.pan?.(now.x-this.lastPan.x,now.y-this.lastPan.y);}this.lastPan=now;return;
   }
+  if(this.faceDrag>=0){this.stop(event);const p=this.f.sourcePoint(event,{warp:false});if(p)this.faceHandles[this.faceDrag]=p;this.f.config.need_render=true;if(this.faceHandles.length===2)this.ui.scheduleFaceMeshPreview?.();return;}
   if(this.bodyDrag>=0){this.stop(event);const p=this.f.sourcePoint(event,{warp:false});if(p)this.bodyHandles[this.bodyDrag]=p;this.f.config.need_render=true;return;}
   if(!this.stroke||!this.custom())return;this.stop(event);
   if(!this.f.config.layers.includes(this.layer)){this.cancel();return;}
@@ -90,6 +95,7 @@ export class GestureRouter{
  }
  async up(event){
   this.pointers.delete(event.pointerId);
+  if(this.faceDrag>=0){this.faceDrag=-1;this.stop(event);return;}
   if(this.bodyDrag>=0){this.bodyDrag=-1;this.stop(event);return;}
   if(this.lastPan){this.lastPan=null;this.cancelStroke();return;}
   if(!this.stroke){if(!this.pointers.size&&!this.suppressNativeTouch)setTimeout(()=>{if(!this.pointers.size)this.nativeSnapshot=null;},0);return;}this.stop(event);clearTimeout(this.frame);this.frame=null;
@@ -113,7 +119,7 @@ export class GestureRouter{
   }
   this.f.config.need_render=true;
  }
- cancelStroke(){const dirty=!!this.stroke||this.warps.length;clearTimeout(this.frame);this.frame=null;this.stroke=null;this.warps=[];this.bodyDrag=-1;if(dirty){this.f.cache.clear();this.f.renderPreview();}this.f.config.need_render=true;}
+ cancelStroke(){const dirty=!!this.stroke||this.warps.length;clearTimeout(this.frame);this.frame=null;this.stroke=null;this.warps=[];this.bodyDrag=-1;this.faceDrag=-1;if(dirty){this.f.cache.clear();this.f.renderPreview();}this.f.config.need_render=true;}
  cancel(){if([...this.pointers.values()].some(p=>p.type==='touch')||this.nativeSnapshot?.touch)this.suppressNativeTouch=true;this.rollbackNative();this.pointers.clear();this.lastPan=null;this.cancelStroke();this.cursor.hidden=true;}
  updateCursor(event=this.lastEvent){
   if(!event||!this.custom()){this.cursor.hidden=true;return;}const r=this.canvas.getBoundingClientRect(),layer=this.f.photoLayer();if(!layer)return;
@@ -139,9 +145,17 @@ export class GestureRouter{
    ctx.beginPath();ctx.moveTo(src.x-r*1.1,src.y);ctx.lineTo(src.x+r*1.1,src.y);ctx.moveTo(src.x,src.y-r*1.1);ctx.lineTo(src.x,src.y+r*1.1);ctx.stroke();
   }
   if(showReshape&&this.ui.brush.mode==='freeze'){ctx.fillStyle='rgba(208,117,157,.22)';for(const s of strokes)for(const point of s.points||[]){const p=forward(point);ctx.beginPath();ctx.arc(p.x,p.y,s.radius,0,Math.PI*2);ctx.fill();}}
-  if(showReshape&&this.placingBody&&this.bodyLayerId===layer.id){
+  if(showReshape&&(this.placingBody&&this.bodyLayerId===layer.id||this.placingFace&&this.faceLayerId===layer.id)){
+   const activeHandles=this.placingFace?this.faceHandles:this.bodyHandles;
    const r=10/(this.f.config.ZOOM*layer.width/layer.width_original);ctx.strokeStyle='#ffffff';ctx.fillStyle='#cf7292';ctx.lineWidth=r*.2;
-   const handles=this.bodyHandles.map(forward);if(handles.length===2){ctx.beginPath();ctx.moveTo(handles[0].x,handles[0].y);ctx.lineTo(handles[1].x,handles[1].y);ctx.stroke();}
+   const handles=activeHandles.map(forward);
+   if(handles.length===2){
+    ctx.beginPath();ctx.moveTo(handles[0].x,handles[0].y);ctx.lineTo(handles[1].x,handles[1].y);ctx.stroke();
+    if(this.placingFace){
+     const mx=(handles[0].x+handles[1].x)/2,my=(handles[0].y+handles[1].y)/2,rx=Math.max(r*2.2,Math.hypot(handles[1].x-handles[0].x,handles[1].y-handles[0].y)*.65);
+     ctx.save();ctx.strokeStyle='rgba(207,114,146,0.65)';ctx.setLineDash([r*.4,r*.3]);ctx.beginPath();ctx.arc(mx,my,rx,0,Math.PI*2);ctx.stroke();ctx.restore();
+    }
+   }
    handles.forEach((p,i)=>{ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);ctx.fillStyle='#cf7292';ctx.fill();ctx.stroke();ctx.fillStyle='#fff';ctx.font=`600 ${r*1.1}px Manrope`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(i+1),p.x,p.y);});
   }
   ctx.restore();

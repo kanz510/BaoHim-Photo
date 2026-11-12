@@ -56,3 +56,20 @@ test('perspective mapping is identity at zero and keeps the center fixed',()=>{
 test('manual face presets and shoulder/height controls reuse bounded native warps',async()=>{const {manualReshapePreset}=await import('../src/js/studio/reshape-presets.mjs').catch(()=>({}));assert.ok(manualReshapePreset);for(const id of ['face','eyes','nose','lips','chin']){const p=manualReshapePreset(id);assert.ok(['pinch','bulge','push'].includes(p.mode));assert.ok(p.size>=10&&p.size<=220);}const handles=[{x:20,y:30},{x:80,y:30}];const {bodyWarps}=await import('../src/js/studio/math.mjs');const shoulders=bodyWarps(handles,'shoulder',60);assert.ok(shoulders[0].to.x>20&&shoulders[1].to.x<80);const height=bodyWarps([{x:50,y:10},{x:50,y:100}],'height',40);assert.equal(height[0].from.x,height[0].to.x);assert.ok(height[0].to.y>height[0].from.y);});
 
 test('long-photo and magazine compositions have non-overlapping native photo slots',()=>{for(const layout of ['long','magazine']){const slots=m.collageSlots(1200,layout==='long'?3600:1500,layout,24);assert.equal(slots.length,3);for(let i=0;i<slots.length;i++)for(let j=i+1;j<slots.length;j++){const a=slots[i],b=slots[j];assert.ok(a.x+a.width<=b.x||b.x+b.width<=a.x||a.y+a.height<=b.y||b.y+b.height<=a.y);}if(layout==='magazine')assert.ok(slots[0].height>slots[1].height);}});
+
+test('Phase 2 faceMeshWarps generates localized mesh warps for all 9 facial features and respects freeze protection',async()=>{
+ const {RESHAPE_PRESETS,manualReshapePreset}=await import('../src/js/studio/reshape-presets.mjs');
+ for(const id of ['face','chin','jawline','cheekbone','eyes','nose','lips','forehead','ratio']){
+  assert.ok(RESHAPE_PRESETS[id],`preset ${id} exists`);
+  const p=manualReshapePreset(id);
+  assert.ok(['pinch','bulge','push'].includes(p.mode));
+  const warps=m.faceMeshWarps([{x:120,y:200},{x:280,y:200}],id,50,3);
+  assert.ok(warps.length>=1,`faceMeshWarps produces warps for ${id}`);
+  assert.ok(warps.every(w=>w.freezeCount===3&&w.radius>0));
+ }
+ // Distant background point outside local mesh radius is completely unaffected
+ const jawWarps=m.faceMeshWarps([{x:140,y:200},{x:260,y:200}],'jawline',60,0);
+ assert.deepEqual(m.warpSample({x:10,y:10},jawWarps),{x:10,y:10});
+ // Frozen point inside the mesh is completely protected
+ assert.deepEqual(m.warpSample({x:140,y:200},jawWarps,()=>1),{x:140,y:200});
+});

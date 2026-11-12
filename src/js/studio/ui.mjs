@@ -1,5 +1,5 @@
 import {icon,hydrateIcons} from './icons.mjs';
-import {PRESETS,DEFAULT_ADJUSTMENTS,clamp,bodyWarps} from './math.mjs';
+import {PRESETS,DEFAULT_ADJUSTMENTS,clamp,bodyWarps,faceMeshWarps} from './math.mjs';
 import {blobDataURL} from './project-repository.mjs';
 import {MAX_PROJECT_FILE_BYTES,projectFileBlob} from './project-schema.mjs';
 const $=selector=>document.querySelector(selector);
@@ -8,7 +8,7 @@ const tools={draw:['Vẽ & xóa','Thêm nét màu, giữ lại khoảng trống.
 const stickers=['bloom','sparkle','heart','bow','daisy','star','moon','butterfly','ribbon','petals','sun','pearl','frame','lovely','kiss','cloud','cherry','tulip','coffee','paperclip','photoNote','music','leaf','smile'];
 export class StudioUI{
  constructor(facade){
-  this.f=facade;this.tool='beauty';this.brush={mode:'smooth',size:85,strength:35,hardness:55,feather:35,detail:65,warmth:0,hue:0,saturation:0,lightness:0,color:'#c76b83',blend:'soft-light'};this.reshapeMode='face';this.makeupMode='lips';this.draft={};this.pendingText={};this.collageLayout='duo';this.collageGap=28;this.addPhoto=false;this.replaceFrame=false;this.router=null;
+  this.f=facade;this.tool='beauty';this.brush={mode:'smooth',size:85,strength:35,hardness:55,feather:35,detail:65,warmth:0,hue:0,saturation:0,lightness:0,color:'#c76b83',blend:'soft-light'};this.reshapeMode='face';this.faceAmount=40;this.makeupMode='lips';this.draft={};this.pendingText={};this.collageLayout='duo';this.collageGap=28;this.addPhoto=false;this.replaceFrame=false;this.router=null;
   this.f.subscribe((type,value)=>this.onFacade(type,value));hydrateIcons();this.bind();this.renderPanel();
  }
  setRouter(router){this.router=router;}
@@ -32,7 +32,7 @@ export class StudioUI{
  }
  async updateProjectCount(){try{$('#project-count').textContent=(await this.f.repository.list()).length;}catch{}}
  async switchTool(tool){
-  await this.commitDraft();this.router?.cancel();if(this.router)this.router.placingBody=false;this.tool=tool;document.querySelectorAll('.nav-tool').forEach(b=>{b.classList.toggle('active',b.dataset.tool===tool);b.setAttribute('aria-pressed',b.dataset.tool===tool);});
+  await this.commitDraft();this.router?.cancel();if(this.router){this.router.placingBody=false;this.router.placingFace=false;}this.tool=tool;document.querySelectorAll('.nav-tool').forEach(b=>{b.classList.toggle('active',b.dataset.tool===tool);b.setAttribute('aria-pressed',b.dataset.tool===tool);});
   $('#stage-mode').textContent=tools[tool][0];$('#studio-inspector').classList.remove('minimized');
   if(['beauty','adjust','filters','reshape','makeup','draw'].includes(tool))await this.f.selectPhoto();
   this.f.activate(tool==='geometry'?'crop':['beauty','reshape','makeup','draw'].includes(tool)?'studio':'select');
@@ -113,7 +113,7 @@ export class StudioUI{
      const id=button.dataset.brush;this.brush.axis=undefined;this.reshapePreset=undefined;
      if(this.tool==='makeup'&&['lips','blush','eyes','highlight'].includes(id)){this.makeupMode=id;this.brush.mode='makeup';const colors={lips:'#a8415c',blush:'#df9296',eyes:'#8f586c',highlight:'#f2d4bc'};this.brush.color=colors[id];this.brush.strength=id==='lips'?55:35;this.brush.blend=id==='lips'?'multiply':'soft-light';}
      else{this.brush.mode=id;if(id==='blemish'&&this.router)this.router.cloneSource=null;}
-     if(this.router)this.router.placingBody=false;this.f.activate('studio');this.renderPanel();return;
+     if(this.router){this.router.placingBody=false;this.router.placingFace=false;}this.f.activate('studio');this.renderPanel();return;
     }
     if(button.dataset.beautyGroup){
      document.querySelectorAll('[data-beauty-group]').forEach(b=>b.classList.toggle('active',b===button));
@@ -145,6 +145,7 @@ export class StudioUI{
     if(group==='filter'||group==='geometry'){this.draft[key]=value;this.schedulePreview();}
     if(group==='levels'){this.draft.levels={black:0,white:255,gamma:1,...this.f.photoLayer()?.studio.levels,...this.draft.levels,[key]:value};this.schedulePreview();}
     if(group==='collage')this.collageGap=value;
+    if(group==='face-mesh'){this.faceAmount=value;this.scheduleFaceMeshPreview();}
     if(group==='text'){this.pendingText.meta={...this.pendingText.meta,[key]:value};this.scheduleText();}
     if(group==='typography'){this.pendingText.typography={...this.pendingText.typography,[key]:value};this.scheduleText();}
    }
@@ -189,6 +190,19 @@ export class StudioUI{
   const stage=$('#studio-stage');stage.addEventListener('dragover',e=>{e.preventDefault();stage.classList.add('drag-over');});stage.addEventListener('dragleave',()=>stage.classList.remove('drag-over'));stage.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();stage.classList.remove('drag-over');if(e.dataTransfer.files[0])this.safely(async()=>{await this.commitDraft();this.router?.cancel();await this.f.open(e.dataTransfer.files[0],e.dataTransfer.files[0].name);this.draft={};this.renderPanel();});},true);
  }
  schedulePreview(){clearTimeout(this.previewTimer);this.previewTimer=setTimeout(()=>this.safely(()=>this.f.preview(this.draft)),45);}
+ scheduleFaceMeshPreview(){
+  clearTimeout(this.faceMeshTimer);
+  this.faceMeshTimer=setTimeout(()=>this.safely(async()=>{
+   const layer=this.f.photoLayer();if(!layer||!this.router?.faceHandles||this.router.faceHandles.length<2)return;
+   const meshWarps=faceMeshWarps(this.router.faceHandles,this.reshapePreset||'face',this.faceAmount??40,layer.studio.freezes?.length||0);
+   await this.f.preview({warps:[...(layer.studio.warps||[]),...meshWarps]});
+  }),45);
+ }
+ defaultFaceHandles(feature='face'){
+  const layer=this.f.photoLayer(),W=layer?.width_original||this.f.config.WIDTH||1000,H=layer?.height_original||this.f.config.HEIGHT||1200;
+  if(['nose','chin','forehead','ratio'].includes(feature))return [{x:Math.round(W*.5),y:Math.round(H*.38)},{x:Math.round(W*.5),y:Math.round(H*.58)}];
+  return [{x:Math.round(W*.36),y:Math.round(H*.48)},{x:Math.round(W*.64),y:Math.round(H*.48)}];
+ }
  scheduleText(){this.pendingTextLayerId??=this.f.config.layer?.id;clearTimeout(this.textTimer);this.textTimer=setTimeout(()=>this.safely(()=>this.flushText()),320);}
  async flushText(){clearTimeout(this.textTimer);const changes=this.pendingText,id=this.pendingTextLayerId;this.pendingText={};this.pendingTextLayerId=null;if(id&&Object.keys(changes).length)await this.f.updateText(changes,id);}
  showLoading(active){const node=$('#studio-loading');node.hidden=!active;node.textContent=active?'Đang mở ảnh của bạn…':'';$('#mobile-shell')?.setAttribute('aria-busy',String(active));}
@@ -209,8 +223,10 @@ export class StudioUI{
   if(action==='dialog-close'){this.closeDialog();return;}
   if(action==='clone-source'){this.router.clonePicking=true;f.activate('studio');this.toast('Chạm lên ảnh để chọn vùng nguồn.');return;}
   if(action==='add-text'){await f.addText();this.renderPanel();return;}
-  if(action==='body-place'){this.router.cancel();this.router.bodyHandles=[];this.router.placingBody=true;await f.activate('studio');this.toast(this.brush.mode==='waist'?'Chạm hai bên eo trên ảnh, rồi kéo các điểm để căn vị trí.':'Chạm điểm bắt đầu và kết thúc vùng chân, rồi kéo để căn vị trí.');return;}
+  if(action==='body-place'){this.router.cancel();this.router.placingFace=false;this.router.bodyHandles=[];this.router.placingBody=true;await f.activate('studio');this.toast(this.brush.mode==='waist'?'Chạm hai bên eo trên ảnh, rồi kéo các điểm để căn vị trí.':'Chạm điểm bắt đầu và kết thúc vùng chân, rồi kéo để căn vị trí.');return;}
   if(action==='apply-body'){await f.addWarp(bodyWarps(this.router.bodyHandles,this.brush.mode,this.brush.strength));this.router.placingBody=false;this.toast('Đã chỉnh vùng do bạn đặt. Có thể hoàn tác từng lần.');return;}
+  if(action==='face-place'){this.router.cancel();this.router.placingBody=false;this.router.placingFace=true;this.router.faceLayerId=f.photoLayer()?.id;if(this.router.faceHandles.length<2)this.router.faceHandles=this.defaultFaceHandles(this.reshapePreset||'face');await f.activate('studio');f.config.need_render=true;this.renderPanel();this.scheduleFaceMeshPreview();this.toast('Kéo hai điểm điều khiển trên khuôn mặt và trượt mức độ để xem trước.');return;}
+  if(action==='apply-face'){clearTimeout(this.faceMeshTimer);const layer=f.photoLayer();if(!this.router.faceHandles||this.router.faceHandles.length<2)this.router.faceHandles=this.defaultFaceHandles(this.reshapePreset||'face');const warps=faceMeshWarps(this.router.faceHandles,this.reshapePreset||'face',this.faceAmount??40,layer?.studio.freezes?.length||0);if(warps.length)await f.addWarp(warps);this.router.placingFace=false;f.config.need_render=true;this.renderPanel();this.toast('Đã áp dụng chỉnh khuôn mặt theo lưới điểm điều khiển. Có thể hoàn tác.');return;}
   if(action==='clear-freeze'){await f.updateStudio({freezes:[...(f.photoLayer()?.studio.freezes||[]),{clear:true}]});this.toast('Đã xóa vùng bảo vệ cho những nét chỉnh tiếp theo.');return;}
   if(action==='histogram'){f.app.GUI.modules['image/histogram'].histogram();return;}
   if(action==='reset-curve'){this.curvePoints=[];this.draft.curve=[];this.drawCurve();await f.preview(this.draft);return;}
