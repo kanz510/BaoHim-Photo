@@ -431,3 +431,35 @@ test('Phase 0 corrupted project restore falls back to Home and Web Share API fal
   ui.download=origDownload;
  }finally{await app.close();}
 });
+
+test('Phase 1 beauty retouch UI exposes blemish spot heal, feather, detail and skin tone Warm/Cool/HSL controls with Undo/Redo',async()=>{
+ const app=await boot();
+ try{
+  const {ui,facade:f}=app.w.Studio;
+  const fixture=createCanvas(80,80),ctx=fixture.getContext('2d');
+  ctx.fillStyle='rgb(212,170,148)';ctx.fillRect(0,0,80,80);
+  ctx.fillStyle='rgb(115,40,40)';ctx.beginPath();ctx.arc(40,40,3,0,Math.PI*2);ctx.fill();
+  await f.open(new Blob([fixture.toBuffer('image/png')],{type:'image/png'}),'Phase 1 Portrait');
+  await ui.switchTool('beauty');
+  // Smooth brush exposes feather and detail tabs
+  assert.ok(app.w.document.querySelector('[data-v2-brush-setting="feather"]'));
+  assert.ok(app.w.document.querySelector('[data-v2-brush-setting="detail"]'));
+  // Blemish brush heals without pre-selecting cloneSource and supports Undo/Redo
+  app.w.document.querySelector('[data-brush="blemish"]').click();
+  await new Promise(r=>setTimeout(r,10));
+  assert.equal(ui.brush.mode,'blemish');
+  await f.addStroke({type:'blemish',points:[{x:40,y:40}],radius:7,strength:.95,hardness:.7,feather:.4});
+  assert.equal(f.basePhotoLayer().studio.strokes.length,1);
+  await f.undo();
+  assert.equal(f.basePhotoLayer().studio.strokes.length,0);
+  await f.redo();
+  assert.equal(f.basePhotoLayer().studio.strokes.length,1);
+  // Tone brush exposes warmth, lightness, hue, saturation tabs
+  app.w.document.querySelector('[data-brush="tone"]').click();
+  await new Promise(r=>setTimeout(r,10));
+  assert.ok(app.w.document.querySelector('[data-v2-tone-setting="warmth"]'));
+  assert.ok(app.w.document.querySelector('[data-v2-tone-setting="lightness"]'));
+  assert.ok(app.w.document.querySelector('[data-v2-tone-setting="hue"]'));
+  assert.ok(app.w.document.querySelector('[data-v2-tone-setting="saturation"]'));
+ }finally{await app.close();}
+});

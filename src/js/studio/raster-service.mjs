@@ -1,10 +1,11 @@
 import {fitWithin,mergePreset,clamp} from './math.mjs';
 import {processPixels} from './pixel-pipeline.mjs';
+import {findCleanBlemishSource,skinSmoothPixels,skinTonePixels} from './pixel-ops.mjs';
 
 function strokeSignature(s){
  if(!s)return '';
  const pts=s.points||[],first=pts[0],last=pts[pts.length-1],mid=pts[pts.length>>1];
- return `${s.type}:${s.radius}:${s.strength}:${s.hardness??.5}:${s.feather||0}:${s.detail??0}:${s.color||''}:${s.blend||''}:${s.cloneSource?s.cloneSource.x+','+s.cloneSource.y:''}:${pts.length}:${first?first.x+','+first.y:''}:${mid?mid.x+','+mid.y:''}:${last?last.x+','+last.y:''}`;
+ return `${s.type}:${s.radius}:${s.strength}:${s.hardness??.5}:${s.feather||0}:${s.detail??''}:${s.warmth||0}:${s.hue||0}:${s.saturation||0}:${s.lightness||0}:${s.color||''}:${s.blend||''}:${s.cloneSource?s.cloneSource.x+','+s.cloneSource.y:''}:${pts.length}:${first?first.x+','+first.y:''}:${mid?mid.x+','+mid.y:''}:${last?last.x+','+last.y:''}`;
 }
 function surfaceFingerprint(ctx,w,h){
  const pts=[[0,0],[w>>1,h>>1],[w-1,h-1],[w>>2,h>>2]];
@@ -23,7 +24,8 @@ export class RasterService{
  strokeBounds(stroke,size,scale){
   const pts=stroke?.points||[];
   if(!pts.length||!stroke.strength)return null;
-  const r=Math.max(.5,(stroke.radius+(stroke.feather||0))*scale)+2;
+  const featherMult=stroke.feather?1+clamp(stroke.feather,0,1)*.65:1;
+  const r=Math.max(.5,stroke.radius*scale*featherMult)+2;
   let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
   for(const p of pts){
    const x=p.x*scale,y=p.y*scale;
@@ -38,14 +40,14 @@ export class RasterService{
   if(signal?.aborted)throw new DOMException('Cancelled','AbortError');
   const sw=source.naturalWidth||source.width,sh=source.naturalHeight||source.height;
   const size=fitWithin(sw,sh,edge),scale=size.width/sw;
-  let output=this.canvas(size.width,size.height),ctx=output.getContext('2d',{willReadFrequently:!!studio.strokes?.some(s=>s.type==='heal')});
+  let output=this.canvas(size.width,size.height),ctx=output.getContext('2d',{willReadFrequently:!!studio.strokes?.some(s=>['heal','blemish','smooth','tone'].includes(s.type))});
   const original=output;try{ctx.drawImage(source,0,0,size.width,size.height);
   const strokes=studio.strokes||[];
   if(strokes.length){
    const origCtx=original.getContext('2d',{willReadFrequently:true});
    const fp=surfaceFingerprint(origCtx,size.width,size.height);
    output=this.canvas(size.width,size.height);ctx=output.getContext('2d');
-   let smooth=null;if(strokes.some(s=>s.type==='smooth')){const cached=this.smoothCache.get(source);if(cached?.width===original.width&&cached?.height===original.height&&cached._fp===fp)smooth=cached;else{smooth=this.smooth(original);smooth._fp=fp;if(Math.max(smooth.width,smooth.height)<=1600)this.smoothCache.set(source,smooth);}}
+   let smooth=null;if(strokes.some(s=>s.type==='smooth'&&s.detail===undefined)){const cached=this.smoothCache.get(source);if(cached?.width===original.width&&cached?.height===original.height&&cached._fp===fp)smooth=cached;else{smooth=this.smooth(original);smooth._fp=fp;if(Math.max(smooth.width,smooth.height)<=1600)this.smoothCache.set(source,smooth);}}
    const sigs=new Array(strokes.length);let acc='';
    for(let i=0;i<strokes.length;i++){acc+=(i?'|':'')+strokeSignature(strokes[i]);sigs[i]=acc;}
    let entry=this.strokeCache.get(source);
@@ -77,22 +79,43 @@ export class RasterService{
      const roi=this.strokeBounds(stroke,size,scale);
      if(roi){
       const mask=this.mask(stroke,roi,scale),scratch=this.canvas(roi.width,roi.height),sctx=scratch.getContext('2d');
-      if(stroke.type==='smooth')sctx.drawImage(smooth||original,roi.x,roi.y,roi.width,roi.height,0,0,roi.width,roi.height);
-      else if(stroke.type==='restore')sctx.drawImage(original,roi.x,roi.y,roi.width,roi.height,0,0,roi.width,roi.height);
-      else if(stroke.type==='heal'){
-       const point=stroke.points[0],from=stroke.cloneSource||point,toScaled={x:point.x*scale,y:point.y*scale},fromScaled={x:from.x*scale,y:from.y*scale},rScaled=stroke.radius*scale;
-       const blurR=Math.max(2,Math.min(40,Math.round(rScaled*.35))),dx=Math.round(toScaled.x-fromScaled.x),dy=Math.round(toScaled.y-fromScaled.y);
+      const advancedTone=stroke.type==='tone'&&Boolean(stroke.warmth||stroke.hue||stroke.saturation||stroke.lightness);
+      if(stroke.type==='smooth'){
+       if(stroke.detail!==undefined){
+        const padR=Math.max(3,Math.min(28,Math.round(Math.max(size.width,size.height)/185)));
+        const px0=Math.max(0,roi.x-padR),py0=Math.max(0,roi.y-padR),px1=Math.min(size.width,roi.x+roi.width+padR),py1=Math.min(size.height,roi.y+roi.height+padR),pw=px1-px0,ph=py1-py0;
+        const raw=new Uint8ClampedArray(ctx.getImageData(px0,py0,pw,ph).data);
+        const smoothed=skinSmoothPixels(raw,pw,ph,padR,stroke.detail);
+        const patchImg=sctx.createImageData(roi.width,roi.height);
+        for(let v=0;v<roi.height;v++){
+         const srcStart=((roi.y-py0+v)*pw+(roi.x-px0))*4;
+         patchImg.data.set(smoothed.subarray(srcStart,srcStart+roi.width*4),v*roi.width*4);
+        }
+        sctx.putImageData(patchImg,0,0);
+       }else{
+        sctx.drawImage(smooth||original,roi.x,roi.y,roi.width,roi.height,0,0,roi.width,roi.height);
+       }
+      }else if(stroke.type==='restore'){
+       sctx.drawImage(original,roi.x,roi.y,roi.width,roi.height,0,0,roi.width,roi.height);
+      }else if(stroke.type==='heal'||stroke.type==='blemish'){
+       const point=stroke.points[0],toScaled={x:point.x*scale,y:point.y*scale},rScaled=stroke.radius*scale;
+       const fromScaled=stroke.cloneSource?{x:stroke.cloneSource.x*scale,y:stroke.cloneSource.y*scale}:stroke.type==='blemish'?findCleanBlemishSource(origCtx,size.width,size.height,toScaled,rScaled):toScaled;
+       const blurR=Math.max(2,Math.min(40,Math.round(rScaled*(stroke.type==='blemish'?.85:.35)))),dx=Math.round(toScaled.x-fromScaled.x),dy=Math.round(toScaled.y-fromScaled.y);
        const dx0=Math.max(0,roi.x-blurR),dy0=Math.max(0,roi.y-blurR),dx1=Math.min(size.width,roi.x+roi.width+blurR),dy1=Math.min(size.height,roi.y+roi.height+blurR),dw=dx1-dx0,dh=dy1-dy0;
        const sxMin=clamp(roi.x-dx,0,size.width-1),sxMax=clamp(roi.x+roi.width-1-dx,0,size.width-1),syMin=clamp(roi.y-dy,0,size.height-1),syMax=clamp(roi.y+roi.height-1-dy,0,size.height-1);
        const sx0=Math.max(0,sxMin-blurR),sy0=Math.max(0,syMin-blurR),sx1=Math.min(size.width,sxMax+1+blurR),sy1=Math.min(size.height,syMax+1+blurR),swPatch=sx1-sx0,shPatch=sy1-sy0;
        const dstPixels=new Uint8ClampedArray(origCtx.getImageData(dx0,dy0,dw,dh).data),srcPixels=new Uint8ClampedArray(origCtx.getImageData(sx0,sy0,swPatch,shPatch).data);
-       const patch={dw,dh,dx0,dy0,srcPixels,sw:swPatch,sh:shPatch,sx0,sy0,fullW:size.width,fullH:size.height,from:fromScaled,to:toScaled,radius:rScaled,rx:roi.x,ry:roi.y,rw:roi.width,rh:roi.height};
+       const patch={dw,dh,dx0,dy0,srcPixels,sw:swPatch,sh:shPatch,sx0,sy0,fullW:size.width,fullH:size.height,from:fromScaled,to:toScaled,radius:rScaled,rx:roi.x,ry:roi.y,rw:roi.width,rh:roi.height,mode:stroke.type};
        const job={kind:'heal-roi',pixels:dstPixels,width:roi.width,height:roi.height,patch};
        const healed=this.worker?await this.worker.run(job,{signal,key:key&&key+':heal',recover:()=>new Uint8ClampedArray(origCtx.getImageData(dx0,dy0,dw,dh).data)}):processPixels(job);
        const image=sctx.createImageData(roi.width,roi.height);image.data.set(healed);sctx.putImageData(image,0,0);
       }else if(stroke.type==='clone'){
        const point=stroke.points[0],from=stroke.cloneSource||point;
        sctx.drawImage(original,(point.x-from.x)*scale-roi.x,(point.y-from.y)*scale-roi.y);
+      }else if(advancedTone){
+       const raw=new Uint8ClampedArray(ctx.getImageData(roi.x,roi.y,roi.width,roi.height).data);
+       const toned=skinTonePixels(raw,roi.width,roi.height,{warmth:stroke.warmth||0,hue:stroke.hue||0,saturation:stroke.saturation||0,lightness:stroke.lightness||0,color:stroke.color});
+       const image=sctx.createImageData(roi.width,roi.height);image.data.set(toned);sctx.putImageData(image,0,0);
       }else{
        sctx.fillStyle=['makeup','paint','tone'].includes(stroke.type)?stroke.color:stroke.type==='burn'?'#35262b':'#fff6ea';
        sctx.fillRect(0,0,roi.width,roi.height);
@@ -102,7 +125,7 @@ export class RasterService{
       if(stroke.type==='restore'){
        ctx.globalCompositeOperation='destination-out';ctx.drawImage(mask,roi.x,roi.y);ctx.globalCompositeOperation='lighter';ctx.drawImage(scratch,roi.x,roi.y);ctx.restore();scratch.width=1;mask.width=1;
       }else{
-       ctx.globalCompositeOperation=stroke.type==='erase'?'destination-out':stroke.type==='tone'?'color':stroke.type==='makeup'?(stroke.blend||'soft-light'):
+       ctx.globalCompositeOperation=stroke.type==='erase'?'destination-out':(stroke.type==='tone'&&!advancedTone)?'color':stroke.type==='makeup'?(stroke.blend||'soft-light'):
          stroke.type==='brighten'?'screen':stroke.type==='dodge'?'soft-light':stroke.type==='burn'?'multiply':'source-over';
        ctx.drawImage(scratch,roi.x,roi.y);ctx.restore();
        scratch.width=1;mask.width=1;
@@ -162,11 +185,14 @@ export class RasterService{
   this.stats.lastTiles=tiles;
  }
  mask(stroke,bounds,scale){
-  const ox=bounds.x||0,oy=bounds.y||0;
-  const mask=this.canvas(bounds.width,bounds.height),ctx=mask.getContext('2d'),radius=Math.max(.5,(stroke.radius+(stroke.feather||0))*scale),hard=clamp(stroke.hardness??.5,0,.99);
+  const ox=bounds.x||0,oy=bounds.y||0,f=stroke.feather?clamp(stroke.feather,0,1):0;
+  const mask=this.canvas(bounds.width,bounds.height),ctx=mask.getContext('2d');
+  const radius=Math.max(.5,stroke.radius*scale*(1+f*.65)),hard=clamp((stroke.hardness??.5)*(1-f*.7),0,.99);
   for(const p of stroke.points||[]){
    const x=p.x*scale-ox,y=p.y*scale-oy,g=ctx.createRadialGradient(x,y,radius*hard,x,y,radius);
-   g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(1,'rgba(255,255,255,0)');
+   g.addColorStop(0,'rgba(255,255,255,1)');
+   if(f>0)g.addColorStop(.55,`rgba(255,255,255,${(1-f*.45).toFixed(3)})`);
+   g.addColorStop(1,'rgba(255,255,255,0)');
    ctx.fillStyle=g;ctx.fillRect(x-radius,y-radius,radius*2,radius*2);
   }
   return mask;
@@ -183,12 +209,9 @@ export class RasterService{
  smooth(source){
   const accelerated=this.gpuEffect(source,g=>g.denoise(15));if(accelerated)return accelerated;
   const out=this.canvas(source.width,source.height),ctx=out.getContext('2d');ctx.drawImage(source,0,0);
-  if(this.filters){const data=ctx.getImageData(0,0,out.width,out.height);ctx.putImageData(this.filters.StackBlur(data,Math.max(2,Math.round(out.width/260))),0,0);}
-  else{
-   // Canvas resampling fallback keeps retouch available without Canvas filters or WebGL.
-   const small=this.canvas(Math.max(1,Math.round(source.width/6)),Math.max(1,Math.round(source.height/6)));
-   small.getContext('2d').drawImage(source,0,0,small.width,small.height);ctx.clearRect(0,0,out.width,out.height);ctx.drawImage(small,0,0,out.width,out.height);
-  }
+  const data=ctx.getImageData(0,0,out.width,out.height);
+  const smoothed=skinSmoothPixels(data.data,out.width,out.height,Math.max(2,Math.round(out.width/200)),.65);
+  const res=ctx.createImageData(out.width,out.height);res.data.set(smoothed);ctx.putImageData(res,0,0);
   return out;
  }
  sharpen(source,amount){

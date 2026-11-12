@@ -13,9 +13,15 @@ function brush(strokes,freeze=false){
  if(strokes===undefined)return;
  if(!Array.isArray(strokes)||strokes.length>3000)throw new Error('Too many brush strokes');
  for(const s of strokes){
-  if(!s||(!freeze&&!['smooth','restore','clone','heal','tone','makeup','paint','erase','burn','brighten','dodge'].includes(s.type)))throw new Error('Invalid brush stroke');
+  if(!s||(!freeze&&!['smooth','restore','clone','heal','blemish','tone','makeup','paint','erase','burn','brighten','dodge'].includes(s.type)))throw new Error('Invalid brush stroke');
   if(freeze&&s.clear)continue;
   if(!finite(s.radius,.1,20000)||!finite(s.strength??1,0,1)||!finite(s.hardness??.5,0,1)||!Array.isArray(s.points)||!s.points.length||s.points.length>6000||!s.points.every(point))throw new Error('Invalid brush stroke path');
+  if(s.feather!==undefined&&!finite(s.feather,0,1))throw new Error('Invalid brush feather');
+  if(s.detail!==undefined&&!finite(s.detail,0,1))throw new Error('Invalid brush detail');
+  if(s.warmth!==undefined&&!finite(s.warmth,-100,100))throw new Error('Invalid skin warmth');
+  if(s.hue!==undefined&&!finite(s.hue,-180,180))throw new Error('Invalid skin hue');
+  if(s.saturation!==undefined&&!finite(s.saturation,-100,100))throw new Error('Invalid skin saturation');
+  if(s.lightness!==undefined&&!finite(s.lightness,-100,100))throw new Error('Invalid skin lightness');
   if(s.cloneSource&&!point(s.cloneSource))throw new Error('Invalid brush source');
   if(s.blend&&!compositions.has(s.blend))throw new Error('Invalid brush blend');
   if(s.color&&!/^#[0-9a-f]{6}$/i.test(s.color))throw new Error('Invalid brush color');

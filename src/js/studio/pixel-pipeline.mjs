@@ -1,9 +1,11 @@
-import{gradePixels,clamp}from'./math.mjs';import{hslPixels,blurPixels,healPixels,healRoiFromPatches}from'./pixel-ops.mjs';
+import{gradePixels,clamp}from'./math.mjs';import{hslPixels,blurPixels,healPixels,healRoiFromPatches,skinSmoothPixels,skinTonePixels}from'./pixel-ops.mjs';
 import{warpPixels}from'./warp-pixels.mjs';
 const healBlurCache=new Map();
 /** Shared worker/fallback equations, in the same order as the existing raster. */
-export function processPixels({kind='grade',pixels,width,height,adjustments={},studio={},from,to,radius,scale=1,indexedWarp=true,cacheKey,patch,pixelOffset=0}){
+export function processPixels({kind='grade',pixels,width,height,adjustments={},studio={},from,to,radius,detail,tone,scale=1,indexedWarp=true,cacheKey,patch,pixelOffset=0}){
  if(kind==='heal-roi')return healRoiFromPatches({...patch,dstPixels:pixels});
+ if(kind==='skin-smooth')return skinSmoothPixels(pixels,width,height,radius,detail);
+ if(kind==='skin-tone')return skinTonePixels(pixels,width,height,tone);
  if(kind==='heal'){let lowpass;const key=cacheKey&&width*height<=2560000?cacheKey+':'+width+':'+height+':'+Math.max(2,Math.min(40,Math.round(radius*.35))):null;if(key){lowpass=healBlurCache.get(key);if(!lowpass){lowpass=blurPixels(pixels,width,height,Math.max(2,Math.min(40,Math.round(radius*.35))));healBlurCache.set(key,lowpass);if(healBlurCache.size>2)healBlurCache.delete(healBlurCache.keys().next().value);}}return healPixels(pixels,width,height,from,to,radius,lowpass);}
  if(kind==='warp')return warpPixels(pixels,width,height,studio,scale,indexedWarp);
  gradePixels(pixels,adjustments,pixels);if(studio.hsl)hslPixels(pixels,studio.hsl,pixels);

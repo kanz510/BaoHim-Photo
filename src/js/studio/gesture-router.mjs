@@ -22,7 +22,12 @@ export class GestureRouter{
  }
  custom(){return ['beauty','reshape','makeup','draw'].includes(this.ui.tool)&&this.f.config.TOOL.name==='studio';}
  size(){const layer=this.f.photoLayer();return this.ui.brush.size/2*Math.max(layer?.width_original||1200,layer?.height_original||1200)/1200;}
- settings(){return {radius:this.size(),strength:this.ui.brush.strength/100,hardness:this.ui.brush.hardness/100,color:this.ui.brush.color,blend:this.ui.brush.blend};}
+ settings(){
+  const b=this.ui.brush,base={radius:this.size(),strength:b.strength/100,hardness:b.hardness/100,feather:(b.feather??35)/100,color:b.color,blend:b.blend};
+  if(b.mode==='smooth')base.detail=(b.detail??65)/100;
+  if(b.mode==='tone')Object.assign(base,{warmth:b.warmth??0,hue:b.hue??0,saturation:b.saturation??0,lightness:b.lightness??0});
+  return base;
+ }
  stop(event){event.preventDefault();event.stopImmediatePropagation();}
  down(event){
   if(event.button!==0&&event.pointerType!=='touch')return;
@@ -41,9 +46,9 @@ export class GestureRouter{
    if(this.bodyHandles.length<2){this.bodyHandles.push(point);this.bodyDrag=this.bodyHandles.length-1;}else this.bodyDrag=Math.hypot(point.x-this.bodyHandles[0].x,point.y-this.bodyHandles[0].y)<Math.hypot(point.x-this.bodyHandles[1].x,point.y-this.bodyHandles[1].y)?0:1;
    this.bodyLayerId=layer.id;this.f.config.need_render=true;return;
   }
-  if((['clone','heal'].includes(this.ui.brush.mode)&&(this.clonePicking||!this.cloneSource))||event.altKey){this.cloneSource=point;this.clonePicking=false;this.ui.toast('Đã chọn vùng nguồn. Bây giờ tô lên nơi muốn sao chép.');return;}
+  if((['clone','heal'].includes(this.ui.brush.mode)&&(this.clonePicking||!this.cloneSource))||(this.ui.brush.mode==='blemish'&&this.clonePicking)||event.altKey){this.cloneSource=point;this.clonePicking=false;this.f.config.need_render=true;this.ui.toast('Đã chọn vùng nguồn. Bây giờ tô lên nơi muốn sao chép.');return;}
   this.layer=layer;this.start=point;this.last=point;this.warps=[];
-  this.stroke={type:this.ui.tool==='makeup'&&this.ui.brush.mode!=='restore'?'makeup':this.ui.brush.mode,points:[point],...this.settings(),cloneSource:this.cloneSource?{...this.cloneSource}:undefined};
+  this.stroke={type:this.ui.tool==='makeup'&&this.ui.brush.mode!=='restore'?'makeup':this.ui.brush.mode,points:[point],...this.settings(),cloneSource:this.cloneSource&&['clone','heal','blemish'].includes(this.ui.brush.mode)?{...this.cloneSource}:undefined};
   if(this.ui.tool==='reshape'&&['pinch','bulge'].includes(this.ui.brush.mode))this.warps=[{from:point,to:point,radius:this.size(),strength:this.ui.brush.strength/100*.6,mode:this.ui.brush.mode,freezeCount:layer.studio.freezes?.length||0}];
   if(this.ui.tool==='reshape'&&this.ui.brush.mode==='restore-warp')this.warps=[{from:point,to:point,radius:this.size(),strength:this.ui.brush.strength/100,mode:'restore'}];
   this.schedule();this.updateCursor(event);
@@ -120,14 +125,21 @@ export class GestureRouter{
   this.f.config.need_render=true;
  }
  renderProtection(ctx){
-  const layer=this.f.photoLayer();if(!layer||this.ui.tool!=='reshape'||this.f.compare)return;
+  const layer=this.f.photoLayer();if(!layer||this.f.compare)return;
+  const showReshape=this.ui.tool==='reshape',showClone=['beauty','draw'].includes(this.ui.tool)&&['clone','heal','blemish'].includes(this.ui.brush.mode)&&this.cloneSource;
+  if(!showReshape&&!showClone)return;
   const all=[...(layer.studio.freezes||[]),...(this.stroke?.type==='freeze'?[this.stroke]:[])],lastClear=all.findLastIndex(s=>s.clear),strokes=all.slice(lastClear+1);
   ctx.save();ctx.translate(layer.x+layer.width/2,layer.y+layer.height/2);ctx.rotate((layer.rotate||0)*Math.PI/180);ctx.translate(-layer.width/2,-layer.height/2);ctx.scale(layer.width/layer.width_original,layer.height/layer.height_original);
   if(layer.studio.flipX){ctx.translate(layer.width_original,0);ctx.scale(-1,1);}if(layer.studio.flipY){ctx.translate(0,layer.height_original);ctx.scale(1,-1);}
   ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
   const forward=p=>perspectiveSample(p,layer.width_original,layer.height_original,-(layer.studio.perspectiveX||0),-(layer.studio.perspectiveY||0));
-  if(this.ui.brush.mode==='freeze'){ctx.fillStyle='rgba(208,117,157,.22)';for(const s of strokes)for(const point of s.points||[]){const p=forward(point);ctx.beginPath();ctx.arc(p.x,p.y,s.radius,0,Math.PI*2);ctx.fill();}}
-  if(this.placingBody&&this.bodyLayerId===layer.id){
+  if(showClone){
+   const r=10/(this.f.config.ZOOM*layer.width/layer.width_original),src=forward(this.cloneSource);
+   ctx.strokeStyle='rgba(255,255,255,0.92)';ctx.lineWidth=r*0.22;ctx.beginPath();ctx.arc(src.x,src.y,this.size(),0,Math.PI*2);ctx.stroke();
+   ctx.beginPath();ctx.moveTo(src.x-r*1.1,src.y);ctx.lineTo(src.x+r*1.1,src.y);ctx.moveTo(src.x,src.y-r*1.1);ctx.lineTo(src.x,src.y+r*1.1);ctx.stroke();
+  }
+  if(showReshape&&this.ui.brush.mode==='freeze'){ctx.fillStyle='rgba(208,117,157,.22)';for(const s of strokes)for(const point of s.points||[]){const p=forward(point);ctx.beginPath();ctx.arc(p.x,p.y,s.radius,0,Math.PI*2);ctx.fill();}}
+  if(showReshape&&this.placingBody&&this.bodyLayerId===layer.id){
    const r=10/(this.f.config.ZOOM*layer.width/layer.width_original);ctx.strokeStyle='#ffffff';ctx.fillStyle='#cf7292';ctx.lineWidth=r*.2;
    const handles=this.bodyHandles.map(forward);if(handles.length===2){ctx.beginPath();ctx.moveTo(handles[0].x,handles[0].y);ctx.lineTo(handles[1].x,handles[1].y);ctx.stroke();}
    handles.forEach((p,i)=>{ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);ctx.fillStyle='#cf7292';ctx.fill();ctx.stroke();ctx.fillStyle='#fff';ctx.font=`600 ${r*1.1}px Manrope`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(i+1),p.x,p.y);});

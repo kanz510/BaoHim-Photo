@@ -8,7 +8,7 @@ const tools={draw:['Vẽ & xóa','Thêm nét màu, giữ lại khoảng trống.
 const stickers=['bloom','sparkle','heart','bow','daisy','star','moon','butterfly','ribbon','petals','sun','pearl','frame','lovely','kiss','cloud','cherry','tulip','coffee','paperclip','photoNote','music','leaf','smile'];
 export class StudioUI{
  constructor(facade){
-  this.f=facade;this.tool='beauty';this.brush={mode:'smooth',size:85,strength:35,hardness:55,color:'#c76b83',blend:'soft-light'};this.reshapeMode='face';this.makeupMode='lips';this.draft={};this.pendingText={};this.collageLayout='duo';this.collageGap=28;this.addPhoto=false;this.replaceFrame=false;this.router=null;
+  this.f=facade;this.tool='beauty';this.brush={mode:'smooth',size:85,strength:35,hardness:55,feather:35,detail:65,warmth:0,hue:0,saturation:0,lightness:0,color:'#c76b83',blend:'soft-light'};this.reshapeMode='face';this.makeupMode='lips';this.draft={};this.pendingText={};this.collageLayout='duo';this.collageGap=28;this.addPhoto=false;this.replaceFrame=false;this.router=null;
   this.f.subscribe((type,value)=>this.onFacade(type,value));hydrateIcons();this.bind();this.renderPanel();
  }
  setRouter(router){this.router=router;}
@@ -36,7 +36,7 @@ export class StudioUI{
   $('#stage-mode').textContent=tools[tool][0];$('#studio-inspector').classList.remove('minimized');
   if(['beauty','adjust','filters','reshape','makeup','draw'].includes(tool))await this.f.selectPhoto();
   this.f.activate(tool==='geometry'?'crop':['beauty','reshape','makeup','draw'].includes(tool)?'studio':'select');
-  if(tool==='beauty'&&!['smooth','brighten','clone','dodge','restore'].includes(this.brush.mode))this.brush.mode='smooth';
+  if(tool==='beauty'&&!['smooth','brighten','blemish','heal','tone','clone','dodge','burn','restore'].includes(this.brush.mode))this.brush.mode='smooth';
   if(tool==='reshape')this.brush.mode=this.reshapeMode==='face'?'push':'waist';
   if(tool==='makeup')this.brush.mode='makeup';
   if(tool==='draw')this.brush.mode='paint';
@@ -112,7 +112,7 @@ export class StudioUI{
     if(button.dataset.brush){
      const id=button.dataset.brush;this.brush.axis=undefined;this.reshapePreset=undefined;
      if(this.tool==='makeup'&&['lips','blush','eyes','highlight'].includes(id)){this.makeupMode=id;this.brush.mode='makeup';const colors={lips:'#a8415c',blush:'#df9296',eyes:'#8f586c',highlight:'#f2d4bc'};this.brush.color=colors[id];this.brush.strength=id==='lips'?55:35;this.brush.blend=id==='lips'?'multiply':'soft-light';}
-     else this.brush.mode=id;
+     else{this.brush.mode=id;if(id==='blemish'&&this.router)this.router.cloneSource=null;}
      if(this.router)this.router.placingBody=false;this.f.activate('studio');this.renderPanel();return;
     }
     if(button.dataset.beautyGroup){

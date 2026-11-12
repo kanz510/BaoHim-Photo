@@ -112,3 +112,28 @@ test('Phase 0 tiled grading matches single-pass grading including deterministic 
  assert.equal(single.stats.lastTiles,1);
  assert.deepEqual(outTiled.getContext('2d').getImageData(0,0,160,180).data,outSingle.getContext('2d').getImageData(0,0,160,180).data);
 });
+
+test('Phase 1 blemish spot heal removes an acne spot automatically without manual cloneSource',async()=>{
+ const source=createCanvas(80,80),ctx=source.getContext('2d');
+ ctx.fillStyle='rgb(215,172,150)';ctx.fillRect(0,0,80,80);
+ // Paint a dark red blemish at (40,40)
+ ctx.fillStyle='rgb(120,45,45)';ctx.beginPath();ctx.arc(40,40,3,0,Math.PI*2);ctx.fill();
+ const beforeCenter=ctx.getImageData(40,40,1,1).data;
+ assert.equal(beforeCenter[0],120);
+ const renderer=new RasterService({canvas});
+ const out=await renderer.render(source,{strokes:[{type:'blemish',points:[{x:40,y:40}],radius:6,strength:.95,hardness:.7,feather:.4}]},{edge:80});
+ const afterCenter=out.getContext('2d').getImageData(40,40,1,1).data;
+ assert.ok(afterCenter[0]>185,`blemish red channel healed toward surrounding skin (${afterCenter[0]})`);
+ assert.ok(afterCenter[1]>140,`blemish green channel healed toward surrounding skin (${afterCenter[1]})`);
+});
+
+test('Phase 1 skin tone stroke adjusts warmth and lightness locally inside feathered mask',async()=>{
+ const source=createCanvas(40,40),ctx=source.getContext('2d');
+ ctx.fillStyle='rgb(185,140,120)';ctx.fillRect(0,0,40,40);
+ const renderer=new RasterService({canvas});
+ const out=await renderer.render(source,{strokes:[{type:'tone',points:[{x:20,y:20}],radius:8,strength:.85,hardness:.6,feather:.5,warmth:45,lightness:30,saturation:15,hue:0,color:'#f2d5be'}]},{edge:40});
+ const center=out.getContext('2d').getImageData(20,20,1,1).data;
+ const corner=out.getContext('2d').getImageData(2,2,1,1).data;
+ assert.ok(center[0]>195&&center[1]>150,'painted skin tone center is brighter and warmer');
+ assert.deepEqual(Array.from(corner),[185,140,120,255],'unpainted corner is untouched');
+});
