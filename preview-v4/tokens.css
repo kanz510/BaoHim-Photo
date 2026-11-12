@@ -1,0 +1,58 @@
+/* BaoHim Photo V4 — Immersive Beauty Editor Design System Tokens */
+@font-face {
+  font-family: "ManropeV4";
+  src: url("../assets/fonts/Manrope.ttf") format("truetype");
+  font-weight: 200 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PlayfairV4";
+  src: url("../assets/fonts/PlayfairDisplay.ttf") format("truetype");
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+:root {
+  /* Typography */
+  --v4-font-sans: "ManropeV4", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  --v4-font-serif: "PlayfairV4", "New York", Georgia, serif;
+
+  /* Immersive Dark Studio Palette */
+  --v4-bg-editor: #19191D;
+  --v4-surface-bar: #202026;
+  --v4-surface-card: #26262D;
+  --v4-surface-pill: rgba(246, 242, 238, 0.08);
+  --v4-surface-pill-active: rgba(201, 107, 150, 0.22);
+  --v4-border-dark: rgba(246, 242, 238, 0.09);
+
+  /* Text & Brand Accent */
+  --v4-ivory: #F6F2EE;
+  --v4-ivory-dim: #AEA7AC;
+  --v4-ivory-muted: #767076;
+  --v4-berry: #C96B96;
+  --v4-berry-bright: #E28AB2;
+  --v4-berry-deep: #9F4970;
+  --v4-berry-soft: rgba(201, 107, 150, 0.16);
+
+  /* Home Editorial Pearl Palette */
+  --v4-pearl: #FBF9F8;
+  --v4-pearl-card: #FFFFFF;
+  --v4-pearl-tint: #F4ECEF;
+  --v4-pearl-ink: #1D181B;
+  --v4-pearl-sub: #6F6068;
+  --v4-pearl-line: rgba(29, 24, 27, 0.08);
+
+  /* Metrics & Radii */
+  --v4-topbar-h: 48px;
+  --v4-hud-h: 36px;
+  --v4-sheet-h: 204px;
+  --v4-radius-sm: 8px;
+  --v4-radius-md: 14px;
+  --v4-radius-lg: 20px;
+  --v4-radius-pill: 999px;
+
+  /* Motion (never animates stage geometry) */
+  --v4-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --v4-t: 180ms;
+}

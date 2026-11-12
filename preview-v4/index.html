@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#19191D">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>BaoHim Photo V4 — Immersive Beauty Preview</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
+  <link rel="stylesheet" href="./tokens.css">
+  <link rel="stylesheet" href="./preview-v4.css">
+  <script defer src="./filters.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <div class="v4-app" id="v4-app" data-screen="home">
+    <!-- SCREEN 1: HOME (PEARL WHITE EDITORIAL) -->
+    <section class="v4-screen v4-home is-active" id="screen-home" aria-label="Trang chủ BaoHim Photo V4">
+      <header class="v4-home-header">
+        <div class="v4-brand">
+          <span class="v4-brand-mark">BaoHim</span>
+          <span class="v4-brand-tag">V4 Preview</span>
+        </div>
+        <button class="v4-home-open-btn" id="btn-home-pick" type="button">
+          <span data-v4-icon="plus"></span>
+          <span>Mở ảnh</span>
+        </button>
+      </header>
+
+      <div class="v4-home-scroll">
+        <article class="v4-hero">
+          <img class="v4-hero-img" src="../assets/photos/muse.jpg" alt="Chân dung biên tập BaoHim Photo V4">
+          <div class="v4-hero-scrim">
+            <span class="v4-hero-kicker">Editorial Beauty Studio</span>
+            <h1 class="v4-hero-title">Chân dung tinh tế,<br>trong từng đường nét</h1>
+            <div class="v4-hero-actions">
+              <button class="v4-btn-berry" id="btn-hero-upload" type="button">
+                <span data-v4-icon="image"></span>
+                <span>Chỉnh ảnh mới</span>
+              </button>
+              <button class="v4-btn-glass" id="btn-hero-demo" type="button">Dùng ảnh mẫu</button>
+            </div>
+          </div>
+        </article>
+
+        <div class="v4-quick-grid" aria-label="Truy cập nhanh">
+          <button class="v4-quick-item" data-launch-mode="beauty" type="button">
+            <span class="v4-quick-icon" data-v4-icon="sparkle"></span>
+            <span class="v4-quick-label">Beauty</span>
+            <span class="v4-quick-sub">Mịn &amp; sáng da</span>
+          </button>
+          <button class="v4-quick-item" data-launch-mode="filters" type="button">
+            <span class="v4-quick-icon" data-v4-icon="filters"></span>
+            <span class="v4-quick-label">Filter</span>
+            <span class="v4-quick-sub">Film · CCD</span>
+          </button>
+          <button class="v4-quick-item" data-launch-mode="makeup" type="button">
+            <span class="v4-quick-icon" data-v4-icon="makeup"></span>
+            <span class="v4-quick-label">Makeup</span>
+            <span class="v4-quick-sub">Môi · Mắt · Má</span>
+          </button>
+          <button class="v4-quick-item" data-launch-mode="beauty" data-launch-tool="body" type="button">
+            <span class="v4-quick-icon" data-v4-icon="body"></span>
+            <span class="v4-quick-label">Body</span>
+            <span class="v4-quick-sub">Demo UI</span>
+          </button>
+        </div>
+
+        <section class="v4-section">
+          <div class="v4-section-head">
+            <h2>Dự án gần đây</h2>
+            <span>Chạm để tiếp tục</span>
+          </div>
+          <div class="v4-rail" id="v4-recent-rail"></div>
+        </section>
+
+        <section class="v4-section">
+          <div class="v4-section-head">
+            <h2>Bộ sưu tập phong cách</h2>
+            <span>6 nhóm màu đặc trưng</span>
+          </div>
+          <div class="v4-rail" id="v4-style-rail"></div>
+        </section>
+
+        <p class="v4-home-footer-note">
+          <strong>Bản Preview UI/UX V4 độc lập:</strong> Hỗ trợ mở ảnh từ máy, zoom/pan, trước/sau, bộ lọc màu pixel &amp; cọ trang điểm trực tiếp trên canvas. Các mục gắn nhãn <em>Demo</em> minh họa bố cục cho giai đoạn nối Engine V3.
+        </p>
+      </div>
+    </section>
+
+    <!-- SCREEN 2 & 3: IMMERSIVE CHARCOAL EDITOR -->
+    <section class="v4-screen v4-editor" id="screen-editor" aria-label="Trình chỉnh ảnh BaoHim Photo V4">
+      <header class="v4-topbar">
+        <button class="v4-top-icon" id="btn-back-home" type="button" aria-label="Quay lại Trang chủ">
+          <span data-v4-icon="chevronLeft"></span>
+        </button>
+        <div class="v4-top-title">
+          <strong id="v4-doc-title">Chân dung</strong>
+          <small id="v4-doc-meta">1200 × 1500 · Vừa khung</small>
+        </div>
+        <button class="v4-save-btn" id="btn-export" type="button">Lưu</button>
+      </header>
+
+      <main class="v4-stage" id="v4-stage" aria-label="Khung hiển thị ảnh">
+        <div class="v4-canvas-transform" id="v4-canvas-wrap">
+          <canvas id="v4-canvas"></canvas>
+        </div>
+        <span class="v4-compare-pill" id="v4-compare-pill" hidden>Ảnh gốc</span>
+        <span class="v4-zoom-badge" id="v4-zoom-badge">100%</span>
+        <div class="v4-brush-ring" id="v4-brush-ring" hidden></div>
+      </main>
+
+      <div class="v4-hud">
+        <div class="v4-hud-group">
+          <button class="v4-hud-btn" id="btn-undo" type="button" aria-label="Hoàn tác" disabled>
+            <span data-v4-icon="undo"></span>
+          </button>
+          <button class="v4-hud-btn" id="btn-redo" type="button" aria-label="Làm lại" disabled>
+            <span data-v4-icon="redo"></span>
+          </button>
+        </div>
+        <button class="v4-compare-btn" id="btn-compare" type="button" aria-pressed="false">
+          <span data-v4-icon="compare"></span>
+          <span>Trước / sau</span>
+        </button>
+        <div class="v4-hud-group">
+          <button class="v4-hud-btn" id="btn-fit" type="button" aria-label="Vừa khung">
+            <span data-v4-icon="fit"></span>
+          </button>
+          <button class="v4-hud-btn is-accent" id="btn-pick-in-editor" type="button" aria-label="Đổi ảnh khác">
+            <span data-v4-icon="image"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ONE COMPACT BOTTOM TOOLBAR AT A TIME -->
+      <section class="v4-toolbar" id="v4-toolbar" aria-label="Thanh công cụ chỉnh sửa">
+        <div class="v4-tb-header">
+          <button class="v4-tb-action" id="btn-cancel-draft" type="button">
+            <span data-v4-icon="close"></span>
+            <span>Hủy</span>
+          </button>
+          <div class="v4-mode-pills" role="tablist" aria-label="Nhóm công cụ chính">
+            <button class="v4-mode-pill is-active" data-mode="filters" role="tab" aria-selected="true" type="button">Filter</button>
+            <button class="v4-mode-pill" data-mode="beauty" role="tab" aria-selected="false" type="button">Beauty</button>
+            <button class="v4-mode-pill" data-mode="makeup" role="tab" aria-selected="false" type="button">Makeup</button>
+          </div>
+          <button class="v4-tb-action is-confirm" id="btn-confirm-draft" type="button">
+            <span>Xác nhận</span>
+            <span data-v4-icon="check"></span>
+          </button>
+        </div>
+
+        <div class="v4-tb-body" id="v4-tb-body"></div>
+      </section>
+    </section>
+
+    <div class="v4-toast" id="v4-toast" role="status" aria-live="polite" hidden></div>
+    <input type="file" id="v4-file-input" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" hidden>
+  </div>
+</body>
+</html>
