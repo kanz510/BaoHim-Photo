@@ -365,3 +365,7 @@ body.premium-v2{--pearl:#fcf9f8;--rose:#bd567b;--rose-strong:#aa4166;--rose-wash
 /* Native miniPaint buttons keep an inset shadow even after border/background resets. */
 .premium-v2 #mobile-shell button{box-shadow:none!important;text-shadow:none!important;-webkit-appearance:none;appearance:none}
 .premium-v2 #mobile-shell button:disabled{visibility:visible;pointer-events:none}
+.premium-v2 #mobile-shell .v3-subnav{display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none;max-width:56%;padding:0 4px}
+.premium-v2 #mobile-shell .v3-subnav::-webkit-scrollbar{display:none}
+.premium-v2 #mobile-shell .v3-subnav button{font-size:9px;padding:3px 7px!important;border-radius:10px;background:#f2e7ed;color:#8f7282;white-space:nowrap;min-height:22px}
+.premium-v2 #mobile-shell .v3-subnav button.active{background:#c5678b;color:#fff;font-weight:600}

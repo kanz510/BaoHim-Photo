@@ -94,3 +94,17 @@ test('Phase 3 bodyWarps supports waist, shoulder, arms, legs, stretch, height, a
  const doorPoint=m.warpSample({x:80,y:300},waistWithPin,(pt,s)=>m.freezeCoverage(pt,freezes,s.freezeCount));
  assert.deepEqual(doorPoint,{x:80,y:300},'pinned background wall/door line stays completely straight');
 });
+
+test('Phase 6 computeAutoEnhance balances underexposed low-contrast portrait pixels using classical histogram percentiles',()=>{
+ assert.ok(m.computeAutoEnhance);
+ const p=new Uint8ClampedArray(64*64*4);
+ for(let i=0;i<p.length;i+=4){
+  const v=40+((i/4)%30);
+  p[i]=v;p[i+1]=v-6;p[i+2]=v-10;p[i+3]=255;
+ }
+ const recipe=m.computeAutoEnhance(p,'portrait',85);
+ assert.equal(recipe.preset,'clear');
+ assert.ok(recipe.adjustments.exposure>0,'underexposed image receives positive exposure lift');
+ assert.ok(recipe.adjustments.contrast>0,'low-dynamic-range image receives positive contrast stretch');
+ assert.ok(recipe.adjustments.brightness>0,'underexposed image receives positive brightness');
+});

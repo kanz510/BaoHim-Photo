@@ -4,7 +4,7 @@ import {PRESETS,DEFAULT_ADJUSTMENTS} from './math.mjs';
 import {MobileSheet} from './mobile-sheet.mjs';
 const $=selector=>document.querySelector(selector);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const titles={home:'Chỉnh ảnh',beauty:'Làm đẹp',adjust:'Điều chỉnh',filters:'Bộ lọc',reshape:'Chỉnh dáng',makeup:'Trang điểm',text:'Văn bản',stickers:'Nhãn dán',collage:'Ghép ảnh',templates:'Mẫu thiết kế',layers:'Lớp ảnh',geometry:'Cắt & xoay',draw:'Vẽ & xóa'};
+const titles={home:'Chỉnh ảnh',auto:'Auto Cân bằng',beauty:'Làm đẹp',adjust:'Điều chỉnh',filters:'Bộ lọc',reshape:'Chỉnh dáng',makeup:'Trang điểm',text:'Văn bản',stickers:'Nhãn dán',collage:'Ghép ảnh',templates:'Mẫu thiết kế',layers:'Lớp ảnh',geometry:'Cắt & xoay',draw:'Vẽ & xóa'};
 const adjustments=[['brightness','Sáng',-100,100,1],['contrast','Tương phản',-100,100,1],['saturation','Bão hòa',-100,100,1],['temperature','Nhiệt',-100,100,1],['exposure','Phơi sáng',-2,2,.05],['highlights','Vùng sáng',-100,100,1],['shadows','Vùng tối',-100,100,1],['tint','Sắc độ',-100,100,1],['sharpen','Sắc nét',0,100,1],['grain','Hạt film',0,100,1],['vignette','Viền tối',0,100,1]];
 
 export class MobilePreviewUI extends StudioUI{

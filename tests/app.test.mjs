@@ -582,3 +582,46 @@ test('Phase 5 Filter & Creative Studio applies CCD filter tab, .cube 3D LUTs, op
   assert.ok(f.config.layers.length>beforeLayers,'Instagram Story template adds independent frame & typography layers');
  }finally{await app.close();}
 });
+
+test('Phase 6 Mobile UX provides 5 primary categories (AUTO, MẶT, DÁNG, MÀU, SÁNG TẠO), classical Auto Enhance, and sub-category switching',async()=>{
+ const app=await boot();
+ try{
+  const {ui,facade:f}=app.w.Studio;
+  for(const cat of ['auto','face','body','color','creative']){
+   assert.ok(app.w.document.querySelector(`#mobile-nav [data-v3-category="${cat}"]`),`Mobile dock category ${cat} exists`);
+  }
+  // 1. AUTO category applies classical histogram auto-enhance and commits to undoable history
+  await ui.switchCategory('auto');
+  assert.equal(ui.tool,'auto');
+  assert.equal(ui.activeCategory(),'auto');
+  const ccdAutoBtn=app.w.document.querySelector('[data-v2-auto-preset="ccd"]');
+  assert.ok(ccdAutoBtn,'CCD Auto preset button exists');
+  ccdAutoBtn.click();
+  await new Promise(r=>setTimeout(r,20));
+  await ui.action('apply');
+  assert.equal(f.basePhotoLayer().studio.preset,'ccd');
+  await f.undo();
+  assert.equal(f.basePhotoLayer().studio.preset,'original');
+  // 2. MẶT category opens beauty and exposes sub-navigation for Làm đẹp, Khuôn mặt, Makeup & Tóc
+  await ui.switchCategory('face');
+  assert.equal(ui.activeCategory(),'face');
+  assert.ok(app.w.document.querySelector('[data-v3-subtool="face-reshape"]'));
+  assert.ok(app.w.document.querySelector('[data-v3-subtool="makeup"]'));
+  // 3. DÁNG category opens Body Reshape directly
+  await ui.switchCategory('body');
+  assert.equal(ui.tool,'reshape');
+  assert.equal(ui.reshapeMode,'body');
+  assert.equal(ui.activeCategory(),'body');
+  assert.ok(app.w.document.querySelector('[data-brush="waist"]'));
+  // 4. MÀU category opens filters and exposes sub-navigation to HSL & Curve
+  await ui.switchCategory('color');
+  assert.equal(ui.activeCategory(),'color');
+  assert.ok(app.w.document.querySelector('[data-v3-subtool="adjust"]'));
+  // 5. SÁNG TẠO category opens text and exposes sub-navigation to Sticker, Ghép, Khung, Mẫu
+  await ui.switchCategory('creative');
+  assert.equal(ui.activeCategory(),'creative');
+  for(const sub of ['text','stickers','collage','frames','templates']){
+   assert.ok(app.w.document.querySelector(`[data-v3-subtool="${sub}"]`),`Creative sub-tool ${sub} exists`);
+  }
+ }finally{await app.close();}
+});

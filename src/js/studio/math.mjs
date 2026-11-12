@@ -183,3 +183,54 @@ export function coverTransform(imageWidth,imageHeight,slot){
  const scale=Math.max(slot.width/imageWidth,slot.height/imageHeight);
  return {x:slot.x+(slot.width-imageWidth*scale)/2,y:slot.y+(slot.height-imageHeight*scale)/2,width:imageWidth*scale,height:imageHeight*scale};
 }
+export const AUTO_PRESETS=Object.freeze([
+ {id:'balanced',label:'Cân bằng',preset:'original',bonus:{}},
+ {id:'portrait',label:'Trong trẻo',preset:'clear',bonus:{brightness:6,highlights:-10,shadows:10,temperature:4}},
+ {id:'ccd',label:'CCD sắc nét',preset:'ccd',bonus:{contrast:8,bloom:16,sharpen:14}},
+ {id:'cinema',label:'Điện ảnh',preset:'cinema',bonus:{contrast:10,halation:16,vignette:12}},
+ {id:'fresh',label:'Hồng hào',preset:'peach',bonus:{brightness:5,glow:14,saturation:6}}
+]);
+export function computeAutoEnhance(pixels,style='balanced',intensity=100){
+ const hist=new Uint32Array(256);
+ let count=0,rSum=0,gSum=0,bSum=0,satSum=0;
+ const step=Math.max(4,Math.floor((pixels?.length||0)/(4*4096))*4);
+ for(let i=0;i<(pixels?.length||0);i+=step){
+  if(pixels[i+3]<16)continue;
+  const r=pixels[i],g=pixels[i+1],b=pixels[i+2];
+  const luma=clamp(Math.round(r*.2126+g*.7152+b*.0722),0,255);
+  hist[luma]++;count++;
+  rSum+=r;gSum+=g;bSum+=b;
+  const max=Math.max(r,g,b),min=Math.min(r,g,b);
+  satSum+=max>0?(max-min)/max:0;
+ }
+ if(!count)return {preset:'original',intensity:100,adjustments:{...DEFAULT_ADJUSTMENTS}};
+ const percentile=p=>{
+  const target=Math.max(1,Math.round(count*p));
+  let acc=0;
+  for(let i=0;i<256;i++){acc+=hist[i];if(acc>=target)return i;}
+  return 255;
+ };
+ const p05=percentile(.05),p50=percentile(.5),p95=percentile(.95);
+ const rAvg=rSum/count,gAvg=gSum/count,satAvg=satSum/count;
+ const mix=clamp(Number(intensity)??100,0,100)/100;
+ const spec=AUTO_PRESETS.find(p=>p.id===style)||AUTO_PRESETS[0];
+ const raw={
+  exposure:clamp(Number(((128-p50)/150).toFixed(2)),-.65,.75),
+  brightness:clamp(Math.round((128-p50)*.22+(spec.bonus.brightness||0)),-28,32),
+  contrast:clamp(Math.round((176-(p95-p05))*.24+(spec.bonus.contrast||0)),-14,32),
+  highlights:clamp((p95>218?-Math.round((p95-208)*.62):4)+(spec.bonus.highlights||0),-40,16),
+  shadows:clamp((p05<48?Math.round((52-p05)*.58):4)+(spec.bonus.shadows||0),-12,38),
+  temperature:clamp(Math.round((gAvg-rAvg)*.32+3+(spec.bonus.temperature||0)),-22,24),
+  saturation:clamp(Math.round((.26-satAvg)*42+(spec.bonus.saturation||0)),-12,22),
+  sharpen:clamp(Math.round(10+(spec.bonus.sharpen||0)),0,40),
+  bloom:spec.bonus.bloom||0,
+  glow:spec.bonus.glow||0,
+  halation:spec.bonus.halation||0,
+  vignette:spec.bonus.vignette||0
+ };
+ const adjustments={...DEFAULT_ADJUSTMENTS};
+ for(const [k,v] of Object.entries(raw)){
+  adjustments[k]=k==='exposure'?Number((v*mix).toFixed(2)):Math.round(v*mix);
+ }
+ return {preset:spec.preset,intensity:Math.round(65*mix),adjustments};
+}

@@ -63,27 +63,34 @@ export class ProjectRepository{
    return new Promise((resolve,reject)=>{
     const tx=db.transaction('projects','readwrite');
     tx.objectStore('projects').put({...project,assets,modified:Date.now()});
-    tx.oncomplete=()=>{this.stats.saves++;resolve(project.id);};tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error||new Error('Không thể lưu dự án.'));
+    tx.oncomplete=()=>{this.stats.saves++;resolve(project.id);};tx.onerror=()=>reject(tx.error||new Error('Không thể lưu dự án.'));tx.onabort=()=>reject(tx.error||new Error('Không thể lưu dự án.'));
    });
   }
-  return new Promise((resolve,reject)=>{
+  const writeTx=items=>new Promise((resolve,reject)=>{
    const tx=db.transaction(['projects','assets'],'readwrite'),projectsStore=tx.objectStore('projects'),assetsStore=tx.objectStore('assets'),allReq=projectsStore.getAll();
    allReq.onsuccess=()=>{
     const all=allReq.result||[],existingHashes=new Set(all.flatMap(p=>Object.values(p.assetHashes||{})));
     const record={...project,assetHashes,modified:Date.now()};delete record.assets;
-    for(const item of blobs){
+    for(const item of items){
      if(existingHashes.has(item.hash)){this.stats.skippedBlobWrites++;}
      else{assetsStore.put(item);existingHashes.add(item.hash);this.stats.blobWrites++;}
     }
     projectsStore.put(record);
-    const used=new Set(all.filter(p=>p.id!==project.id).concat([record]).flatMap(p=>Object.values(p.assetHashes||{})));
+    const used=new Set(all.filter(p=>p.id!==project.id).concat([record]).flatMap(c=>Object.values(c.assetHashes||{})));
     const cursorReq=assetsStore.openCursor();
     cursorReq.onsuccess=()=>{const c=cursorReq.result;if(!c)return;if(!used.has(c.key))c.delete();c.continue();};
    };
    tx.oncomplete=()=>{this.stats.saves++;resolve(project.id);};
-   tx.onerror=()=>reject(tx.error);
+   tx.onerror=()=>reject(tx.error||new Error('Không thể lưu dự án.'));
    tx.onabort=()=>reject(tx.error||new Error('Không thể lưu dự án.'));
   });
+  try{
+   return await writeTx(blobs);
+  }catch(err){
+   if(!blobs.length)throw err;
+   const byteItems=await Promise.all(blobs.map(async({hash,blob})=>({hash,bytes:new Uint8Array(await blob.arrayBuffer()),type:blob.type||'image/jpeg'})));
+   return await writeTx(byteItems);
+  }
  }
  async load(id){
   const db=await this.open();
@@ -99,8 +106,9 @@ export class ProjectRepository{
    const assetsStore=tx.objectStore('assets');
    for(const [key,hash] of Object.entries(assetHashes)){
     const found=await reqPromise(assetsStore.get(hash));
-    if(!found?.blob)throw new Error('Thiếu ảnh nguồn của dự án đã lưu.');
-    assets[key]=found.blob;
+    const blob=found?.blob instanceof Blob?found.blob:found?.bytes?new Blob([found.bytes],{type:found.type||'image/jpeg'}):null;
+    if(!blob)throw new Error('Thiếu ảnh nguồn của dự án đã lưu.');
+    assets[key]=blob;
    }
   }
   const {assetHashes:_ignored,...rest}=record;
