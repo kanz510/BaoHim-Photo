@@ -1,14 +1,15 @@
 import {MobilePreviewUI} from './mobile-ui.mjs';
 import {icon,hydrateIcons} from './icons.mjs';
 import {PRESETS,DEFAULT_ADJUSTMENTS} from './math.mjs';
-import {LOOK_GROUPS,lookGroup,lookFromStudio} from './look-catalog.mjs';
+import {LOOK_GROUPS,lookGroup,matchesLookGroup,lookFromStudio} from './look-catalog.mjs';
+import {BUILTIN_CUBE_LUTS,parseCubeLut} from './lut-cube.mjs';
 import {FONT_BANK} from './font-registry.mjs';
 import {RESHAPE_PRESETS,manualReshapePreset} from './reshape-presets.mjs';
 import {StudioPreferences} from './studio-preferences.mjs';
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const names={home:'Chỉnh ảnh',beauty:'Làm đẹp',adjust:'Ánh sáng & màu',filters:'Bộ lọc màu',reshape:'Chỉnh đường nét',makeup:'Trang điểm',text:'Typography',stickers:'Sticker',frames:'Khung ảnh',collage:'Ghép ảnh',templates:'Mẫu thiết kế',layers:'Các lớp',geometry:'Cắt & căn chỉnh',draw:'Vẽ & xóa'};
-const adjustmentGroups={light:[['exposure','Phơi sáng',-2,2,.05],['brightness','Độ sáng',-100,100,1],['contrast','Tương phản',-100,100,1],['highlights','Vùng sáng',-100,100,1],['shadows','Vùng tối',-100,100,1]],color:[['temperature','Nhiệt độ',-100,100,1],['tint','Sắc độ',-100,100,1],['saturation','Bão hòa',-100,100,1]],detail:[['blur','Làm mờ',0,100,1],['sharpen','Sắc nét',0,100,1],['grain','Hạt film',0,100,1],['vignette','Viền tối',0,100,1]]};
+const adjustmentGroups={light:[['exposure','Phơi sáng',-2,2,.05],['brightness','Độ sáng',-100,100,1],['contrast','Tương phản',-100,100,1],['highlights','Vùng sáng',-100,100,1],['shadows','Vùng tối',-100,100,1]],color:[['temperature','Nhiệt độ',-100,100,1],['tint','Sắc độ',-100,100,1],['saturation','Bão hòa',-100,100,1]],detail:[['blur','Làm mờ',0,100,1],['sharpen','Sắc nét',0,100,1],['grain','Hạt film',0,100,1],['vignette','Viền tối',0,100,1],['bloom','Bloom',0,100,1],['glow','Glow',0,100,1],['halation','Halation',0,100,1],['lightLeak','Light leak',0,100,1],['chromatic','Tán sắc',0,100,1]]};
 const roles={lips:['Môi','makeup','#a8415c','multiply'],blush:['Má','heart','#df9296','soft-light'],eyes:['Mắt','eye','#8f586c','multiply'],eyeliner:['Eyeliner','brush','#2c2227','multiply'],brows:['Mày','brush','#614337','multiply'],highlight:['Sáng mắt','sun','#f2d4bc','soft-light'],hair:['Màu tóc','brush','#6e473b','soft-light']};
 const palette=['#a8415c','#c76b83','#df9296','#8f586c','#b5826c','#f2d4bc'];
 const hairPalette=['#6e473b','#8c624c','#9e4738','#78596e','#6e7075','#242c38','#c49a5c'];
@@ -79,8 +80,10 @@ export class PremiumUI extends MobilePreviewUI{
  }
  filterPanel(){
   const studio={...this.f.basePhotoLayer()?.studio,...this.draft},group=this.filterGroup||'all';
-  const filters=group==='saved'?(this.looks||[]):PRESETS.filter(p=>group==='all'||lookGroup(p)===group);
-  return `${tabs(LOOK_GROUPS,group,'data-v2-filter-group')}<div class="filter-grid v2-filter-strip">${filters.map(p=>group==='saved'?`<button class="filter-card" data-v2-look="${esc(p.id)}"><span class="filter-preview"><img src="./assets/photos/portrait.jpg" alt="" data-saved-preview="${esc(p.id)}"></span><span class="filter-name">${esc(p.name)}</span></button>`:`<button class="filter-card ${studio.preset===p.id?'active':''}" data-preset="${p.id}"><span class="filter-preview"><img src="./assets/photos/portrait.jpg" alt="" data-filter-preview="${p.id}"></span><span class="filter-name">${p.name}</span></button>`).join('')||'<p class="v2-empty-inline">Lưu công thức màu yêu thích để dùng cho ảnh tiếp theo.</p>'}</div>${this.slider('Mức độ','intensity',studio.intensity??100,0,100,1,'filter')}`;
+  const filters=group==='saved'?(this.looks||[]):PRESETS.filter(p=>matchesLookGroup(p,group));
+  const activeLut=studio.lut?.name||'';
+  const lutRow=`<div class="pro-effect-list">${[['none','Không LUT'],...Object.entries(BUILTIN_CUBE_LUTS).map(([id,l])=>[id,l.name])].map(([id,label])=>`<button data-v2-cube-lut="${id}" class="${(id==='none'&&!activeLut)||(BUILTIN_CUBE_LUTS[id]?.name===activeLut)?'active':''}">${esc(label)}</button>`).join('')}<button data-v2-action="import-lut">${icon('folder')}Nhập .cube</button></div>`;
+  return `${tabs(LOOK_GROUPS,group,'data-v2-filter-group')}<div class="filter-grid v2-filter-strip">${filters.map(p=>group==='saved'?`<button class="filter-card" data-v2-look="${esc(p.id)}"><span class="filter-preview"><img src="./assets/photos/portrait.jpg" alt="" data-saved-preview="${esc(p.id)}"></span><span class="filter-name">${esc(p.name)}</span></button>`:`<button class="filter-card ${studio.preset===p.id?'active':''}" data-preset="${p.id}"><span class="filter-preview"><img src="./assets/photos/portrait.jpg" alt="" data-filter-preview="${p.id}"></span><span class="filter-name">${p.name}</span></button>`).join('')||'<p class="v2-empty-inline">Lưu công thức màu yêu thích để dùng cho ảnh tiếp theo.</p>'}</div>${lutRow}${this.slider('Mức độ','intensity',studio.intensity??100,0,100,1,'filter')}`;
  }
  async filterThumbnails(){
   if(!this.filterCache)return;const layer=this.f.basePhotoLayer(),source=this.f.sources.get(layer?.studio?.sourceId);if(!source)return;const epoch=this.f.epoch,token=++this.filterEpoch||1;this.filterEpoch=token;
@@ -216,6 +219,13 @@ export class PremiumUI extends MobilePreviewUI{
     if(d.v2BrushSetting){this.brushSetting=d.v2BrushSetting;this.renderPanel();return;}
     if(d.v2ToneSetting){this.toneSetting=d.v2ToneSetting;this.renderPanel();return;}
     if(d.v2FilterGroup){this.filterGroup=d.v2FilterGroup;this.renderPanel();return;}
+    if(d.v2CubeLut){
+     const lut=d.v2CubeLut==='none'?null:BUILTIN_CUBE_LUTS[d.v2CubeLut]||null;
+     this.draft={...this.draft,lut,intensity:this.draft.intensity??this.f.basePhotoLayer()?.studio.intensity??100};
+     this.renderPanel();
+     await this.f.preview(this.draft);
+     return;
+    }
     if(d.v2Look){const look=this.looks.find(l=>l.id===d.v2Look);if(look){await this.commitDraft();await this.f.applyLook(look.recipe);this.renderPanel();}return;}
     if(d.v2HomeLook){const look=this.looks.find(l=>l.id===d.v2HomeLook);if(look)await this.startPhoto('filters',look);return;}
     if(d.v2RemoveLook){this.dialog('Xóa công thức màu?',`<p>Ảnh và dự án đã chỉnh sẽ giữ công thức hiện tại.</p><button class="v2-danger v2-wide" data-v2-delete-look="${esc(d.v2RemoveLook)}">Xóa khỏi bộ sưu tập</button>`);return;}
@@ -248,6 +258,23 @@ export class PremiumUI extends MobilePreviewUI{
     if(action==='checkpoints'){await this.checkpointDialog();return;}
     if(action==='history'){await this.historyDialog();return;}
     if(action==='save-look'){await this.saveLookDialog();return;}
+    if(action==='import-lut'){
+     let input=$('#lut-file-input');
+     if(!input){
+      input=document.createElement('input');input.type='file';input.id='lut-file-input';input.accept='.cube,text/plain';input.hidden=true;document.body.append(input);
+      input.addEventListener('change',()=>this.safely(async()=>{
+       const file=input.files?.[0];if(!file)return;
+       if(file.size>8*1024*1024)throw new Error('File LUT .cube vượt quá 8 MB.');
+       const lut=parseCubeLut(await file.text(),file.name.replace(/\.cube$/i,''));
+       input.value='';
+       this.draft={...this.draft,lut,intensity:this.draft.intensity??this.f.basePhotoLayer()?.studio.intensity??100};
+       this.renderPanel();
+       await this.f.preview(this.draft);
+       this.toast(`Đã nạp 3D LUT ${lut.name}.`);
+      }));
+     }
+     input.click();return;
+    }
     if(action==='confirm-look'){const value=$('#v2-look-name').value.trim();if(!value){$('#v2-look-name').focus();return;}b.disabled=true;try{await this.savePersonalLook(value);this.closeDialog();this.toast('Đã lưu màu trên thiết bị.');if(this.tool==='filters'){this.filterGroup='saved';this.renderPanel();}}finally{b.disabled=false;}return;}
     if(action==='settings'){this.dialog('Beauty Studio Pro',`<p>Không gian chỉnh ảnh thủ công. Ảnh, công thức và dự án được xử lý trên thiết bị của bạn.</p><div class="v2-about-row">${icon('shield')}<div><strong>Ưu tiên ngoại tuyến</strong><p>Ứng dụng và tài nguyên cần được tải lần đầu. Trình duyệt có thể thu hồi bộ nhớ; hãy giữ file dự án cho ảnh quan trọng.</p></div></div><div class="v2-about-row">${icon('image')}<div><strong>Ảnh tĩnh · Không AI · Không watermark</strong><p>Xuất JPG/PNG/WebP tối đa 12 MP. Mở ảnh gốc tối đa 64 MP; ảnh HEIC tùy khả năng trình duyệt.</p></div></div><a class="v2-link-row" href="./licenses.html" target="_blank" rel="noopener">Nguồn mở & giấy phép ${icon('arrowUpRight')}</a><a class="v2-link-row" href="./v2-report.html" target="_blank" rel="noopener">Kiểm thử bản V2 ${icon('arrowUpRight')}</a><p>PREMIUM V2 · Bản preview riêng để duyệt giao diện.</p>`);return;}
     if(action==='compare'&&event.detail===0){await this.commitDraft();await this.f.setCompare(!this.f.compare);}

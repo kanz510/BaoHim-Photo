@@ -20,7 +20,7 @@ export function collageSlots(width,height,layout='duo',gap=20){
  const w=(width-gap*(cols+1))/cols,h=(height-gap*(rows+1))/rows;
  return Array.from({length:cols*rows},(_,i)=>({x:gap+(i%cols)*(w+gap),y:gap+Math.floor(i/cols)*(h+gap),width:w,height:h}));
 }
-export const DEFAULT_ADJUSTMENTS=Object.freeze({exposure:0,brightness:0,contrast:0,saturation:0,temperature:0,tint:0,highlights:0,shadows:0,fade:0,vignette:0,grain:0,sharpen:0,clarity:0,blur:0});
+export const DEFAULT_ADJUSTMENTS=Object.freeze({exposure:0,brightness:0,contrast:0,saturation:0,temperature:0,tint:0,highlights:0,shadows:0,fade:0,vignette:0,grain:0,sharpen:0,clarity:0,blur:0,bloom:0,glow:0,halation:0,lightLeak:0,chromatic:0});
 export const PRESETS=Object.freeze([
  {id:'original',name:'Nguyên bản',tag:'Tự nhiên',params:{}},
  {id:'muse',name:'Nàng thơ',tag:'Chân dung',params:{temperature:9,contrast:-8,saturation:-9,fade:5,brightness:3}},

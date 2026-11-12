@@ -547,3 +547,38 @@ test('Phase 4 Makeup & Hair Studio creates dedicated eyeliner and hair layers, a
   assert.ok(project.layers.some(l=>l.studio?.makeup?.role==='hair'));
  }finally{await app.close();}
 });
+
+test('Phase 5 Filter & Creative Studio applies CCD filter tab, .cube 3D LUTs, optical effects and social templates',async()=>{
+ const app=await boot();
+ try{
+  const {ui,facade:f}=app.w.Studio;
+  await ui.switchTool('filters');
+  for(const g of ['ccd','film','vintage','korean','chinese','japanese','cinema','y2k','mono']){
+   assert.ok(app.w.document.querySelector(`[data-v2-filter-group="${g}"]`),`Filter tab ${g} exists`);
+  }
+  app.w.document.querySelector('[data-v2-filter-group="ccd"]').click();
+  await new Promise(r=>setTimeout(r,10));
+  assert.ok(app.w.document.querySelectorAll('[data-preset]').length>=3,'CCD filter tab lists CCD presets');
+  // Apply built-in .cube 3D LUT and commit
+  const lutBtn=app.w.document.querySelector('[data-v2-cube-lut="kodak-2383"]');
+  assert.ok(lutBtn,'Kodak 2383 .cube LUT button exists');
+  lutBtn.click();
+  await new Promise(r=>setTimeout(r,20));
+  await ui.commitDraft();
+  assert.equal(f.basePhotoLayer().studio.lut?.name,'Kodak 2383 .cube');
+  // Adjust optical effects (bloom, glow, halation, lightLeak, chromatic, grain, vignette) in detail group
+  await ui.switchTool('adjust');
+  app.w.document.querySelector('[data-v2-adjust-group="detail"]').click();
+  await new Promise(r=>setTimeout(r,10));
+  for(const id of ['bloom','glow','halation','lightLeak','chromatic','grain','vignette']){
+   assert.ok(app.w.document.querySelector(`[data-v2-adjust-key="${id}"]`),`Adjust button ${id} exists`);
+  }
+  // Creative Studio social media & poster templates create independent layers
+  await ui.switchTool('templates');
+  assert.ok(app.w.document.querySelector('[data-template="ig-story"]'),'Instagram Story template card exists');
+  assert.ok(app.w.document.querySelector('[data-template="cinema-poster"]'),'Cinema Poster template card exists');
+  const beforeLayers=f.config.layers.length;
+  await f.template('ig-story');
+  assert.ok(f.config.layers.length>beforeLayers,'Instagram Story template adds independent frame & typography layers');
+ }finally{await app.close();}
+});

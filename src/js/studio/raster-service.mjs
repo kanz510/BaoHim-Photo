@@ -1,6 +1,7 @@
 import {fitWithin,mergePreset,clamp} from './math.mjs';
 import {processPixels} from './pixel-pipeline.mjs';
-import {findCleanBlemishSource,skinSmoothPixels,skinTonePixels} from './pixel-ops.mjs';
+import {findCleanBlemishSource,skinSmoothPixels,skinTonePixels,opticalEffectsPixels} from './pixel-ops.mjs';
+import {applyCubeLut} from './lut-cube.mjs';
 
 function strokeSignature(s){
  if(!s)return '';
@@ -154,6 +155,16 @@ export class RasterService{
     const data=this.worker?await this.worker.run(job,{signal,key,recover:()=>ctx.getImageData(0,0,output.width,output.height).data}):processPixels(job);
     const result=ctx.createImageData(output.width,output.height);result.data.set(data);ctx.putImageData(result,0,0);
    }
+  }
+  if(studio.lut?.size){
+   const pixels=ctx.getImageData(0,0,output.width,output.height);
+   applyCubeLut(pixels.data,studio.lut,studio.intensity??100,pixels.data);
+   ctx.putImageData(pixels,0,0);
+  }
+  if(adjustments.bloom>0||adjustments.glow>0||adjustments.halation>0||adjustments.lightLeak>0||adjustments.chromatic>0){
+   const pixels=ctx.getImageData(0,0,output.width,output.height);
+   opticalEffectsPixels(pixels.data,output.width,output.height,adjustments,pixels.data);
+   ctx.putImageData(pixels,0,0);
   }
   if(adjustments.sharpen>0||adjustments.clarity>0){
    const sharpened=this.gpuEffect(output,g=>g.unsharpMask(2,clamp((adjustments.sharpen+adjustments.clarity*.5)/70,0,2)))||this.sharpen(output,(adjustments.sharpen+adjustments.clarity*.5)/100);

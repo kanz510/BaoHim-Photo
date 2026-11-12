@@ -35,3 +35,18 @@ test('Phase 1 skinTonePixels adjusts warmth, lightness, hue and saturation clean
  assert.ok(warmBright[1]>p[1],'lightness increases green channel');
  assert.equal(warmBright[3],255);
 });
+test('Phase 5 opticalEffectsPixels renders bloom, glow, halation, lightLeak and chromatic aberration',()=>{
+ assert.ok(ops.opticalEffectsPixels);
+ const w=16,h=16,p=new Uint8ClampedArray(w*h*4);
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+  const i=(y*w+x)*4,bright=Math.abs(x-8)<=1&&Math.abs(y-8)<=1?250:40;
+  p[i]=bright;p[i+1]=bright;p[i+2]=bright;p[i+3]=255;
+ }
+ const out=ops.opticalEffectsPixels(p,w,h,{bloom:60,glow:40,halation:65,lightLeak:50,chromatic:40});
+ // Neighbor of bright highlight receives warm halation & bloom spill
+ const neighborIdx=(8*w+6)*4;
+ assert.ok(out[neighborIdx]>p[neighborIdx],'bloom/halation brightens neighbor of specular highlight');
+ assert.ok(out[neighborIdx]>out[neighborIdx+2],'halation adds warm red-orange cast around highlight');
+ // Top-left corner receives warm light leak
+ assert.ok(out[0]>p[0],'light leak warms corner pixels');
+});

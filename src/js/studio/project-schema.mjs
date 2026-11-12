@@ -68,7 +68,11 @@ export function validateProject(project,{allowBlobs=false}={}){
    if(!Array.isArray(studio.warps)||studio.warps.length>3000)throw new Error('Too many warp strokes');
    for(const s of studio.warps)if(!s||!point(s.from)||!point(s.to)||!finite(s.radius,.1,20000)||!finite(s.strength,0,s.mode==='restore'?1:.65)||(s.mode&&!['push','pinch','bulge','restore'].includes(s.mode))||(s.freezeCount!==undefined&&(!Number.isInteger(s.freezeCount)||s.freezeCount<0||s.freezeCount>3000)))throw new Error('Invalid warp stroke');
   }
-  if(studio.adjustments)for(const [key,value] of Object.entries(studio.adjustments))if(!['exposure','brightness','contrast','saturation','temperature','tint','highlights','shadows','fade','vignette','grain','sharpen','clarity','blur'].includes(key)||!finite(value,-100,100))throw new Error('Invalid grading parameter');
+  if(studio.adjustments)for(const [key,value] of Object.entries(studio.adjustments))if(!['exposure','brightness','contrast','saturation','temperature','tint','highlights','shadows','fade','vignette','grain','sharpen','clarity','blur','bloom','glow','halation','lightLeak','chromatic'].includes(key)||!finite(value,-100,100))throw new Error('Invalid grading parameter');
+  if(studio.lut){
+   const lut=studio.lut;
+   if(typeof lut!=='object'||typeof lut.name!=='string'||lut.name.length>80||!Number.isInteger(lut.size)||lut.size<2||lut.size>33||!Array.isArray(lut.table)||lut.table.length!==lut.size*lut.size*lut.size*3||!lut.table.every(v=>finite(v,0,1)))throw new Error('Invalid 3D LUT');
+  }
   if(studio.hsl)for(const[key,value]of Object.entries(studio.hsl))if(!['red','orange','yellow','green','aqua','blue','purple','magenta'].includes(key)||!value||Object.entries(value).some(([k,v])=>!['hue','saturation','lightness'].includes(k)||!finite(v,k==='hue'?-180:-100,k==='hue'?180:100)))throw new Error('Invalid HSL band');
   if(studio.curve&&(!Array.isArray(studio.curve)||studio.curve.length>24||!studio.curve.every(p=>Array.isArray(p)&&p.length===2&&p.every(n=>finite(n,0,1)))))throw new Error('Invalid tone curve');
   if(studio.levels&&(!finite(studio.levels.black,0,254)||!finite(studio.levels.white,1,255)||studio.levels.white<=studio.levels.black||!finite(studio.levels.gamma,.1,5)))throw new Error('Invalid levels');

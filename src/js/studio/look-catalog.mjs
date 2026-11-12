@@ -1,7 +1,13 @@
 import {PRESETS,DEFAULT_ADJUSTMENTS} from './math.mjs';
-export const LOOK_GROUPS=[['all','Tất cả'],['portrait','Chân dung'],['film','Film'],['natural','Tự nhiên'],['mono','Đen trắng'],['cinema','Điện ảnh'],['vintage','Vintage'],['korean','Hàn'],['chinese','Trung'],['japanese','Nhật'],['y2k','Y2K'],['saved','Của bạn']];
+export const LOOK_GROUPS=[['all','Tất cả'],['ccd','CCD'],['film','Film'],['vintage','Vintage'],['korean','Hàn'],['chinese','Trung'],['japanese','Nhật'],['cinema','Điện ảnh'],['y2k','Y2K'],['mono','Đen trắng'],['portrait','Chân dung'],['natural','Tự nhiên'],['saved','Của bạn']];
 const groups={original:'all',muse:'portrait',peach:'portrait',morning:'portrait',milk:'portrait',clear:'natural',film:'film',mono:'mono',night:'cinema'};
-export function lookGroup(look){return groups[look.id]||({'Chân dung':'portrait',Film:'film','Tự nhiên':'natural','Đen trắng':'mono','Điện ảnh':'cinema','Vintage':'vintage','Hàn':'korean','Trung':'chinese','Nhật':'japanese','Y2K':'y2k'}[look.tag])||'natural';}
+const ccdIds=new Set(['y2k-flash','clear','porcelain','daylight','y2k-pop']);
+export function lookGroup(look){return groups[look.id]||({'Chân dung':'portrait',Film:'film','Tự nhiên':'natural','Đen trắng':'mono','Điện ảnh':'cinema','Vintage':'vintage','Hàn':'korean','Trung':'chinese','Nhật':'japanese','Y2K':'y2k','CCD':'ccd'}[look.tag])||'natural';}
+export function matchesLookGroup(look,group='all'){
+ if(group==='all')return true;
+ if(group==='ccd')return ccdIds.has(look.id)||lookGroup(look)==='ccd';
+ return lookGroup(look)===group;
+}
 const number=(v,min,max)=>typeof v==='number'&&Number.isFinite(v)&&v>=min&&v<=max;
 export function validateLook(look){
  if(!look||typeof look.name!=='string'||!look.name.trim()||look.name.length>60)throw new Error('Invalid look name');

@@ -185,6 +185,9 @@ export class StudioFacade{
    await guard(this.addText('a little moment',{meta:{family:'Playfair Display',size:Math.round(w*.06),fill_color:'#383131'}}));await guard(this.updateLayer({y:h+70,height:80}));await guard(this.fit());
   }
   else if(id==='minimal'){await guard(this.updateStudio({preset:'morning',intensity:65}));await guard(this.addText('less, but lovely.',{meta:{family:'Manrope',size:Math.round(this.config.WIDTH*.06),fill_color:'#fff9ef'}}));}
+  else if(id==='ig-story'){await guard(this.updateStudio({preset:'y2k-flash',intensity:75}));await guard(this.addText('NEW STORY\nMOMENT',{meta:{family:'Manrope',bold:true,size:Math.round(this.config.WIDTH*.08),fill_color:'#ffffff',stroke_color:'#242229',stroke_size:2},typography:{shadow:12}}));}
+  else if(id==='ig-post'){await guard(this.updateStudio({preset:'seoul',intensity:70}));await guard(this.addText('DAILY AESTHETIC',{meta:{family:'Playfair Display',italic:true,size:Math.round(this.config.WIDTH*.07),fill_color:'#fffdf9'},typography:{shadow:8}}));}
+  else if(id==='cinema-poster'){await guard(this.framePhoto('charcoal',6));await guard(this.addText('A FILM BY YOU',{meta:{family:'Playfair Display',size:Math.round(this.config.WIDTH*.065),fill_color:'#f5e6c8',kerning:8},typography:{glow:14,shadow:10}}));await guard(this.fit());}
   this.emit('selection');
  }
  snapshot(){

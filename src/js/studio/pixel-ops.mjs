@@ -138,3 +138,85 @@ export function skinTonePixels(input,w,h,options={}){
  }
  return out;
 }
+/**
+ * Classical optical effects pipeline:
+ * - Chromatic aberration (`chromatic` 0..100): lateral radial R/B dispersion from optical center
+ * - Bloom (`bloom` 0..100): soft highlight glow extraction & screen blend
+ * - Glow (`glow` 0..100): dreamy Orton midtone/highlight soft-light diffusion
+ * - Halation (`halation` 0..100): red-orange film emulsion highlight scatter
+ * - Light leak (`lightLeak` 0..100): procedural warm film border leak
+ */
+export function opticalEffectsPixels(input,w,h,adjustments={},output=new Uint8ClampedArray(input)){
+ const bloom=clamp(Number(adjustments.bloom)||0,0,100)/100;
+ const glow=clamp(Number(adjustments.glow)||0,0,100)/100;
+ const halation=clamp(Number(adjustments.halation)||0,0,100)/100;
+ const lightLeak=clamp(Number(adjustments.lightLeak)||0,0,100)/100;
+ const chromatic=clamp(Number(adjustments.chromatic)||0,0,100)/100;
+ if(!bloom&&!glow&&!halation&&!lightLeak&&!chromatic){
+  if(output!==input)output.set(input);
+  return output;
+ }
+ const work=new Uint8ClampedArray(input);
+ if(chromatic>0){
+  const cx=w*.5,cy=h*.5,maxShift=Math.max(1.2,Math.min(w,h)*.018)*chromatic;
+  for(let y=0;y<h;y++){
+   const ny=(y-cy)/Math.max(1,cy);
+   for(let x=0;x<w;x++){
+    const nx=(x-cx)/Math.max(1,cx),r2=Math.hypot(nx,ny);
+    const sxR=clamp(Math.round(x+nx*r2*maxShift),0,w-1),syR=clamp(Math.round(y+ny*r2*maxShift),0,h-1);
+    const sxB=clamp(Math.round(x-nx*r2*maxShift),0,w-1),syB=clamp(Math.round(y-ny*r2*maxShift),0,h-1);
+    const idx=(y*w+x)*4;
+    work[idx]=input[(syR*w+sxR)*4];
+    work[idx+1]=input[idx+1];
+    work[idx+2]=input[(syB*w+sxB)*4+2];
+   }
+  }
+ }
+ let blurred=null;
+ if(bloom>0||glow>0||halation>0){
+  const blurR=Math.max(2,Math.min(28,Math.round(Math.max(w,h)*.025)));
+  blurred=blurPixels(work,w,h,blurR);
+ }
+ for(let y=0;y<h;y++){
+  const v=y/Math.max(1,h-1);
+  for(let x=0;x<w;x++){
+   const u=x/Math.max(1,w-1),i=(y*w+x)*4;
+   let r=work[i],g=work[i+1],b=work[i+2];
+   if(blurred){
+    const br=blurred[i],bg=blurred[i+1],bb=blurred[i+2];
+    const bluma=(br*.2126+bg*.7152+bb*.0722)/255;
+    if(bloom>0&&bluma>.32){
+     const bw=clamp((bluma-.32)/.68,0,1)*bloom*.65;
+     r=255-(255-r)*(1-(br/255)*bw);
+     g=255-(255-g)*(1-(bg/255)*bw);
+     b=255-(255-b)*(1-(bb/255)*bw);
+    }
+    if(glow>0){
+     const gw=glow*.48;
+     r=r*(1-gw)+(255-(255-r)*(255-br)/255)*gw;
+     g=g*(1-gw)+(255-(255-g)*(255-bg)/255)*gw;
+     b=b*(1-gw)+(255-(255-b)*(255-bb)/255)*gw;
+    }
+    if(halation>0&&bluma>.35){
+     const hw=Math.pow(clamp((bluma-.35)/.65,0,1),1.15)*halation*115;
+     r+=hw;
+     g+=hw*.34;
+     b+=hw*.07;
+    }
+   }
+   if(lightLeak>0){
+    const edgeLeft=Math.pow(Math.max(0,1-u*2.1),1.8)*(0.65+0.35*Math.sin(v*Math.PI));
+    const cornerTop=Math.pow(Math.max(0,1-Math.hypot(1-u,v)*1.45),2);
+    const leak=(edgeLeft+cornerTop*.75)*lightLeak;
+    r=255-(255-clamp(r,0,255))*(1-clamp(leak*.82,0,.92));
+    g=255-(255-clamp(g,0,255))*(1-clamp(leak*.44,0,.85));
+    b=255-(255-clamp(b,0,255))*(1-clamp(leak*.18,0,.75));
+   }
+   output[i]=clamp(Math.round(r),0,255);
+   output[i+1]=clamp(Math.round(g),0,255);
+   output[i+2]=clamp(Math.round(b),0,255);
+   output[i+3]=input[i+3];
+  }
+ }
+ return output;
+}
