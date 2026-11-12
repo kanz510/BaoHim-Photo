@@ -4,19 +4,30 @@
 
   var F = global.BaoHimV4Filters;
 
+  var ASSET_BASE = (function () {
+    if (global.location.hostname !== 'htmlpreview.github.io') return '../assets/';
+    var m = global.location.search.match(/github\.com\/([^/]+\/[^/]+)\/blob\/([^/?#]+)\//);
+    if (m) return 'https://cdn.jsdelivr.net/gh/' + m[1] + '@' + m[2] + '/assets/';
+    return 'https://raw.githubusercontent.com/kanz510/BaoHim-Photo/preview/v4-immersive/assets/';
+  })();
+
+  function assetUrl(rel) {
+    return String(rel || '').replace(/^\.\.\/assets\//, ASSET_BASE);
+  }
+
   var RECENT_ITEMS = [
-    { id: 'muse', title: 'Nàng thơ studio', meta: '1200×1500 · Portra 400', src: '../assets/photos/muse.jpg', preset: 'portra-400', group: 'film' },
-    { id: 'portrait', title: 'Chân dung ánh xanh', meta: '1200×1500 · Seoul Soft', src: '../assets/photos/portrait.jpg', preset: 'seoul-soft', group: 'korean' },
-    { id: 'sunlight', title: 'Nắng chiều', meta: '1200×1500 · Kyoto Air', src: '../assets/photos/sunlight.jpg', preset: 'kyoto-air', group: 'japanese' }
+    { id: 'muse', title: 'Nàng thơ studio', meta: '1200×1500 · Portra 400', src: assetUrl('../assets/photos/muse.jpg'), preset: 'portra-400', group: 'film' },
+    { id: 'portrait', title: 'Chân dung ánh xanh', meta: '1200×1500 · Seoul Soft', src: assetUrl('../assets/photos/portrait.jpg'), preset: 'seoul-soft', group: 'korean' },
+    { id: 'sunlight', title: 'Nắng chiều', meta: '1200×1500 · Kyoto Air', src: assetUrl('../assets/photos/sunlight.jpg'), preset: 'kyoto-air', group: 'japanese' }
   ];
 
   var STYLE_COLLECTIONS = [
-    { id: 'film', name: 'Film 35mm', sub: 'Kodak · Portra · Cine', src: '../assets/photos/sunlight.jpg', preset: 'kodak-2383' },
-    { id: 'ccd', name: 'CCD Digicam', sub: 'Flash 2004 · Trong trẻo', src: '../assets/photos/portrait.jpg', preset: 'ccd-flash' },
-    { id: 'korean', name: 'Hàn Trong Veo', sub: 'Seoul Soft · Sáng da', src: '../assets/photos/muse.jpg', preset: 'seoul-soft' },
-    { id: 'chinese', name: 'Trung Cổ Điển', sub: 'Bạch liên · Hồng Kông', src: '../assets/photos/muse.jpg', preset: 'peony-cn' },
-    { id: 'japanese', name: 'Nhật Mờ Sương', sub: 'Kyoto Air · Tokyo 07', src: '../assets/photos/sunlight.jpg', preset: 'kyoto-air' },
-    { id: 'vintage', name: 'Vintage Diary', sub: 'Giấy cũ · 90s Film', src: '../assets/photos/portrait.jpg', preset: 'diary-90' }
+    { id: 'film', name: 'Film 35mm', sub: 'Kodak · Portra · Cine', src: assetUrl('../assets/photos/sunlight.jpg'), preset: 'kodak-2383' },
+    { id: 'ccd', name: 'CCD Digicam', sub: 'Flash 2004 · Trong trẻo', src: assetUrl('../assets/photos/portrait.jpg'), preset: 'ccd-flash' },
+    { id: 'korean', name: 'Hàn Trong Veo', sub: 'Seoul Soft · Sáng da', src: assetUrl('../assets/photos/muse.jpg'), preset: 'seoul-soft' },
+    { id: 'chinese', name: 'Trung Cổ Điển', sub: 'Bạch liên · Hồng Kông', src: assetUrl('../assets/photos/muse.jpg'), preset: 'peony-cn' },
+    { id: 'japanese', name: 'Nhật Mờ Sương', sub: 'Kyoto Air · Tokyo 07', src: assetUrl('../assets/photos/sunlight.jpg'), preset: 'kyoto-air' },
+    { id: 'vintage', name: 'Vintage Diary', sub: 'Giấy cũ · 90s Film', src: assetUrl('../assets/photos/portrait.jpg'), preset: 'diary-90' }
   ];
 
   var BEAUTY_TOOLS = [
@@ -259,6 +270,9 @@
   function loadImageIntoEditor(src, title, opts) {
     opts = opts || {};
     var img = new Image();
+    if (/^https?:/.test(global.location.protocol) && !src.startsWith('blob:') && !src.startsWith('data:')) {
+      img.crossOrigin = 'anonymous';
+    }
     img.onload = function () {
       var maxSide = 1280;
       var scale = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
@@ -694,7 +708,7 @@
     el('btn-pick-in-editor').addEventListener('click', triggerPick);
 
     el('btn-hero-demo').addEventListener('click', function () {
-      loadImageIntoEditor('../assets/photos/muse.jpg', 'Nàng thơ studio', { mode: 'filters', preset: 'seoul-soft', group: 'korean', intensity: 85 });
+      loadImageIntoEditor(assetUrl('../assets/photos/muse.jpg'), 'Nàng thơ studio', { mode: 'filters', preset: 'seoul-soft', group: 'korean', intensity: 85 });
     });
 
     el('v4-file-input').addEventListener('change', function (e) {
@@ -709,7 +723,7 @@
     document.addEventListener('click', function (e) {
       var quick = e.target.closest('[data-launch-mode]');
       if (quick) {
-        loadImageIntoEditor('../assets/photos/portrait.jpg', 'Chân dung ánh xanh', {
+        loadImageIntoEditor(assetUrl('../assets/photos/portrait.jpg'), 'Chân dung ánh xanh', {
           mode: quick.dataset.launchMode,
           tool: quick.dataset.launchTool
         });
@@ -906,6 +920,10 @@
 
   function init() {
     state.previewCanvas = el('v4-canvas');
+    var heroImg = document.querySelector('.v4-hero-img');
+    if (heroImg && ASSET_BASE !== '../assets/') {
+      heroImg.src = assetUrl('../assets/photos/muse.jpg');
+    }
     hydrateAllIcons(document);
     renderHomeRails();
     bindEvents();
@@ -916,7 +934,7 @@
     var initScreen = params.get('screen');
     var initMode = params.get('mode') || 'filters';
     if (initScreen === 'editor') {
-      loadImageIntoEditor('../assets/photos/portrait.jpg', 'Chân dung ánh xanh', {
+      loadImageIntoEditor(assetUrl('../assets/photos/portrait.jpg'), 'Chân dung ánh xanh', {
         mode: initMode,
         preset: params.get('preset') || 'seoul-soft',
         group: params.get('group') || 'all',
@@ -925,7 +943,8 @@
     } else {
       // Preload default photo silently for instant first switch
       var preload = new Image();
-      preload.src = '../assets/photos/portrait.jpg';
+      if (/^https?:/.test(global.location.protocol)) preload.crossOrigin = 'anonymous';
+      preload.src = assetUrl('../assets/photos/portrait.jpg');
     }
   }
 
