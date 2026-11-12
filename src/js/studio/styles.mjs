@@ -10,3 +10,4 @@ import '../../css/mobile-preview.css';
 import '../../css/premium-v2.css';
 import '../../css/pro-tokens.css';
 import '../../css/pro-v2.css';
+import '../../css/v4-theme.css';

@@ -1,0 +1,912 @@
+/* BaoHim Photo V4 — Immersive Beauty Editor Production Theme */
+body.immersive-v4,
+body.immersive-v4 .mobile-shell {
+  background: var(--v4-bg-editor);
+  color: var(--v4-ivory);
+  font-family: var(--v4-font-sans);
+}
+
+/* =========================================================
+   SCREEN 1: HOME (PEARL WHITE EDITORIAL)
+   ========================================================= */
+.immersive-v4 #mobile-shell .mobile-library {
+  background: var(--v4-pearl);
+  color: var(--v4-pearl-ink);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+}
+
+.immersive-v4 #mobile-shell .mobile-library[hidden] {
+  display: none;
+}
+
+.immersive-v4 #mobile-shell .v2-home-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(10px + env(safe-area-inset-top, 0px)) 18px 10px;
+  background: rgba(251, 249, 248, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--v4-pearl-line);
+  z-index: 5;
+}
+
+.immersive-v4 #mobile-shell .v2-wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  text-decoration: none;
+  font-family: var(--v4-font-serif);
+  font-size: 23px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--v4-pearl-ink);
+}
+
+.immersive-v4 #mobile-shell .v2-wordmark span {
+  font-family: var(--v4-font-sans);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--v4-berry-deep);
+  background: rgba(201, 107, 150, 0.14);
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-left: 0;
+}
+
+.immersive-v4 .v4-home-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.immersive-v4 .v4-home-open-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--v4-pearl-ink);
+  color: var(--v4-ivory);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.immersive-v4 .v4-home-open-btn .studio-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.immersive-v4 #mobile-shell .v2-plain-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid var(--v4-pearl-line);
+  background: #ffffff;
+  color: var(--v4-pearl-ink);
+  display: grid;
+  place-items: center;
+}
+
+.immersive-v4 #v2-home-content {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 14px 18px 24px;
+}
+
+.immersive-v4 #v2-home-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* Editorial Hero Card */
+.immersive-v4 .v4-hero {
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  height: 232px;
+  background: #231e21;
+  box-shadow: 0 14px 30px rgba(29, 24, 27, 0.12);
+}
+
+.immersive-v4 .v4-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 14%;
+  display: block;
+}
+
+.immersive-v4 .v4-hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(25, 25, 29, 0.04) 0%,
+    rgba(25, 25, 29, 0.24) 44%,
+    rgba(25, 25, 29, 0.92) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 16px;
+  color: var(--v4-ivory);
+}
+
+.immersive-v4 .v4-hero-kicker {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--v4-berry-bright);
+  margin-bottom: 3px;
+}
+
+.immersive-v4 .v4-hero-title {
+  margin: 0 0 11px;
+  font-family: var(--v4-font-serif);
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+}
+
+.immersive-v4 .v4-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.immersive-v4 .v4-btn-berry {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--v4-berry);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 6px 16px rgba(201, 107, 150, 0.34);
+}
+
+.immersive-v4 .v4-btn-glass {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(25, 25, 29, 0.56);
+  border: 1px solid rgba(246, 242, 238, 0.24);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--v4-ivory);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Quick Access Grid */
+.immersive-v4 .v4-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.immersive-v4 .v4-quick-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 6px;
+  border-radius: 16px;
+  background: var(--v4-pearl-card);
+  border: 1px solid var(--v4-pearl-line);
+  color: var(--v4-pearl-ink);
+  transition: transform var(--v4-t) var(--v4-ease);
+}
+
+.immersive-v4 .v4-quick-item:active {
+  transform: scale(0.96);
+}
+
+.immersive-v4 .v4-quick-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--v4-pearl-tint);
+  color: var(--v4-berry-deep);
+}
+
+.immersive-v4 .v4-quick-label {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.immersive-v4 .v4-quick-sub {
+  font-size: 9.5px;
+  color: var(--v4-pearl-sub);
+  margin-top: -3px;
+}
+
+/* Editorial Rails & Sections */
+.immersive-v4 .v2-home-section {
+  margin-top: 18px;
+}
+
+.immersive-v4 .v2-section-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 9px;
+}
+
+.immersive-v4 .v2-section-heading h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--v4-pearl-ink);
+}
+
+.immersive-v4 .v2-section-heading button {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--v4-berry-deep);
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+.immersive-v4 .v4-rail {
+  display: flex;
+  gap: 11px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scroll-snap-type: x proximity;
+}
+
+.immersive-v4 .v4-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.immersive-v4 .v4-recent-card {
+  position: relative;
+  flex: 0 0 116px;
+  scroll-snap-align: start;
+  background: var(--v4-pearl-card);
+  border-radius: 14px;
+  padding: 5px;
+  border: 1px solid var(--v4-pearl-line);
+}
+
+.immersive-v4 .v4-recent-card > button[data-v2-project] {
+  width: 100%;
+  text-align: left;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+}
+
+.immersive-v4 .v4-recent-thumb {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #ece3e7;
+  display: grid;
+  place-items: center;
+  color: var(--v4-pearl-sub);
+}
+
+.immersive-v4 .v4-recent-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+}
+
+.immersive-v4 .v4-recent-meta {
+  padding: 6px 3px 2px;
+}
+
+.immersive-v4 .v4-recent-meta strong {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--v4-pearl-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.immersive-v4 .v4-recent-meta small {
+  display: block;
+  font-size: 10px;
+  color: var(--v4-pearl-sub);
+  margin-top: 1px;
+}
+
+.immersive-v4 .v4-style-card {
+  flex: 0 0 154px;
+  scroll-snap-align: start;
+  position: relative;
+  height: 102px;
+  border-radius: 16px;
+  overflow: hidden;
+  text-align: left;
+  border: 0;
+  padding: 0;
+}
+
+.immersive-v4 .v4-style-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 24%;
+  display: block;
+}
+
+.immersive-v4 .v4-style-overlay {
+  position: absolute;
+  inset: 0;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: linear-gradient(180deg, rgba(25, 25, 29, 0.05) 10%, rgba(25, 25, 29, 0.84) 100%);
+  color: var(--v4-ivory);
+}
+
+.immersive-v4 .v4-style-overlay strong {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.immersive-v4 .v4-style-overlay small {
+  font-size: 10px;
+  color: rgba(246, 242, 238, 0.78);
+}
+
+.immersive-v4 .v2-home-foot {
+  margin-top: 16px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--v4-pearl-tint);
+  color: var(--v4-pearl-sub);
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.immersive-v4 .v2-home-foot .studio-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--v4-berry-deep);
+}
+
+/* Home Bottom Tabs (Pearl White) */
+.immersive-v4 #mobile-shell .v2-home-nav {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--v4-pearl-line);
+  padding: 6px 14px calc(8px + env(safe-area-inset-bottom, 0px));
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.immersive-v4 #mobile-shell .v2-home-nav button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  height: 44px;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--v4-pearl-sub);
+}
+
+.immersive-v4 #mobile-shell .v2-home-nav button.active {
+  color: var(--v4-berry-deep);
+  background: var(--v4-pearl-tint);
+}
+
+/* Projects & Looks sub-pages inside Home */
+.immersive-v4 #mobile-library .v2-page-intro h2 {
+  font-family: var(--v4-font-serif);
+  color: var(--v4-pearl-ink);
+  font-size: 26px;
+  margin: 4px 0 6px;
+}
+
+.immersive-v4 #mobile-library .v2-page-intro span {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--v4-berry-deep);
+}
+
+.immersive-v4 #mobile-library .v2-primary {
+  background: var(--v4-berry);
+  color: #ffffff;
+  border-radius: 999px;
+}
+
+/* =========================================================
+   SCREEN 2 & 3: IMMERSIVE CHARCOAL EDITOR (#19191D)
+   ========================================================= */
+.immersive-v4 #mobile-shell {
+  --topbar: 48px;
+  --dock: 58px;
+  background: var(--v4-bg-editor);
+  color: var(--v4-ivory);
+}
+
+/* Minimalist Topbar */
+.immersive-v4 #mobile-shell .mobile-header {
+  height: calc(var(--topbar) + env(safe-area-inset-top, 0px));
+  padding: env(safe-area-inset-top, 0px) 12px 0;
+  background: var(--v4-bg-editor);
+  border-bottom: 1px solid rgba(246, 242, 238, 0.05);
+  color: var(--v4-ivory);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.immersive-v4 #mobile-shell .mobile-back {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  color: var(--v4-ivory);
+  background: transparent;
+}
+
+.immersive-v4 #mobile-shell .mobile-back:active {
+  background: var(--v4-surface-pill);
+}
+
+.immersive-v4 #mobile-shell .v2-header-title h1 {
+  color: var(--v4-ivory);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.immersive-v4 #mobile-shell #v2-save-state {
+  color: var(--v4-ivory-dim);
+  font-size: 10px;
+}
+
+.immersive-v4 #mobile-shell .mobile-save {
+  height: 30px;
+  min-height: 30px;
+  padding: 0 15px;
+  border-radius: 999px;
+  background: var(--v4-berry);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Immersive Stage & Unclipped Canvas Container */
+.immersive-v4 #mobile-shell .mobile-workspace {
+  background: var(--v4-bg-editor);
+  transition: none !important;
+}
+
+.immersive-v4 #mobile-shell .studio-stage {
+  background: var(--v4-bg-editor);
+}
+
+.immersive-v4 #mobile-shell #middle_area {
+  background: var(--v4-bg-editor);
+}
+
+.immersive-v4 #mobile-shell #main_wrapper {
+  top: 6px;
+  bottom: 42px;
+  left: 6px;
+  right: 6px;
+  background: var(--v4-bg-editor);
+}
+
+.immersive-v4 #mobile-shell #canvas_minipaint {
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.48);
+  border-radius: 2px;
+}
+
+.immersive-v4 #mobile-shell .v2-photo-caption {
+  top: 6px;
+  right: 12px;
+  left: auto;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(25, 25, 29, 0.65);
+  border: 1px solid var(--v4-border-dark);
+  color: var(--v4-ivory-dim);
+  font-size: 9.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.immersive-v4 #mobile-shell .v2-photo-caption #v2-photo-name {
+  display: none;
+}
+
+.immersive-v4 #mobile-shell .comparison-badge {
+  background: rgba(25, 25, 29, 0.84);
+  border: 1px solid var(--v4-border-dark);
+  color: var(--v4-ivory);
+}
+
+/* Floating Stage HUD */
+.immersive-v4 #mobile-shell .mobile-canvas-controls {
+  height: 36px;
+  padding: 0 12px;
+  bottom: 2px;
+  background: var(--v4-bg-editor);
+  border-top: 1px solid rgba(246, 242, 238, 0.04);
+}
+
+.immersive-v4 #mobile-shell .mobile-icon-button {
+  width: 34px;
+  height: 30px;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--v4-ivory-dim);
+}
+
+.immersive-v4 #mobile-shell .mobile-icon-button:disabled {
+  opacity: 0.3;
+}
+
+.immersive-v4 #mobile-shell .mobile-compare {
+  height: 26px;
+  padding: 0 11px;
+  border-radius: 999px;
+  background: var(--v4-surface-pill);
+  border: 1px solid var(--v4-border-dark);
+  color: var(--v4-ivory);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.immersive-v4 #mobile-shell .mobile-compare[aria-pressed="true"] {
+  background: var(--v4-berry);
+  border-color: var(--v4-berry);
+  color: #ffffff;
+}
+
+/* Sleek Charcoal Dock when Sheet Closed (hidden automatically under .sheet-open) */
+.immersive-v4 #mobile-shell .mobile-nav {
+  background: var(--v4-surface-bar);
+  border-top: 1px solid var(--v4-border-dark);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  padding: 5px 10px calc(5px + env(safe-area-inset-bottom, 0px));
+  height: calc(var(--dock) + env(safe-area-inset-bottom, 0px));
+}
+
+.immersive-v4 #mobile-shell .nav-tool {
+  color: var(--v4-ivory-dim);
+  min-width: 54px;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 10.5px;
+  gap: 3px;
+}
+
+.immersive-v4 #mobile-shell .nav-tool .studio-icon {
+  width: 19px;
+  height: 19px;
+}
+
+.immersive-v4 #mobile-shell .nav-tool.active,
+.immersive-v4 #mobile-shell .nav-tool[aria-pressed="true"] {
+  background: var(--v4-surface-pill-active);
+  color: var(--v4-berry-bright);
+}
+
+/* =========================================================
+   UNIFIED COMPACT CHARCOAL BOTTOM SHEET (ONE BAR ONLY)
+   ========================================================= */
+.immersive-v4 #mobile-shell .mobile-sheet {
+  background: var(--v4-surface-bar);
+  color: var(--v4-ivory);
+  border-top: 1px solid var(--v4-border-dark);
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.42);
+  grid-template-rows: 34px minmax(0, 1fr) 38px;
+}
+
+.immersive-v4 #mobile-shell .sheet-drag-zone {
+  background: var(--v4-surface-bar);
+  border-bottom: 1px solid rgba(246, 242, 238, 0.05);
+}
+
+.immersive-v4 #mobile-shell .sheet-grabber i {
+  background: rgba(246, 242, 238, 0.22);
+}
+
+.immersive-v4 #mobile-shell .mobile-panel-heading h2 {
+  color: var(--v4-ivory);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.immersive-v4 #mobile-shell .v3-subnav {
+  background: rgba(246, 242, 238, 0.06);
+  border: 1px solid rgba(246, 242, 238, 0.06);
+  border-radius: 999px;
+  padding: 2px;
+}
+
+.immersive-v4 #mobile-shell .v3-subnav button {
+  color: var(--v4-ivory-dim);
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.immersive-v4 #mobile-shell .v3-subnav button.active {
+  background: var(--v4-berry);
+  color: #ffffff;
+}
+
+.immersive-v4 #mobile-shell .sheet-detail-toggle,
+.immersive-v4 #mobile-shell .sheet-close {
+  color: var(--v4-ivory-dim);
+  background: rgba(246, 242, 238, 0.06);
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+}
+
+.immersive-v4 #mobile-shell .v2-manual-label {
+  display: none;
+}
+
+/* Sheet Body & Dark Controls */
+.immersive-v4 #mobile-shell .panel-content {
+  background: var(--v4-surface-bar);
+  color: var(--v4-ivory);
+  padding: 6px 12px 4px !important;
+}
+
+.immersive-v4 #mobile-shell .panel-footer {
+  background: var(--v4-surface-bar);
+  border-top: 1px solid rgba(246, 242, 238, 0.06);
+  padding: 2px 12px 4px !important;
+}
+
+.immersive-v4 #mobile-shell .sheet-secondary {
+  color: var(--v4-ivory-dim);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.immersive-v4 #mobile-shell .sheet-confirm {
+  background: var(--v4-berry);
+  color: #ffffff;
+  border-radius: 999px;
+  height: 28px;
+  padding: 0 13px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Dark Berry Pink Sliders */
+.immersive-v4 #mobile-shell .slider-heading {
+  color: var(--v4-ivory-dim);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.immersive-v4 #mobile-shell .slider-heading output {
+  color: var(--v4-ivory);
+  font-variant-numeric: tabular-nums;
+}
+
+.immersive-v4 #mobile-shell .studio-range {
+  background: transparent !important;
+  accent-color: var(--v4-berry);
+}
+
+.immersive-v4 #mobile-shell .studio-range::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 99px;
+  background: linear-gradient(
+    90deg,
+    var(--v4-berry) 0%,
+    var(--v4-berry) var(--range, 50%),
+    rgba(246, 242, 238, 0.18) var(--range, 50%),
+    rgba(246, 242, 238, 0.18) 100%
+  );
+}
+
+.immersive-v4 #mobile-shell .studio-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6.5px;
+  border-radius: 50%;
+  background: var(--v4-ivory);
+  border: 2.5px solid var(--v4-berry);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+}
+
+/* Filter Strip: 60px Square Thumbnails & Dark Category Tabs */
+.immersive-v4 #mobile-shell .v2-filter-strip {
+  min-height: 80px;
+  max-height: 80px;
+  padding: 2px 1px;
+  gap: 9px;
+}
+
+.immersive-v4 #mobile-shell .v2-filter-strip .filter-card {
+  flex: 0 0 60px;
+  width: 60px;
+  min-width: 60px;
+  max-width: 60px;
+  gap: 3px;
+  color: var(--v4-ivory-dim);
+}
+
+.immersive-v4 #mobile-shell .v2-filter-strip .filter-preview {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background: var(--v4-surface-card);
+  box-sizing: border-box;
+}
+
+.immersive-v4 #mobile-shell .v2-filter-strip .filter-card.active .filter-preview {
+  border-color: var(--v4-berry);
+}
+
+.immersive-v4 #mobile-shell .v2-filter-strip .filter-name {
+  color: var(--v4-ivory-dim);
+  font-size: 10.5px;
+  line-height: 13px;
+}
+
+.immersive-v4 #mobile-shell .v2-filter-strip .filter-card.active .filter-name {
+  color: var(--v4-ivory);
+  font-weight: 700;
+}
+
+/* Dark Single-Row Category Tabs */
+.immersive-v4 #mobile-shell .v2-tabs {
+  border-color: rgba(246, 242, 238, 0.06);
+  gap: 6px;
+}
+
+.immersive-v4 #mobile-shell .v2-tabs button {
+  color: var(--v4-ivory-muted);
+  border-radius: 999px;
+  padding: 0 9px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.immersive-v4 #mobile-shell .v2-tabs button.active {
+  color: var(--v4-ivory);
+  background: var(--v4-surface-pill);
+  border-bottom-color: var(--v4-berry);
+}
+
+/* Dark Tool Strips & Effect Chips */
+.immersive-v4 #mobile-shell .v2-tool-strip .tool-card {
+  background: var(--v4-surface-card);
+  border: 1px solid rgba(246, 242, 238, 0.06);
+  color: var(--v4-ivory-dim);
+  border-radius: 12px;
+  min-width: 60px;
+  height: 48px;
+}
+
+.immersive-v4 #mobile-shell .v2-tool-strip .tool-card.active {
+  background: var(--v4-surface-pill-active);
+  border-color: var(--v4-berry);
+  color: var(--v4-ivory);
+}
+
+.immersive-v4 #mobile-shell .pro-effect-list button,
+.immersive-v4 #mobile-shell .v2-body-actions button,
+.immersive-v4 #mobile-shell .v2-inline-action,
+.immersive-v4 #mobile-shell .v2-attributes button,
+.immersive-v4 #mobile-shell .v2-crop-ratios button,
+.immersive-v4 #mobile-shell .v2-rotate-actions button {
+  background: var(--v4-surface-card);
+  border: 1px solid rgba(246, 242, 238, 0.08);
+  color: var(--v4-ivory-dim);
+}
+
+.immersive-v4 #mobile-shell .pro-effect-list button.active,
+.immersive-v4 #mobile-shell .v2-attributes button.active,
+.immersive-v4 #mobile-shell .v2-crop-ratios button.active {
+  background: var(--v4-surface-pill-active);
+  border-color: var(--v4-berry);
+  color: var(--v4-ivory);
+}
+
+.immersive-v4 #mobile-shell .v2-tool-note,
+.immersive-v4 #mobile-shell .v2-empty-inline,
+.immersive-v4 #mobile-shell .compact-caption {
+  color: var(--v4-ivory-muted);
+}
+
+/* Dark Makeup Swatches & Layers & Text Inputs inside Sheet */
+.immersive-v4 #mobile-shell .studio-field,
+.immersive-v4 #mobile-shell .studio-textarea {
+  background: var(--v4-surface-card);
+  color: var(--v4-ivory);
+  border-color: rgba(246, 242, 238, 0.14);
+}
+
+.immersive-v4 #mobile-shell .layer-row {
+  background: var(--v4-surface-card);
+  border-color: rgba(246, 242, 238, 0.07);
+  color: var(--v4-ivory);
+}
+
+.immersive-v4 #mobile-shell .layer-row.active {
+  border-color: var(--v4-berry);
+  background: var(--v4-surface-pill-active);
+}
+
+.immersive-v4 #mobile-shell .layer-name,
+.immersive-v4 #mobile-shell .layer-type {
+  color: var(--v4-ivory);
+}
+
+/* Dark Dialog & Toast */
+.immersive-v4 .studio-dialog {
+  background: var(--v4-surface-bar);
+  color: var(--v4-ivory);
+  border: 1px solid var(--v4-border-dark);
+}
+
+.immersive-v4 .studio-dialog .v2-primary {
+  background: var(--v4-berry);
+  color: #ffffff;
+}
+
+.immersive-v4 .studio-dialog .v2-menu-list button,
+.immersive-v4 .studio-dialog .v2-link-row,
+.immersive-v4 .studio-dialog .v2-timeline button {
+  background: var(--v4-surface-card);
+  color: var(--v4-ivory);
+  border-color: var(--v4-border-dark);
+}
+
+.immersive-v4 .toast {
+  background: rgba(32, 32, 38, 0.94);
+  border: 1px solid rgba(201, 107, 150, 0.36);
+  color: var(--v4-ivory);
+}
