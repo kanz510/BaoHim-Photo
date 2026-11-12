@@ -9,10 +9,11 @@ import {resolve} from 'node:path';
 const root=resolve(import.meta.dirname,'..');
 GlobalFonts.registerFromPath(resolve(root,'assets/fonts/Manrope.ttf'),'Manrope');
 GlobalFonts.registerFromPath(resolve(root,'assets/fonts/PlayfairDisplay.ttf'),'Playfair Display');
-async function boot(){
+async function boot(options={}){
+ const url=options.url||'https://studio.test';
  const html=await readFile(resolve(root,'index.html'),'utf8'),built=await readFile(resolve(root,'dist/index.html'),'utf8'),script=built.match(/<script defer src="\.\/([^"]+)"/)[1],bundle=await readFile(process.env.PBS_TEST_BUNDLE||resolve(root,'dist',script),'utf8');
  const errors=[],vc=new VirtualConsole();vc.on('jsdomError',e=>errors.push(e.message));vc.on('error',(...e)=>errors.push(e.join(' ')));
- const dom=new JSDOM(html,{url:'https://studio.test',runScripts:'outside-only',pretendToBeVisual:true,virtualConsole:vc});
+ const dom=new JSDOM(html,{url,runScripts:'outside-only',pretendToBeVisual:true,virtualConsole:vc});
  const w=dom.window;w.Path2D=Path2D;w.Blob=Blob;w.FileReader=class extends w.EventTarget{
   readAsDataURL(blob){blob.arrayBuffer().then(bytes=>{this.result=`data:${blob.type};base64,${Buffer.from(bytes).toString('base64')}`;this.onload?.(new w.Event('load'));},error=>{this.error=error;this.onerror?.(new w.Event('error'));});}
  };w.indexedDB=new IDBFactory();w.structuredClone=structuredClone;w.fetch=async url=>{
@@ -661,5 +662,60 @@ test('V4 Immersive Beauty UI renders Pearl Editorial Home, connects all tools, s
   }
   await ui.showHome('studio');
   assert.equal(doc.querySelector('meta[name="theme-color"]')?.getAttribute('content'),'#fbf9f8');
+ }finally{await app.close();}
+});
+
+test('V5 CN Edition boots via ?ui=v5, applies dark editorial shell, 4 quick tools, secondary pills, 5-tab nav, 196px dock and preserves engine',async()=>{
+ const app=await boot({url:'https://studio.test/?ui=v5'});
+ try{
+  const {ui,facade:f}=app.w.Studio;
+  const doc=app.w.document;
+  assert.equal(ui.isV5,true);
+  assert.equal(doc.body.classList.contains('immersive-v5'),true);
+  assert.equal(doc.querySelector('meta[name="theme-color"]')?.getAttribute('content'),'#141416');
+
+  await ui.showHome('studio');
+  assert.equal(doc.querySelector('meta[name="theme-color"]')?.getAttribute('content'),'#141416');
+  assert.ok(doc.querySelector('.v5-hero'),'V5 Dark Editorial hero banner exists on Home');
+  assert.ok(doc.querySelector('.v5-hero-title')?.textContent.includes('Chỉnh ảnh'));
+
+  for(const target of ['beauty','makeup','body-reshape','filters']){
+   assert.ok(doc.querySelector(`.v5-quick-grid [data-v4-launch="${target}"]`),`V5 Quick Access button ${target} exists`);
+  }
+
+  for(const target of ['adjust','hsl','collage','text','stickers']){
+   assert.ok(doc.querySelector(`.v5-tool-pills [data-v4-launch="${target}"]`),`V5 secondary tool pill ${target} exists`);
+  }
+  const pendingErase=doc.querySelector('[data-v5-pending="erase"]');
+  assert.ok(pendingErase,'V5 pending erase pill exists');
+  pendingErase.click();
+  const toast=doc.querySelector('#studio-toast');
+  assert.ok(toast?.textContent.includes('Xóa vật thể'),'Clicking pending tool shows informative toast');
+
+  assert.ok(doc.querySelector('.v5-home-nav'),'V5 5-tab home nav exists');
+  assert.ok(doc.querySelector('.v5-home-nav [data-v2-home="studio"]'),'V5 Home tab exists');
+  assert.ok(doc.querySelector('.v5-home-nav [data-v4-launch="templates"]'),'V5 Templates tab exists');
+  assert.ok(doc.querySelector('.v5-home-nav [data-v2-action="open-photo"].v5-nav-create'),'V5 Center [+] create button exists');
+  assert.ok(doc.querySelector('.v5-home-nav [data-v2-home="projects"]'),'V5 Projects tab exists');
+  assert.ok(doc.querySelector('.v5-home-nav [data-v2-action="settings"]'),'V5 Profile/Settings tab exists');
+
+  assert.ok(doc.querySelector('.v5-style-card'),'V5 Style card carousel exists');
+
+  doc.querySelector('.v5-quick-grid [data-v4-launch="beauty"]').click();
+  for(let i=0;i<80&&ui.tool!=='beauty';i++)await new Promise(r=>setTimeout(r,25));
+  await ui.navigation;
+  assert.equal(ui.libraryVisible,false);
+  assert.equal(ui.tool,'beauty');
+  assert.equal(doc.querySelector('meta[name="theme-color"]')?.getAttribute('content'),'#141416');
+  assert.equal(ui.sheet.stops().compact,196,'V5 compact dock height targets 196px');
+
+  await ui.switchCategory('creative');
+  for(const sub of ['text','stickers','collage','frames','templates','geometry','layers','draw']){
+   assert.ok(doc.querySelector(`[data-v3-subtool="${sub}"]`),`Creative/Utility sub-tool ${sub} accessible in V5`);
+  }
+
+  await ui.showHome('studio');
+  assert.equal(ui.libraryVisible,true);
+  assert.equal(doc.querySelector('meta[name="theme-color"]')?.getAttribute('content'),'#141416');
  }finally{await app.close();}
 });

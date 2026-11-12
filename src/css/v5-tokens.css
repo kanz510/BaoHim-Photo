@@ -1,0 +1,30 @@
+/* BaoHim Photo V5 — Design Tokens (Approved CN Edition) */
+:root {
+  --v5-bg: #141416;
+  --v5-bg-elevated: #1D1D21;
+  --v5-surface: #242429;
+  --v5-surface-hover: #2D2D34;
+  --v5-surface-pill: rgba(255, 255, 255, 0.06);
+  --v5-surface-pill-active: rgba(196, 104, 144, 0.22);
+  --v5-text: #F5F3F2;
+  --v5-text-secondary: #A9A8B0;
+  --v5-text-muted: #777780;
+  --v5-accent: #C46890;
+  --v5-accent-active: #E27FAB;
+  --v5-accent-soft: rgba(196, 104, 144, 0.16);
+  --v5-border: rgba(255, 255, 255, 0.11);
+  --v5-divider: rgba(255, 255, 255, 0.08);
+  --v5-success: #8EBDA7;
+  --v5-danger: #EE8D9A;
+  --v5-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+  --v5-radius-sm: 10px;
+  --v5-radius-card: 14px;
+  --v5-radius-panel: 20px;
+  --v5-radius-pill: 999px;
+  --v5-header-height: 52px;
+  --v5-compact-dock-height: 196px;
+  --v5-touch-min: 44px;
+  --v5-thumb: 62px;
+  --v5-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --v5-motion: 170ms;
+}

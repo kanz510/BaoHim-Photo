@@ -689,6 +689,135 @@ try{
  assert.equal(v4AdjustMetrics.canvasW,v4FilterMetrics.canvasW,'Zero canvas width zoom jump when switching subtools');
  assert.equal(v4AdjustMetrics.canvasH,v4FilterMetrics.canvasH,'Zero canvas height zoom jump when switching subtools');
 
+ // 12. V5 CN Edition Mode (?ui=v5) WebKit Verification across iPhone Viewports
+ const v5Viewports=[
+  {name:'iPhone 16 Pro Max',width:440,height:956,dpr:3},
+  {name:'iPhone 14/15/16',width:390,height:844,dpr:3},
+  {name:'iPhone SE/Mini Compact',width:375,height:812,dpr:3}
+ ];
+
+ const v5Context=await browser.newContext({
+  viewport:{width:440,height:956},
+  deviceScaleFactor:3,
+  isMobile:true,
+  hasTouch:true,
+  userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'
+ });
+ const v5Page=await v5Context.newPage();
+ v5Page.on('pageerror',e=>errors.push(`[V5 PageError] ${e.message}`));
+ v5Page.on('console',m=>{if(m.type()==='error')errors.push(`[V5 ConsoleError] ${m.text()}`);});
+
+ await v5Page.goto(`${base}/index.html?ui=v5`,{waitUntil:'networkidle'});
+ await v5Page.waitForFunction(()=>window.Studio&&window.StudioReady);
+ await v5Page.evaluate(()=>window.StudioReady);
+
+ const v5HomeMetrics=await v5Page.evaluate(async()=>{
+  await Studio.ui.showHome('studio');
+  const doc=document;
+  const top=doc.querySelector('.v5-home-top').getBoundingClientRect();
+  const v2TopVisible=getComputedStyle(doc.querySelector('.v2-home-top')).display!=='none';
+  const v5TopVisible=getComputedStyle(doc.querySelector('.v5-home-top')).display!=='none';
+  const v2NavVisible=getComputedStyle(doc.querySelector('.v2-home-nav')).display!=='none';
+  const v5NavVisible=getComputedStyle(doc.querySelector('.v5-home-nav')).display!=='none';
+  const navBtns=[...doc.querySelectorAll('.v5-home-nav button')];
+  const navBtnHeights=navBtns.map(b=>b.getBoundingClientRect().height);
+  const quickItems=[...doc.querySelectorAll('.v5-quick-grid .v5-quick-item')];
+  const quickHeights=quickItems.map(q=>q.getBoundingClientRect().height);
+  const pills=[...doc.querySelectorAll('.v5-tool-pills .v5-tool-pill')];
+  const pillsHeights=pills.map(p=>p.getBoundingClientRect().height);
+  return {
+   isV5:Studio.ui.isV5,
+   bodyClass:doc.body.className,
+   themeColor:doc.querySelector('meta[name="theme-color"]')?.getAttribute('content'),
+   headerH:Math.round(top.height),
+   v2TopVisible,
+   v5TopVisible,
+   v2NavVisible,
+   v5NavVisible,
+   navBtnCount:navBtns.length,
+   minNavHeight:Math.min(...navBtnHeights),
+   quickCount:quickItems.length,
+   minQuickHeight:Math.min(...quickHeights),
+   pillCount:pills.length,
+   minPillHeight:Math.min(...pillsHeights),
+   hasHero:Boolean(doc.querySelector('.v5-hero')),
+   heroTitle:doc.querySelector('.v5-hero-title')?.textContent?.trim(),
+   hasRecentCard:Boolean(doc.querySelector('.v5-recent-card')),
+   hasStyleCard:Boolean(doc.querySelector('.v5-style-card'))
+  };
+ });
+
+ assert.equal(v5HomeMetrics.isV5,true,'ui.isV5 must be true when ?ui=v5');
+ assert.ok(v5HomeMetrics.bodyClass.includes('immersive-v5'),'body must have immersive-v5 class');
+ assert.equal(v5HomeMetrics.themeColor,'#141416','Theme color meta tag must be #141416 in V5 Home');
+ assert.equal(v5HomeMetrics.v5TopVisible,true,'V5 topbar must be visible');
+ assert.equal(v5HomeMetrics.v2TopVisible,false,'Legacy V2/V4 topbar must be hidden');
+ assert.equal(v5HomeMetrics.v5NavVisible,true,'V5 5-tab nav must be visible');
+ assert.equal(v5HomeMetrics.v2NavVisible,false,'Legacy V2/V4 3-tab nav must be hidden');
+ assert.equal(v5HomeMetrics.navBtnCount,5,'V5 bottom nav must contain exactly 5 tabs');
+ assert.ok(v5HomeMetrics.minNavHeight>=40,'V5 bottom nav touch targets meet minimum ergonomic height (>= 40px)');
+ assert.equal(v5HomeMetrics.quickCount,4,'V5 quick grid must contain 4 items (Beauty, Makeup, Body, Filters)');
+ assert.ok(v5HomeMetrics.minQuickHeight>=70,'V5 quick grid items meet ergonomic height');
+ assert.equal(v5HomeMetrics.pillCount,6,'V5 secondary utility strip has 6 items');
+ assert.ok(v5HomeMetrics.minPillHeight>=36,'V5 secondary pills meet ergonomic touch height');
+ assert.equal(v5HomeMetrics.hasHero,true,'V5 Hero banner must be present');
+ assert.ok(v5HomeMetrics.heroTitle.includes('Chỉnh ảnh'),'V5 Hero banner title matches spec');
+
+ await v5Page.click('.v5-quick-grid [data-v4-launch="beauty"]');
+ await v5Page.waitForTimeout(300);
+
+ const v5EditorMetrics=await v5Page.evaluate(()=>{
+  const doc=document;
+  const stage=doc.querySelector('#studio-stage').getBoundingClientRect();
+  const canvas=doc.querySelector('#canvas_minipaint').getBoundingClientRect();
+  const sheet=doc.querySelector('#studio-inspector').getBoundingClientRect();
+  return {
+   tool:Studio.ui.tool,
+   themeColor:doc.querySelector('meta[name="theme-color"]')?.getAttribute('content'),
+   compactDockTarget:Studio.ui.sheet.stops().compact,
+   sheetH:Math.round(sheet.height),
+   canvasW:Math.round(canvas.width),
+   canvasH:Math.round(canvas.height),
+   unclipped:canvas.top>=stage.top-1&&canvas.bottom<=stage.bottom+1&&canvas.left>=stage.left-1&&canvas.right<=stage.right+1
+  };
+ });
+
+ assert.equal(v5EditorMetrics.tool,'beauty','Launched beauty tool in V5 editor');
+ assert.equal(v5EditorMetrics.themeColor,'#141416','Theme color in V5 Editor remains #141416');
+ assert.equal(v5EditorMetrics.compactDockTarget,196,'V5 compact dock target is 196px');
+ assert.ok(v5EditorMetrics.sheetH>=180&&v5EditorMetrics.sheetH<=210,`V5 sheet height ${v5EditorMetrics.sheetH}px fits ~196px compact dock`);
+ assert.equal(v5EditorMetrics.unclipped,true,'Canvas fits cleanly inside stage without clipping in V5');
+
+ await v5Page.click('[data-v3-subtool="face-reshape"]');
+ await v5Page.waitForTimeout(220);
+ const v5ReshapeMetrics=await v5Page.evaluate(()=>{
+  const canvas=document.querySelector('#canvas_minipaint').getBoundingClientRect();
+  return {tool:Studio.ui.tool,canvasW:Math.round(canvas.width),canvasH:Math.round(canvas.height)};
+ });
+ assert.equal(v5ReshapeMetrics.tool,'reshape','Switched to face reshape subtool');
+ assert.equal(v5ReshapeMetrics.canvasW,v5EditorMetrics.canvasW,'Zero width zoom jump in V5 subtool switch');
+ assert.equal(v5ReshapeMetrics.canvasH,v5EditorMetrics.canvasH,'Zero height zoom jump in V5 subtool switch');
+
+ for(const vp of v5Viewports.slice(1)){
+  await v5Page.setViewportSize({width:vp.width,height:vp.height});
+  await v5Page.evaluate(async()=>{ await Studio.facade.fit(); });
+  await v5Page.waitForTimeout(150);
+  const vpMetrics=await v5Page.evaluate(()=>{
+   const doc=document;
+   const stage=doc.querySelector('#studio-stage').getBoundingClientRect();
+   const canvas=doc.querySelector('#canvas_minipaint').getBoundingClientRect();
+   return {
+    scrollW:doc.documentElement.scrollWidth,
+    clientW:doc.documentElement.clientWidth,
+    unclipped:canvas.top>=stage.top-1&&canvas.bottom<=stage.bottom+1&&canvas.left>=stage.left-1&&canvas.right<=stage.right+1
+   };
+  });
+  assert.equal(vpMetrics.scrollW<=vpMetrics.clientW,true,`No horizontal overflow on ${vp.name}`);
+  assert.equal(vpMetrics.unclipped,true,`Canvas stays unclipped on ${vp.name}`);
+ }
+
+ await v5Context.close();
+
  if(process.env.WRITE_BENCHMARK==='1'){
   await mkdir(resolve(root,'docs/qa'),{recursive:true});
   const distFiles=await readdir(dist);

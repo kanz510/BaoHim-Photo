@@ -11,3 +11,5 @@ import '../../css/premium-v2.css';
 import '../../css/pro-tokens.css';
 import '../../css/pro-v2.css';
 import '../../css/v4-theme.css';
+import '../../css/v5-tokens.css';
+import '../../css/v5-theme.css';
