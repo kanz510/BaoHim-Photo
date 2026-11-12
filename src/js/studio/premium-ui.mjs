@@ -23,7 +23,7 @@ const miniNote=text=>`<p class="v2-tool-note">${text}</p>`;
 export class PremiumUI extends MobilePreviewUI{
  constructor(facade,viewport){
   super(facade,viewport);this.preferences=new StudioPreferences();this.looks=[];this.thumbURLs=new Map();this.filterCache=new Map();this.homeTab='studio';this.filterGroup='all';this.adjustGroup='light';this.adjustKey='exposure';this.textTab='content';this.geometryTab='crop';this.brushSetting='strength';this.toneSetting='warmth';this.frameStyle='paper';this.framePercent=5;this.homeEpoch=0;this.makeupStudio=null;this.creativeStudio=null;this.lutStudio=null;this.bindPremium();
-  const stops=this.sheet.stops.bind(this.sheet);this.sheet.stops=()=>{const s=stops(),vh=window.visualViewport?.height||window.innerHeight;s.expanded=Math.min(s.expanded,Math.round(vh*.52));const baseCompact=vh<520?168:208;s.compact=Math.min(s.expanded,this.sheet.keyboard?172:baseCompact);return s;};
+  const stops=this.sheet.stops.bind(this.sheet);this.sheet.stops=()=>{const s=stops(),vh=window.visualViewport?.height||window.innerHeight;s.expanded=Math.min(s.expanded,Math.round(vh*.52));const baseCompact=vh<520?168:220;s.compact=Math.min(s.expanded,this.sheet.keyboard?172:baseCompact);return s;};
   this.preferences.listLooks().then(looks=>{this.looks=looks;if(this.tool==='filters')this.renderPanel();}).catch(()=>{});this.renderPanel();
  }
  async ensureMakeupStudio(){

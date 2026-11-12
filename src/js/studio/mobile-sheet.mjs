@@ -20,7 +20,7 @@ export class MobileSheet{
   if(render&&(previous==='expanded')!==(detent==='expanded'))this.ui.renderPanel();this.ui.mobileViewport?.schedule();
  }
  write(height){this.height=height;this.root.style.setProperty('--sheet-height',`${Math.max(0,height||0)}px`);}
- down(event){if(event.button!==0||event.target.closest('[data-mobile-action="sheet-close"]'))return;this.drag={id:event.pointerId,y:event.clientY,height:this.height,detent:this.detent,time:performance.now()};this.handle.setPointerCapture?.(event.pointerId);this.el.classList.add('is-dragging');}
+ down(event){if(event.button!==0||event.target.closest('button,a,input,select,[role="button"],[data-v3-subtool],[data-mobile-action]'))return;this.drag={id:event.pointerId,y:event.clientY,height:this.height,detent:this.detent,time:performance.now()};this.handle.setPointerCapture?.(event.pointerId);this.el.classList.add('is-dragging');}
  move(event){if(this.drag?.id!==event.pointerId)return;event.preventDefault();const s=this.stops();this.write(Math.max(s.peek,Math.min(s.expanded,this.drag.height+this.drag.y-event.clientY)));}
  up(event){
   if(this.drag?.id!==event.pointerId)return;const drag=this.drag,delta=drag.y-event.clientY;this.drag=null;this.el.classList.remove('is-dragging');

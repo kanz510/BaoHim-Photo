@@ -35,8 +35,10 @@ body.immersive-v4 .mobile-shell {
 
 .immersive-v4 #mobile-shell .v2-wordmark {
   display: inline-flex;
-  align-items: baseline;
+  flex-direction: row;
+  align-items: center;
   gap: 8px;
+  white-space: nowrap;
   text-decoration: none;
   font-family: var(--v4-font-serif);
   font-size: 23px;
@@ -46,6 +48,9 @@ body.immersive-v4 .mobile-shell {
 }
 
 .immersive-v4 #mobile-shell .v2-wordmark span {
+  display: inline-flex;
+  align-items: center;
+  width: auto;
   font-family: var(--v4-font-sans);
   font-size: 9px;
   font-weight: 700;
@@ -402,10 +407,9 @@ body.immersive-v4 .mobile-shell {
 
 /* Home Bottom Tabs (Pearl White) */
 .immersive-v4 #mobile-shell .v2-home-nav {
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: #ffffff;
   border-top: 1px solid var(--v4-pearl-line);
+  box-shadow: 0 -2px 12px rgba(29, 24, 27, 0.04);
   padding: 6px 14px calc(8px + env(safe-area-inset-bottom, 0px));
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -418,11 +422,14 @@ body.immersive-v4 .mobile-shell {
   align-items: center;
   gap: 3px;
   height: 44px;
+  margin: 0;
+  padding: 0 8px;
   justify-content: center;
   border-radius: 12px;
   font-size: 11px;
   font-weight: 600;
   color: var(--v4-pearl-sub);
+  background: transparent;
 }
 
 .immersive-v4 #mobile-shell .v2-home-nav button.active {
@@ -637,7 +644,7 @@ body.immersive-v4 .mobile-shell {
   border-top: 1px solid var(--v4-border-dark);
   border-radius: 18px 18px 0 0;
   box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.42);
-  grid-template-rows: 34px minmax(0, 1fr) 38px;
+  grid-template-rows: 34px minmax(0, 1fr) 36px;
 }
 
 .immersive-v4 #mobile-shell .sheet-drag-zone {
@@ -649,21 +656,69 @@ body.immersive-v4 .mobile-shell {
   background: rgba(246, 242, 238, 0.22);
 }
 
+.immersive-v4 #mobile-shell .panel-header {
+  padding: 0 10px !important;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.immersive-v4 #mobile-shell .mobile-panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  height: 28px;
+  padding: 0;
+}
+
 .immersive-v4 #mobile-shell .mobile-panel-heading h2 {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  margin: 0;
   color: var(--v4-ivory);
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 600;
 }
 
-.immersive-v4 #mobile-shell .v3-subnav {
+.immersive-v4 #mobile-shell .mobile-panel-heading > div:last-child {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  margin-right: 0 !important;
+}
+
+.immersive-v4 #mobile-shell .mobile-panel-heading .v3-subnav {
+  flex: 1 1 0;
+  width: 0;
+  max-width: none !important;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
   background: rgba(246, 242, 238, 0.06);
-  border: 1px solid rgba(246, 242, 238, 0.06);
+  border: 1px solid rgba(246, 242, 238, 0.08);
   border-radius: 999px;
   padding: 2px;
 }
 
-.immersive-v4 #mobile-shell .v3-subnav button {
-  color: var(--v4-ivory-dim);
+.immersive-v4 #mobile-shell .mobile-panel-heading .v3-subnav::-webkit-scrollbar {
+  display: none;
+}
+
+.immersive-v4 #mobile-shell .mobile-panel-heading .v3-subnav button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: var(--v4-ivory-dim) !important;
   height: 22px;
   padding: 0 9px;
   border-radius: 999px;
@@ -671,9 +726,9 @@ body.immersive-v4 .mobile-shell {
   font-weight: 600;
 }
 
-.immersive-v4 #mobile-shell .v3-subnav button.active {
-  background: var(--v4-berry);
-  color: #ffffff;
+.immersive-v4 #mobile-shell .mobile-panel-heading .v3-subnav button.active {
+  background: var(--v4-berry) !important;
+  color: #ffffff !important;
 }
 
 .immersive-v4 #mobile-shell .sheet-detail-toggle,
@@ -693,7 +748,73 @@ body.immersive-v4 .mobile-shell {
 .immersive-v4 #mobile-shell .panel-content {
   background: var(--v4-surface-bar);
   color: var(--v4-ivory);
-  padding: 6px 12px 4px !important;
+  padding: 4px 12px 2px !important;
+}
+
+.immersive-v4 #mobile-shell .v2-filters-panel {
+  gap: 5px;
+}
+
+.immersive-v4 #mobile-shell .v2-filters-panel .slider-field {
+  margin: 0;
+  gap: 2px;
+}
+
+.immersive-v4 #mobile-shell .v2-text-empty {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  min-height: 0 !important;
+  padding: 6px 2px;
+  flex-wrap: nowrap;
+}
+
+.immersive-v4 #mobile-shell .v2-text-empty > span {
+  font-size: 32px !important;
+  color: var(--v4-berry-bright) !important;
+}
+
+.immersive-v4 #mobile-shell .v2-text-empty strong {
+  color: var(--v4-ivory);
+  font-size: 12px;
+}
+
+.immersive-v4 #mobile-shell .v2-text-empty p {
+  font-size: 10.5px;
+  line-height: 1.4;
+  color: var(--v4-ivory-muted);
+  margin: 2px 0 6px !important;
+}
+
+.immersive-v4 #mobile-shell .v2-text-empty .v2-primary {
+  background: var(--v4-berry);
+  color: #ffffff;
+  border-radius: 999px;
+  height: 32px;
+  padding: 0 15px;
+  font-size: 12px;
+}
+
+.immersive-v4 #mobile-shell .v2-makeup-roles {
+  margin-top: 2px !important;
+  margin-bottom: 2px !important;
+}
+
+.immersive-v4 #mobile-shell .v2-makeup-roles button {
+  min-height: 28px !important;
+  gap: 1px !important;
+  font-size: 9px !important;
+}
+
+.immersive-v4 #mobile-shell .v2-makeup-roles .studio-icon {
+  width: 15px !important;
+  height: 15px !important;
+}
+
+.immersive-v4 #mobile-shell .v2-makeup-palette {
+  margin: 2px 0 !important;
+  min-height: 24px !important;
 }
 
 .immersive-v4 #mobile-shell .panel-footer {
@@ -836,10 +957,60 @@ body.immersive-v4 .mobile-shell {
   color: var(--v4-ivory);
 }
 
+.immersive-v4 #mobile-shell .v2-attributes button {
+  background: var(--v4-surface-card) !important;
+  border: 1px solid rgba(246, 242, 238, 0.08) !important;
+  color: var(--v4-ivory-dim) !important;
+  border-radius: 12px;
+}
+
+.immersive-v4 #mobile-shell .v2-attributes button i {
+  background: rgba(246, 242, 238, 0.06) !important;
+  color: var(--v4-ivory) !important;
+}
+
+.immersive-v4 #mobile-shell .v2-attributes button.active {
+  background: var(--v4-surface-pill-active) !important;
+  border-color: var(--v4-berry) !important;
+  color: var(--v4-ivory) !important;
+}
+
+.immersive-v4 #mobile-shell .v2-attributes button.active i {
+  background: rgba(201, 107, 150, 0.22) !important;
+  color: var(--v4-berry-bright) !important;
+}
+
+.immersive-v4 #mobile-shell .v2-filter-strip img[src^="data:image/gif"] {
+  opacity: 0;
+}
+
+.immersive-v4 #mobile-shell .v2-brush-controls,
+.immersive-v4 #mobile-shell .v2-tone-controls {
+  gap: 3px;
+}
+
+.immersive-v4 #mobile-shell .v2-tool-strip {
+  gap: 7px;
+  padding-bottom: 2px;
+}
+
+.immersive-v4 #mobile-shell .v2-makeup-panel,
+.immersive-v4 #mobile-shell .v2-makeup-roles {
+  gap: 5px;
+}
+
+.immersive-v4 #mobile-shell .v2-makeup-swatches {
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.immersive-v4 #mobile-shell .v2-brush-controls .slider-field {
+  margin-top: 1px;
+}
+
 .immersive-v4 #mobile-shell .pro-effect-list button,
 .immersive-v4 #mobile-shell .v2-body-actions button,
 .immersive-v4 #mobile-shell .v2-inline-action,
-.immersive-v4 #mobile-shell .v2-attributes button,
 .immersive-v4 #mobile-shell .v2-crop-ratios button,
 .immersive-v4 #mobile-shell .v2-rotate-actions button {
   background: var(--v4-surface-card);
@@ -848,7 +1019,6 @@ body.immersive-v4 .mobile-shell {
 }
 
 .immersive-v4 #mobile-shell .pro-effect-list button.active,
-.immersive-v4 #mobile-shell .v2-attributes button.active,
 .immersive-v4 #mobile-shell .v2-crop-ratios button.active {
   background: var(--v4-surface-pill-active);
   border-color: var(--v4-berry);
