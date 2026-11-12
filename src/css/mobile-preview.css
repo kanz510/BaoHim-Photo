@@ -5,7 +5,7 @@ body.mobile-preview {
 }
 .mobile-preview *, .mobile-preview *::before, .mobile-preview *::after {box-sizing:border-box;}
 .mobile-preview .ui-support {position:fixed;left:-10000px;top:0;width:200px;height:100px;visibility:hidden;pointer-events:none;overflow:hidden;}
-.mobile-preview .mobile-shell {--sheet-height:0px;--topbar:calc(56px + env(safe-area-inset-top,0px));--dock:calc(78px + env(safe-area-inset-bottom,0px));width:100%;max-width:480px;height:var(--app-height,100dvh);position:fixed;inset:0 auto auto 50%;transform:translateX(-50%);overflow:hidden;background:var(--pearl);isolation:isolate;}
+.mobile-preview .mobile-shell {--sheet-height:0px;--topbar:calc(46px + env(safe-area-inset-top,0px));--dock:calc(58px + env(safe-area-inset-bottom,0px));width:100%;max-width:480px;height:var(--app-height,100dvh);position:fixed;inset:0 auto auto 50%;transform:translateX(-50%);overflow:hidden;background:var(--pearl);isolation:isolate;}
 #mobile-shell button {font-family:var(--studio-font);letter-spacing:0;text-transform:none;touch-action:manipulation;}
 #mobile-shell .studio-icon {width:22px;height:22px;stroke-width:1.65;}
 #mobile-shell button:focus-visible {outline:2px solid var(--rose);outline-offset:2px;}
@@ -16,6 +16,9 @@ body.mobile-preview {
 #mobile-shell .mobile-save {height:40px;min-width:62px;padding:8px 18px!important;border-radius:21px;background:var(--rose);color:#fff;font-size:14px;font-weight:600;position:relative;}
 #mobile-shell .mobile-save::before {content:'';position:absolute;inset:-3px 0;}
 #mobile-shell .mobile-workspace {position:absolute;top:var(--topbar);bottom:calc(var(--dock) + var(--sheet-height));left:0;right:0;min-height:0;display:block;transition:none;}
+#mobile-shell.sheet-open .mobile-workspace {bottom:calc(var(--sheet-height) + env(safe-area-inset-bottom,0px));}
+#mobile-shell.sheet-open .mobile-nav {display:none;}
+#mobile-shell.sheet-open .mobile-sheet {bottom:0;height:calc(var(--sheet-height) + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);}
 #mobile-shell .studio-stage {position:absolute;inset:0;min-height:0;background:#f3f0ef;overflow:hidden;display:block;}
 #mobile-shell #middle_area {position:absolute!important;inset:0!important;width:100%!important;height:100%!important;margin:0!important;border:0!important;overflow:hidden!important;background:none!important;}
 #mobile-shell #main_wrapper {position:absolute!important;inset:0!important;display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important;min-height:0!important;overflow:hidden!important;padding:0!important;touch-action:none;}
@@ -38,7 +41,7 @@ body.mobile-preview {
 #mobile-shell .loading-flower {font-size:36px;color:#d796ad;}
 #mobile-shell .mobile-nav {position:absolute;bottom:0;left:0;right:0;height:var(--dock);z-index:15;display:flex;align-items:flex-start;gap:0;overflow-x:auto;overflow-y:hidden;white-space:nowrap;flex-wrap:nowrap;padding:0 max(8px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(8px,env(safe-area-inset-left,0px));background:var(--pearl);border-top:1px solid #eee8eb;scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x;}
 #mobile-shell .mobile-nav::-webkit-scrollbar {display:none;}
-#mobile-shell #mobile-nav .nav-tool {display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;flex:0 0 67px;min-width:67px;width:67px;height:77px;min-height:77px;margin:0;padding:8px 3px 9px!important;border:0;border-radius:0;background:none;box-shadow:none;font-size:11px!important;font-weight:500;color:#958b91;line-height:1.1;position:relative;white-space:nowrap;}
+#mobile-shell #mobile-nav .nav-tool {display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:0 0 60px;min-width:60px;width:60px;height:57px;min-height:57px;margin:0;padding:5px 2px 6px!important;border:0;border-radius:0;background:none;box-shadow:none;font-size:10px!important;font-weight:500;color:#958b91;line-height:1.1;position:relative;white-space:nowrap;}
 #mobile-shell #mobile-nav .nav-tool>span {white-space:nowrap;overflow:visible;line-height:1.15;}
 #mobile-shell #mobile-nav .nav-tool>span[data-icon] {width:30px;height:27px;display:flex;align-items:center;justify-content:center;}
 #mobile-shell #mobile-nav .nav-tool .studio-icon {width:24px;height:24px;}

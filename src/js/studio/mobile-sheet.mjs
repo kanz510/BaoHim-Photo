@@ -7,7 +7,7 @@ export class MobileSheet{
   this.resize=()=>this.viewportChanged();window.addEventListener('resize',this.resize);window.visualViewport?.addEventListener('resize',this.resize);window.visualViewport?.addEventListener('scroll',this.resize);
   this.viewportChanged();
  }
- stops(){const s=sheetStops(window.visualViewport?.height||window.innerHeight,this.root.querySelector('.mobile-header')?.offsetHeight||60,this.keyboard?0:document.getElementById('mobile-nav').offsetHeight||80);if(['filters','makeup'].includes(this.ui.tool))s.compact=Math.min(272,s.expanded);return s;}
+ stops(){const dock=(this.keyboard||this.detent!=='closed')?0:(document.getElementById('mobile-nav')?.offsetHeight||58);return sheetStops(window.visualViewport?.height||window.innerHeight,this.root.querySelector('.mobile-header')?.offsetHeight||46,dock);}
  viewportChanged(){
   const vv=window.visualViewport,height=Math.round(vv?.height||window.innerHeight),focused=document.activeElement?.matches('textarea,input:not([type="range"]):not([type="color"]),select');
   this.keyboard=!!focused&&height<window.innerHeight-100;this.root.classList.toggle('keyboard-visible',this.keyboard);this.root.style.setProperty('--app-height',height+'px');this.root.style.top=Math.max(0,vv?.offsetTop||0)+'px';

@@ -91,22 +91,43 @@ function setupViewportHarness({docW=1200,docH=1500,winW=440,winH=956,stageW=440,
  return {facade,viewport,config,gui,canvas,stage,flushRaf,triggerStageResize,fire,worldAtCenter,viewportEvents,cleanup};
 }
 
-test('MobileViewport never resets zoom across 30 tool/sheet height changes and preserves 200% zoom + center anchor',async()=>{
- const h=setupViewportHarness();
+test('MobileViewport distinguishes Fit mode (unclipped on resize, invariant across tools) from Manual mode (locked zoom & center)',async()=>{
+ const h=setupViewportHarness({docW:1000,docH:1500,stageW:440,stageH:814});
  try{
   await h.facade.fit();
-  const fitZoom=h.config.ZOOM;
-  assert.ok(fitZoom>0&&fitZoom<1);
+  const homeFitZoom=h.config.ZOOM;
+  assert.ok(homeFitZoom>0&&homeFitZoom<1);
   assert.equal(h.viewport.fitted,true);
 
-  // 1. Switch across 30 simulated tool/subtool sheet heights while fitted -> zoom must stay identical
-  const sheetHeights=[236,250,288,280,268,308,276,254,280,252,278,282,250,0,120,480];
+  // 1000x1500 opening Filter compact toolbar (198px -> stage 440x656): still width-bound, same zoom, 100% unclipped
+  h.triggerStageResize(440,656);
+  await h.flushRaf();
+  assert.equal(h.config.ZOOM,homeFitZoom);
+  assert.ok(h.config.HEIGHT*h.config.ZOOM<=h.stage.clientHeight);
+  assert.equal(h.canvas.studioViewportHeight,Math.ceil(1500*homeFitZoom));
+
+  // 1. Switch across 30 tools using shared compact height (440x656) -> zero zoom drift
   for(let i=0;i<30;i++){
-   const sh=sheetHeights[i%sheetHeights.length];
-   h.triggerStageResize(440,750-sh);
+   h.triggerStageResize(440,656);
    await h.flushRaf();
-   assert.equal(h.config.ZOOM,fitZoom,`Zoom drifted on switch #${i+1}`);
+   assert.equal(h.config.ZOOM,homeFitZoom,`Zoom drifted on switch #${i+1}`);
   }
+
+  // Tall full-body photo 1000x2000 in Fit mode refits cleanly when compact sheet opens so head/feet stay unclipped
+  h.config.WIDTH=1000;h.config.HEIGHT=2000;
+  h.triggerStageResize(440,814);
+  await h.facade.fit();
+  assert.ok(2000*h.config.ZOOM<=814);
+  h.triggerStageResize(440,656);
+  await h.flushRaf();
+  assert.ok(2000*h.config.ZOOM<=656,'Full-body 1000x2000 must stay 100% visible when toolbar opens');
+  assert.equal(h.canvas.studioViewportHeight,Math.ceil(2000*h.config.ZOOM));
+
+  // Restore 1000x1500 at compact stage before Manual 200% zoom
+  h.config.WIDTH=1000;h.config.HEIGHT=1500;
+  h.triggerStageResize(440,656);
+  await h.facade.fit();
+  const fitZoom=h.config.ZOOM;
 
   // 2. Manual zoom to 200% and pan to a specific off-center face detail
   await h.facade.zoom(2/h.config.ZOOM);
@@ -118,13 +139,11 @@ test('MobileViewport never resets zoom across 30 tool/sheet height changes and p
 
   // 3. Switch 10 tools + drag sheet across compact/peek/expanded/closed + keyboard + Safari bar resize
   const events=[
-   [440,750-236,{}],
-   [440,750-288,{}],
-   [440,750-280,{}],
-   [440,750-308,{}],
-   [440,750-56,{}],
-   [440,750-490,{}],
-   [440,750,{}],
+   [440,656,{}],
+   [440,656,{}],
+   [440,814,{}],
+   [440,380,{}],
+   [440,870,{}],
    [440,660,{winHeight:840,vvHeight:840,fireWindowResize:true,fireVV:true}], // Safari bar expand
    [440,420,{vvHeight:500,fireWindowResize:true,fireVV:true}], // Keyboard visible
    [440,750,{winHeight:956,vvHeight:956,fireWindowResize:true,fireVV:true}]
@@ -155,7 +174,7 @@ test('MobileViewport never resets zoom across 30 tool/sheet height changes and p
   assert.ok(h.config.ZOOM<0.3);
 
   // 6. Rotation when fitted re-fits cleanly to portrait
-  h.triggerStageResize(440,750,{winWidth:440,winHeight:956,vvHeight:956,fireWindowResize:true,fireVV:true});
+  h.triggerStageResize(440,656,{winWidth:440,winHeight:956,vvHeight:956,fireWindowResize:true,fireVV:true});
   h.fire('window','orientationchange');
   await h.flushRaf();
   assert.equal(h.viewport.fitted,true);

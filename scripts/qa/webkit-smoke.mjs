@@ -209,6 +209,57 @@ try{
  assert.ok(['worker','cpu'].includes(fallbackCheck.backendDuringLoss),'Lost WebGL context must fall back automatically to worker/CPU');
  assert.equal(fallbackCheck.backendAfterRestore,'webgl2','Restored WebGL context must resume WebGL2 GPU Liquify');
 
+ // 3a. Meitu Compact Layout & 100% Unclipped Photo Visibility (Portrait 1000x1500, Landscape 1500x1000, Square 1000x1000, Full-Body 1000x2000)
+ const aspectCases=[[1000,1500,'portrait-1000x1500'],[1500,1000,'landscape-1500x1000'],[1000,1000,'square-1000x1000'],[1000,2000,'fullbody-1000x2000']];
+ for(const [tw,th,label] of aspectCases){
+  const aspectAudit=await page.evaluate(async([w,h])=>{
+   const {facade:f,ui}=window.Studio;
+   const rafTick=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+   const cTmp=document.createElement('canvas');cTmp.width=w;cTmp.height=h;
+   const x=cTmp.getContext('2d');
+   const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,'#e8d5de');g.addColorStop(.5,'#cfa0b4');g.addColorStop(1,'#875c70');
+   x.fillStyle=g;x.fillRect(0,0,w,h);
+   x.strokeStyle='#ffffff';x.lineWidth=16;x.strokeRect(8,8,w-16,h-16);
+   const blob=await new Promise(r=>cTmp.toBlob(r,'image/png'));cTmp.width=1;
+   await f.open(blob,`${w}x${h}.png`);
+   await ui.switchTool('filters');
+   await rafTick();
+   const wrapper=document.getElementById('main_wrapper').getBoundingClientRect();
+   const canvas=document.getElementById('canvas_minipaint').getBoundingClientRect();
+   const sheet=document.getElementById('studio-inspector').getBoundingClientRect();
+   const navStyle=getComputedStyle(document.getElementById('mobile-nav'));
+   const thumb=document.querySelector('.v2-filter-strip .filter-preview')?.getBoundingClientRect();
+   const ratioCanvas=canvas.width/canvas.height,ratioDoc=w/h;
+   const fullBodyZoomInTools=[];
+   for(const t of ['filters','beauty','makeup','reshape','adjust','text']){
+    await ui.switchTool(t);await rafTick();fullBodyZoomInTools.push(f.config.ZOOM);
+   }
+   await ui.switchTool('filters');await rafTick();
+   return {
+    wrapper,canvas,sheet,navDisplay:navStyle.display,
+    thumbW:thumb?.width||0,thumbH:thumb?.height||0,
+    ratioDiff:Math.abs(ratioCanvas-ratioDoc),
+    fullVisibleWidth:canvas.width<=wrapper.width+1&&canvas.left>=wrapper.left-1&&canvas.right<=wrapper.right+1,
+    fullVisibleHeight:canvas.height<=wrapper.height+1&&canvas.top>=wrapper.top-1&&canvas.bottom<=wrapper.bottom+1,
+    noOverlapSheet:canvas.bottom<=sheet.top+1,
+    renderedFullDoc:Math.abs(canvas.width-w*f.config.ZOOM)<2&&Math.abs(canvas.height-h*f.config.ZOOM)<2,
+    zoomsConsistentAcrossTools:fullBodyZoomInTools.every(z=>Math.abs(z-fullBodyZoomInTools[0])<1e-6)
+   };
+  },[tw,th]);
+  assert.equal(aspectAudit.navDisplay,'none',`${label}: bottom nav must hide when compact tool sheet is open`);
+  assert.ok(aspectAudit.sheet.height>=160&&aspectAudit.sheet.height<=220,`${label}: compact sheet height (${aspectAudit.sheet.height}) must stay in 160-220px`);
+  assert.ok(aspectAudit.thumbH>=54&&aspectAudit.thumbH<=70,`${label}: filter thumbnail height (${aspectAudit.thumbH}) must stay compact ~58-70px`);
+  assert.ok(aspectAudit.ratioDiff<0.02,`${label}: aspect ratio distorted (diff=${aspectAudit.ratioDiff})`);
+  assert.equal(aspectAudit.fullVisibleWidth,true,`${label}: canvas horizontally clipped or outside wrapper`);
+  assert.equal(aspectAudit.fullVisibleHeight,true,`${label}: canvas vertically clipped or outside wrapper`);
+  assert.equal(aspectAudit.noOverlapSheet,true,`${label}: canvas overlapped bottom toolbar (${aspectAudit.canvas.bottom} > ${aspectAudit.sheet.top})`);
+  assert.equal(aspectAudit.renderedFullDoc,true,`${label}: canvas CSS size did not render 100% of W*ZOOM x H*ZOOM`);
+  assert.equal(aspectAudit.zoomsConsistentAcrossTools,true,`${label}: zoom changed while switching Filter/Beauty/Makeup/Reshape/Adjust/Text`);
+  if(process.env.SCREENSHOT_DIR&&(label==='portrait-1000x1500'||label==='fullbody-1000x2000')){
+   await page.screenshot({path:resolve(process.env.SCREENSHOT_DIR,`after-${label}-filters.png`)});
+  }
+ }
+
  // 3b. Viewport Zoom & Anchor Stability Regression (iPhone 16 Pro Max 440x956 DPR3)
  await page.evaluate(async()=>{
   await window.Studio.facade.openDemo('portrait');
@@ -320,6 +371,16 @@ try{
  assert.ok(Math.abs(afterDragAndSafariBar.center.x-manual200Stability.centerBefore.x)<1.5);
  assert.ok(Math.abs(afterDragAndSafariBar.center.y-manual200Stability.centerBefore.y)<1.5);
  assert.ok(afterDragAndSafariBar.zoomAfterExplicitFit<1,'Explicit Vừa khung action must still refit cleanly');
+ if(process.env.SCREENSHOT_DIR){
+  await page.evaluate(async()=>{await window.Studio.facade.openDemo('portrait');await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));});
+  await page.waitForTimeout(350);
+  await page.evaluate(async()=>{await window.Studio.ui.switchTool('filters');await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));});
+  await page.waitForTimeout(200);
+  await page.screenshot({path:resolve(process.env.SCREENSHOT_DIR,'after-demo-portrait-filters.png')});
+  await page.evaluate(async()=>{await window.Studio.ui.switchTool('beauty');await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));});
+  await page.waitForTimeout(160);
+  await page.screenshot({path:resolve(process.env.SCREENSHOT_DIR,'after-demo-portrait-beauty.png')});
+ }
 
  // 4. Full V3 workflow: Zoom/Pan, Orientation Rotate, Auto/Color, Beauty, Heal/Blemish, Face/Body Reshape, Makeup/Hair, Filter/LUT, Creative, Continuous Undo/Redo, Background/Foreground, PNG/JPEG Open & Export
  const editResult=await page.evaluate(async()=>{

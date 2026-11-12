@@ -1,7 +1,7 @@
 @font-face{font-family:'Dancing Script';src:url('./assets/fonts/DancingScript.ttf') format('truetype');font-weight:400 700;font-display:swap}
 @font-face{font-family:'Lora';src:url('./assets/fonts/Lora.ttf') format('truetype');font-weight:400 700;font-display:swap}
 body.premium-v2{--pearl:#fcf9f8;--rose:#bd567b;--rose-strong:#aa4166;--rose-wash:#f6e7ee;--ink:#302b2f;--muted:#8c7d85;background:#e9e3e6;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Manrope',sans-serif}
-.premium-v2 #mobile-shell{--topbar:calc(52px + env(safe-area-inset-top,0px));--dock:calc(76px + env(safe-area-inset-bottom,0px));background:#1d1d20;max-width:480px;box-shadow:0 0 70px #2e1f3010}
+.premium-v2 #mobile-shell{--topbar:calc(46px + env(safe-area-inset-top,0px));--dock:calc(58px + env(safe-area-inset-bottom,0px));background:#1d1d20;max-width:480px;box-shadow:0 0 70px #2e1f3010}
 .premium-v2 #mobile-shell button,.premium-v2 #mobile-shell a{ -webkit-tap-highlight-color:transparent}
 .premium-v2 #mobile-shell button{transition:color .16s,background .16s,opacity .16s,transform .16s;cursor:pointer}
 .premium-v2 #mobile-shell button:active{opacity:.72}
@@ -14,12 +14,12 @@ body.premium-v2{--pearl:#fcf9f8;--rose:#bd567b;--rose-strong:#aa4166;--rose-wash
 .premium-v2 #mobile-shell .mobile-save{min-width:58px;height:34px;padding:5px 14px!important;border-radius:10px;font-size:13px;background:#e5a4bd;color:#33232d;font-weight:650}
 .premium-v2 #mobile-shell .mobile-workspace{transition:none}
 .premium-v2 #mobile-shell .studio-stage{background:#1d1d20}
-.premium-v2 #mobile-shell #main_wrapper{top:26px!important;bottom:54px!important;height:calc(100% - 80px)!important}
+.premium-v2 #mobile-shell #main_wrapper{top:18px!important;bottom:38px!important;height:calc(100% - 56px)!important}
 .premium-v2 #mobile-shell #canvas_wrapper{box-shadow:none;border-radius:0}
-.premium-v2 #mobile-shell .v2-photo-caption{position:absolute;top:6px;left:20px;right:20px;display:flex;justify-content:space-between;gap:12px;pointer-events:none;color:#9e949d;font-size:9px;line-height:16px;letter-spacing:.3px}
+.premium-v2 #mobile-shell .v2-photo-caption{position:absolute;top:2px;left:16px;right:16px;display:flex;justify-content:space-between;gap:12px;pointer-events:none;color:#9e949d;font-size:9px;line-height:14px;letter-spacing:.3px}
 .premium-v2 #mobile-shell #v2-photo-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:70%}
 .premium-v2 #mobile-shell #v2-photo-size{white-space:nowrap;font-variant-numeric:tabular-nums}
-.premium-v2 #mobile-shell .mobile-canvas-controls{left:12px;right:12px;bottom:5px;gap:0;height:44px;color:#d7ced5}
+.premium-v2 #mobile-shell .mobile-canvas-controls{left:10px;right:10px;bottom:2px;gap:0;height:36px;color:#d7ced5}
 .premium-v2 #mobile-shell .mobile-history{margin-right:auto;gap:0}
 .premium-v2 #mobile-shell .mobile-icon-button{background:transparent;color:#d8ced6;backdrop-filter:none;-webkit-backdrop-filter:none;width:40px;height:44px;border-radius:8px}
 .premium-v2 #mobile-shell .mobile-icon-button .studio-icon{width:19px;height:19px;stroke-width:1.7}
@@ -29,25 +29,25 @@ body.premium-v2{--pearl:#fcf9f8;--rose:#bd567b;--rose-strong:#aa4166;--rose-wash
 .premium-v2 #mobile-shell .comparison-badge{top:30px;background:#2c272ecc;color:#fff;font-size:10px;border-radius:6px}
 .premium-v2 #mobile-shell .loading-studio{background:#1d1d20;color:#e5c1d0;font-size:12px}
 .premium-v2 #mobile-shell .mobile-nav{background:var(--pearl);border-top:1px solid #eae2e6;padding-left:max(5px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
-.premium-v2 #mobile-shell #mobile-nav .nav-tool{flex-basis:66px;min-width:66px;width:66px;height:75px;min-height:75px;gap:7px;color:#867880;font-size:10px!important;font-weight:500;padding:12px 2px 11px!important}
-.premium-v2 #mobile-shell #mobile-nav .nav-tool .studio-icon{width:23px;height:23px;stroke-width:1.55}
+.premium-v2 #mobile-shell #mobile-nav .nav-tool{flex-basis:60px;min-width:60px;width:60px;height:57px;min-height:57px;gap:3px;color:#867880;font-size:10px!important;font-weight:500;padding:6px 2px 6px!important}
+.premium-v2 #mobile-shell #mobile-nav .nav-tool .studio-icon{width:21px;height:21px;stroke-width:1.55}
 .premium-v2 #mobile-shell #mobile-nav .nav-tool.active{color:#a84067}
-.premium-v2 #mobile-shell #mobile-nav .nav-tool.active::after{top:9px;left:50%;width:32px;height:3px;border-radius:2px;background:#bf5a80;transform:translate(-50%,-9px)}
-.premium-v2 #mobile-shell .mobile-sheet{background:var(--pearl);box-shadow:none;border-radius:19px 19px 0 0;grid-template-rows:44px minmax(0,1fr) 44px;transition:height .26s cubic-bezier(.22,.72,.23,1)}
-.premium-v2 #mobile-shell .mobile-sheet[data-detent=peek]{grid-template-rows:44px 0 0}
-.premium-v2 #mobile-shell .sheet-drag-zone{height:44px;padding-top:12px}
-.premium-v2 #mobile-shell .sheet-grabber{height:18px;padding-top:6px!important}
+.premium-v2 #mobile-shell #mobile-nav .nav-tool.active::after{top:5px;left:50%;width:28px;height:3px;border-radius:2px;background:#bf5a80;transform:translate(-50%,-5px)}
+.premium-v2 #mobile-shell .mobile-sheet{background:var(--pearl);box-shadow:0 -4px 18px #18141816;border-radius:18px 18px 0 0;grid-template-rows:32px minmax(0,1fr) 36px;transition:height .22s cubic-bezier(.22,.72,.23,1)}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=peek]{grid-template-rows:32px 0 0}
+.premium-v2 #mobile-shell .sheet-drag-zone{height:32px;padding-top:4px}
+.premium-v2 #mobile-shell .sheet-grabber{height:10px;padding-top:2px!important}
 .premium-v2 #mobile-shell .sheet-grabber i{width:28px;height:3px;background:#dfd1d8}
-.premium-v2 #mobile-shell .panel-header{padding:0 20px!important}
-.premium-v2 #mobile-shell .mobile-panel-heading{height:31px}
-.premium-v2 #mobile-shell .mobile-panel-heading h2{font-size:14px;font-weight:650;letter-spacing:-.2px}
+.premium-v2 #mobile-shell .panel-header{padding:0 14px!important}
+.premium-v2 #mobile-shell .mobile-panel-heading{height:24px}
+.premium-v2 #mobile-shell .mobile-panel-heading h2{font-size:13px;font-weight:650;letter-spacing:-.2px}
 .premium-v2 #mobile-shell .v2-manual-label{font-size:7px;letter-spacing:1px;color:#a58c9a;margin-right:4px}
-.premium-v2 #mobile-shell .sheet-close,.premium-v2 #mobile-shell .sheet-detail-toggle{width:34px;height:32px;color:#9c8591}
+.premium-v2 #mobile-shell .sheet-close,.premium-v2 #mobile-shell .sheet-detail-toggle{width:30px;height:26px;color:#9c8591}
 .premium-v2 #mobile-shell .sheet-detail-toggle .studio-icon,.premium-v2 #mobile-shell .sheet-close .studio-icon{width:16px;height:16px}
-.premium-v2 #mobile-shell .panel-content{padding:2px 20px 8px!important}
-.premium-v2 #mobile-shell .panel-footer{background:var(--pearl);padding:2px 20px 4px!important;border-color:#ebe2e7}
-.premium-v2 #mobile-shell .sheet-secondary{font-size:11px;color:#8c7884;height:40px;min-width:64px;justify-content:flex-start}
-.premium-v2 #mobile-shell .sheet-confirm{height:32px;border-radius:8px;min-width:80px;background:#f0dae5;color:#9f4062;font-size:11px;font-weight:650;padding:5px 13px!important}
+.premium-v2 #mobile-shell .panel-content{padding:2px 14px 4px!important}
+.premium-v2 #mobile-shell .panel-footer{background:var(--pearl);padding:2px 14px 4px!important;border-color:#ebe2e7}
+.premium-v2 #mobile-shell .sheet-secondary{font-size:11px;color:#8c7884;height:32px;min-height:32px;min-width:56px;justify-content:flex-start}
+.premium-v2 #mobile-shell .sheet-confirm{height:28px;min-height:28px;border-radius:14px;min-width:74px;background:#f0dae5;color:#9f4062;font-size:11px;font-weight:650;padding:4px 12px!important}
 .premium-v2 #mobile-shell .sheet-confirm .studio-icon{width:16px;height:16px}
 .premium-v2 #mobile-shell .slider-field{margin:3px 0 0}
 .premium-v2 #mobile-shell .slider-heading{font-size:11px;line-height:17px;color:#71626b;font-weight:500}
@@ -310,7 +310,7 @@ body.premium-v2{--pearl:#fcf9f8;--rose:#bd567b;--rose-strong:#aa4166;--rose-wash
 .premium-v2 #mobile-shell:has(.is-dragging) .mobile-workspace{transition:none}
 @keyframes v2-page-in{from{opacity:.65;transform:translateY(5px)}to{opacity:1;transform:none}}
 @media(max-width:375px){.premium-v2 #mobile-shell #v2-home-content{padding-left:18px;padding-right:18px}.premium-v2 #mobile-shell .v2-home-top{padding-left:18px;padding-right:18px}.premium-v2 #mobile-shell .v2-home-intro h2{font-size:32px}.premium-v2 #mobile-shell .v2-editorial{height:255px}.premium-v2 #mobile-shell .v2-makeup-palette{gap:5px}.premium-v2 #mobile-shell .v2-makeup-palette .swatch{width:24px;height:24px;flex-basis:24px}.premium-v2 #mobile-shell .v2-tabs{gap:16px}.premium-v2 #mobile-shell .v2-frame-thumb{width:58px;height:76px}.premium-v2 #mobile-shell .mobile-fit{display:none}.premium-v2 #mobile-shell .mobile-icon-button{width:37px}.premium-v2 #mobile-shell .v2-manual-label{display:none}}
-@media(orientation:landscape) and (max-height:520px){.premium-v2 #mobile-shell{max-width:none;--topbar:46px;--dock:64px}.premium-v2 #mobile-shell #mobile-nav .nav-tool{height:63px;min-height:63px;padding-top:8px!important;gap:4px}.premium-v2 #mobile-shell .v2-home-top{min-height:68px;padding-top:10px}.premium-v2 #mobile-shell .v2-home-intro{padding-top:15px}.premium-v2 #mobile-shell .v2-editorial{height:250px}.premium-v2 #mobile-shell .mobile-library #v2-home-content{max-width:520px;margin:auto}.premium-v2 #mobile-shell #main_wrapper{top:8px!important;height:calc(100% - 52px)!important;bottom:44px!important}.premium-v2 #mobile-shell .v2-photo-caption{display:none}.premium-v2 #mobile-shell .v2-home-nav{height:64px;padding-top:3px}}
+@media(orientation:landscape) and (max-height:520px){.premium-v2 #mobile-shell{max-width:none;--topbar:42px;--dock:52px}.premium-v2 #mobile-shell #mobile-nav .nav-tool{height:51px;min-height:51px;padding-top:4px!important;gap:2px}.premium-v2 #mobile-shell .v2-home-top{min-height:68px;padding-top:10px}.premium-v2 #mobile-shell .v2-home-intro{padding-top:15px}.premium-v2 #mobile-shell .v2-editorial{height:250px}.premium-v2 #mobile-shell .mobile-library #v2-home-content{max-width:520px;margin:auto}.premium-v2 #mobile-shell #main_wrapper{top:4px!important;height:calc(100% - 42px)!important;bottom:38px!important}.premium-v2 #mobile-shell .v2-photo-caption{display:none}.premium-v2 #mobile-shell .v2-home-nav{height:64px;padding-top:3px}}
 @media(prefers-reduced-motion:reduce){.premium-v2 #mobile-shell *,.premium-v2 #mobile-shell *::before,.premium-v2 #mobile-shell *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
 /* Neutralize inherited desktop declarations at the preview boundary. */
@@ -337,7 +337,7 @@ body.premium-v2{--pearl:#fcf9f8;--rose:#bd567b;--rose-strong:#aa4166;--rose-wash
 .premium-v2 #mobile-shell .studio-range{height:40px!important}
 .premium-v2 #mobile-shell .sheet-close,.premium-v2 #mobile-shell .sheet-detail-toggle{position:relative}
 .premium-v2 #mobile-shell .sheet-close::before,.premium-v2 #mobile-shell .sheet-detail-toggle::before{content:'';position:absolute;inset:-6px -4px}
-.premium-v2 #mobile-shell #main_wrapper{top:22px!important;bottom:50px!important;height:calc(100% - 72px)!important}
+.premium-v2 #mobile-shell #main_wrapper{top:18px!important;bottom:38px!important;height:calc(100% - 56px)!important}
 .premium-v2 #mobile-shell .v2-filter-strip .filter-preview{outline:0}
 .premium-v2 #mobile-shell .v2-draft-item{position:relative;min-width:0}
 .premium-v2 #mobile-shell .v2-drafts .v2-project-delete{position:absolute;right:4px;top:4px;display:flex;align-items:center;justify-content:center;width:34px;height:34px;background:#fcf9f8e8;color:#a45c81;border-radius:7px;padding:7px!important}
@@ -345,27 +345,45 @@ body.premium-v2{--pearl:#fcf9f8;--rose:#bd567b;--rose-strong:#aa4166;--rose-wash
 .premium-v2 #mobile-shell.keyboard-visible .v2-tabs,.premium-v2 #mobile-shell.keyboard-visible .v2-inline-row{display:none}
 /* Compact primary controls keep their value and slider in the same visual group. */
 .premium-v2 #mobile-shell .v2-brush-controls{position:relative;margin:1px 0 0}
-.premium-v2 #mobile-shell .v2-brush-controls>.v2-tabs{min-height:30px;height:30px;margin:0;padding-right:30px;gap:18px}
-.premium-v2 #mobile-shell .v2-brush-controls>.v2-tabs button{min-height:30px;height:30px;font-size:10px}
+.premium-v2 #mobile-shell .v2-brush-controls>.v2-tabs{min-height:24px;height:24px;margin:0;padding-right:30px;gap:14px}
+.premium-v2 #mobile-shell .v2-brush-controls>.v2-tabs button{min-height:24px;height:24px;font-size:10px}
 .premium-v2 #mobile-shell .v2-brush-controls .slider-field{position:static;margin:0}
-.premium-v2 #mobile-shell .v2-brush-controls .slider-heading{position:absolute;right:0;top:0;line-height:30px;font-size:0;margin:0}
-.premium-v2 #mobile-shell .v2-brush-controls .slider-heading output{font-size:10px;line-height:30px}
-.premium-v2 #mobile-shell .v2-tool-strip .tool-card{height:52px;min-height:52px}
-.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-filter-strip{min-height:88px;max-height:88px;padding-top:3px;padding-bottom:3px}
-.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-filter-strip .filter-preview{height:64px}
-.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-filter-strip .filter-card{gap:4px}
-.premium-v2 #mobile-shell[data-tool=filters] .panel-content>.v2-tabs,.premium-v2 #mobile-shell[data-tool=adjust] .panel-content>.v2-tabs{height:32px;min-height:32px;margin-bottom:2px}
-.premium-v2 #mobile-shell[data-tool=filters] .panel-content>.v2-tabs button,.premium-v2 #mobile-shell[data-tool=adjust] .panel-content>.v2-tabs button{height:32px;min-height:32px}
-.premium-v2 #mobile-shell .v2-frame-styles{min-height:104px}
-.premium-v2 #mobile-shell .v2-collage-layouts .layout-thumb{height:52px}
-.premium-v2 #mobile-shell .v2-collage-layouts .layout-card{gap:5px}
-.premium-v2 #mobile-shell .v2-collage-layouts .layout-options{margin:4px 0}
+.premium-v2 #mobile-shell .v2-brush-controls .slider-heading{position:absolute;right:0;top:0;line-height:24px;font-size:0;margin:0;min-width:0}
+.premium-v2 #mobile-shell .v2-brush-controls .slider-heading output{font-size:10px;line-height:24px}
+.premium-v2 #mobile-shell .v2-tool-strip .tool-card{height:46px;min-height:46px;min-width:52px;gap:3px}
+.premium-v2 #mobile-shell .v2-tool-strip .tool-card .studio-icon{width:20px;height:20px}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .slider-field{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:10px;margin:1px 0 3px;min-height:24px}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .slider-field:has(.range-ends){display:block;min-height:0}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .slider-heading{min-width:74px;gap:6px;font-size:10px;line-height:16px}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .studio-range{height:24px!important}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-brush-controls .slider-field{display:block;min-height:0;margin:0}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-brush-controls .slider-heading{min-width:0;font-size:0;line-height:24px;margin:0}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-filter-strip{min-height:78px;max-height:78px;padding:1px;gap:10px}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-filter-strip .filter-card{flex:0 0 60px;width:60px;min-width:60px;max-width:60px;gap:2px}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-filter-strip .filter-preview{width:58px;height:58px;border-radius:7px;box-sizing:border-box}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-filter-strip .filter-name{line-height:13px}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-tabs{min-height:24px;height:24px;gap:14px;margin:2px 0 0}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-tabs button{min-height:24px;height:24px;font-size:10px}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .pro-effect-list{min-height:26px;gap:12px}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .pro-effect-list button{min-height:26px;font-size:10px}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-attributes{min-height:52px;margin:2px -2px}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-attributes i{width:26px;height:26px}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-makeup-roles{margin-bottom:2px}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-makeup-roles button{min-height:36px;gap:2px}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-makeup-roles .studio-icon{width:17px;height:17px}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-makeup-palette{min-height:26px;margin:2px 0;gap:8px}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-makeup-palette .swatch{width:22px;height:22px;flex-basis:22px}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-tool-note,.premium-v2 #mobile-shell .mobile-sheet[data-detent=compact] .v2-manual-label{display:none}
+.premium-v2 #mobile-shell .v2-frame-styles{min-height:92px}
+.premium-v2 #mobile-shell .v2-collage-layouts .layout-thumb{height:48px}
+.premium-v2 #mobile-shell .v2-collage-layouts .layout-card{gap:4px}
+.premium-v2 #mobile-shell .v2-collage-layouts .layout-options{margin:3px 0}
 .premium-v2 #mobile-shell .v2-draft-item>button:first-child{width:100%}
 .premium-v2 #mobile-shell .v2-editorial>button::before{content:'';position:absolute;inset:-5px;border-radius:50%}
 /* Native miniPaint buttons keep an inset shadow even after border/background resets. */
 .premium-v2 #mobile-shell button{box-shadow:none!important;text-shadow:none!important;-webkit-appearance:none;appearance:none}
 .premium-v2 #mobile-shell button:disabled{visibility:visible;pointer-events:none}
-.premium-v2 #mobile-shell .v3-subnav{display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none;max-width:56%;padding:0 4px}
+.premium-v2 #mobile-shell .v3-subnav{display:flex;align-items:center;gap:5px;overflow-x:auto;scrollbar-width:none;max-width:60%;padding:0 4px}
 .premium-v2 #mobile-shell .v3-subnav::-webkit-scrollbar{display:none}
-.premium-v2 #mobile-shell .v3-subnav button{font-size:9px;padding:3px 7px!important;border-radius:10px;background:#f2e7ed;color:#8f7282;white-space:nowrap;min-height:22px}
+.premium-v2 #mobile-shell .v3-subnav button{font-size:9px;padding:2px 7px!important;border-radius:10px;background:#f2e7ed;color:#8f7282;white-space:nowrap;min-height:20px}
 .premium-v2 #mobile-shell .v3-subnav button.active{background:#c5678b;color:#fff;font-weight:600}

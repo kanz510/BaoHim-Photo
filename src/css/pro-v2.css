@@ -7,7 +7,7 @@ body.premium-v2{--pearl:var(--pro-color-pearl);--rose:var(--pro-color-berry);--r
 .premium-v2 #mobile-shell .mobile-icon-button{width:44px;min-width:44px}
 .premium-v2 #mobile-shell .mobile-compare{min-height:44px;background:none;font-size:11px}
 .premium-v2 #mobile-shell .v2-photo-caption{font-size:10px;color:#bcafb9}
-.premium-v2 #mobile-shell #main_wrapper{top:24px!important;bottom:48px!important;height:calc(100% - 72px)!important}
+.premium-v2 #mobile-shell #main_wrapper{top:18px!important;bottom:38px!important;height:calc(100% - 56px)!important}
 .premium-v2 #mobile-shell #mobile-nav .nav-tool{font-size:11px!important;color:var(--pro-color-muted)}
 .premium-v2 #mobile-shell #mobile-nav .nav-tool.active{color:var(--pro-color-berryInk)}
 .premium-v2 #mobile-shell #mobile-nav .nav-tool.active::after{background:var(--pro-color-berry)}

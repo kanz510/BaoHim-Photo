@@ -72,8 +72,12 @@ export class MobileViewport{
   if(!stageW||!stageH)return;
   const winW=globalThis.innerWidth||0,winH=globalThis.innerHeight||0,portrait=winW<=winH;
   const rotated=this.orientationPending||(this.viewportWidth>0&&winW>0&&winW!==this.viewportWidth&&this.viewportPortrait!==portrait);
+  const isDragging=!!globalThis.document?.getElementById?.('studio-inspector')?.classList?.contains?.('is-dragging');
   this.orientationPending=false;
-  if(rotated&&this.fitted){await this.fit();return;}
+  if(this.fitted&&!isDragging){
+   const fitZ=containScale(c.WIDTH,c.HEIGHT,stageW,stageH,6);
+   if(rotated||(fitZ&&`${stageW}:${stageH}`!==this.lastSize&&Math.abs(fitZ-c.ZOOM)>1e-4)){await this.fit();return;}
+  }
   this.captureViewportMetrics();
   const key=`${stageW}:${stageH}`,dpr=Math.max(1,Math.min(3,globalThis.devicePixelRatio||1));
   const curW=this.canvas.studioViewportWidth??this.canvas.width,curH=this.canvas.studioViewportHeight??this.canvas.height;
@@ -93,7 +97,7 @@ export class MobileViewport{
  }
  async fit(){
   if(this.pending){cancelAnimationFrame(this.pending);this.pending=0;}
-  const c=this.f.config,z=containScale(c.WIDTH,c.HEIGHT,this.stage.clientWidth,this.stage.clientHeight,10);if(!z)return;
+  const c=this.f.config,z=containScale(c.WIDTH,c.HEIGHT,this.stage.clientWidth,this.stage.clientHeight,6);if(!z)return;
   this.orientationPending=false;this.fitted=true;c.ZOOM=z;
   this.syncing=true;try{this.f.app.GUI.prepare_canvas();}finally{this.syncing=false;}
   view.setBounds(0,0,c.WIDTH,c.HEIGHT);view.setContext(this.f.app.Layers.ctx);
