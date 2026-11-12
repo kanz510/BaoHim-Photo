@@ -638,6 +638,57 @@ try{
  assert.deepEqual(externalUrls,[],'Zero external font or asset requests allowed');
  assert.deepEqual(errors,[]);
 
+ // 7. Verify V4 Immersive UI, Charcoal palette, compact bottom sheet, unclipped contain canvas & Safari subtool tap
+ await page.evaluate(async()=>{
+  await Studio.ui.showHome('studio');
+  await Studio.facade.openDemo('portrait');
+  await Studio.ui.showHome('studio');
+ });
+ await page.waitForSelector('.v4-hero');
+ const v4HomeCheck=await page.evaluate(()=>({
+  hasClass:document.body.classList.contains('immersive-v4'),
+  themeColor:document.querySelector('meta[name="theme-color"]')?.getAttribute('content'),
+  heroCount:document.querySelectorAll('.v4-hero').length,
+  quickCount:document.querySelectorAll('.v4-quick-item').length,
+  styleCount:document.querySelectorAll('.v4-style-card').length
+ }));
+ assert.equal(v4HomeCheck.hasClass,true);
+ assert.equal(v4HomeCheck.themeColor,'#fbf9f8');
+ assert.equal(v4HomeCheck.heroCount,1);
+ assert.equal(v4HomeCheck.quickCount,4);
+ assert.ok(v4HomeCheck.styleCount>=6);
+
+ await page.click('[data-v4-launch="filters"]');
+ await page.waitForTimeout(360);
+ const v4FilterMetrics=await page.evaluate(()=>{
+  const shell=document.querySelector('#mobile-shell');
+  const sheet=document.querySelector('.mobile-sheet');
+  const stage=document.querySelector('#main_wrapper').getBoundingClientRect();
+  const canvas=document.querySelector('#canvas_minipaint').getBoundingClientRect();
+  return {
+   themeColor:document.querySelector('meta[name="theme-color"]')?.getAttribute('content'),
+   shellBg:getComputedStyle(shell).backgroundColor,
+   sheetH:Math.round(sheet.getBoundingClientRect().height),
+   unclipped:canvas.top>=stage.top-1&&canvas.bottom<=stage.bottom+1&&canvas.left>=stage.left-1&&canvas.right<=stage.right+1,
+   canvasW:Math.round(canvas.width),
+   canvasH:Math.round(canvas.height)
+  };
+ });
+ assert.equal(v4FilterMetrics.themeColor,'#19191D');
+ assert.equal(v4FilterMetrics.shellBg,'rgb(25, 25, 29)');
+ assert.ok(v4FilterMetrics.sheetH>0&&v4FilterMetrics.sheetH<=228,`Compact sheet height ${v4FilterMetrics.sheetH} must fit <= 228px`);
+ assert.equal(v4FilterMetrics.unclipped,true,'Portrait canvas must fit completely inside stage without clipping');
+
+ await page.click('[data-v3-subtool="adjust"]');
+ await page.waitForTimeout(220);
+ const v4AdjustMetrics=await page.evaluate(()=>{
+  const canvas=document.querySelector('#canvas_minipaint').getBoundingClientRect();
+  return {tool:Studio.ui.tool,canvasW:Math.round(canvas.width),canvasH:Math.round(canvas.height)};
+ });
+ assert.equal(v4AdjustMetrics.tool,'adjust','Tapping subtool inside sheet header must switch tools in WebKit');
+ assert.equal(v4AdjustMetrics.canvasW,v4FilterMetrics.canvasW,'Zero canvas width zoom jump when switching subtools');
+ assert.equal(v4AdjustMetrics.canvasH,v4FilterMetrics.canvasH,'Zero canvas height zoom jump when switching subtools');
+
  if(process.env.WRITE_BENCHMARK==='1'){
   await mkdir(resolve(root,'docs/qa'),{recursive:true});
   const distFiles=await readdir(dist);

@@ -625,3 +625,41 @@ test('Phase 6 Mobile UX provides 5 primary categories (AUTO, MẶT, DÁNG, MÀU,
   }
  }finally{await app.close();}
 });
+
+test('V4 Immersive Beauty UI renders Pearl Editorial Home, connects all tools, syncs theme-color and switches creative utility subtools',async()=>{
+ const app=await boot();
+ try{
+  const {ui,facade:f}=app.w.Studio;
+  const doc=app.w.document;
+  assert.equal(doc.body.classList.contains('immersive-v4'),true);
+  await ui.showHome('studio');
+  assert.equal(doc.querySelector('meta[name="theme-color"]')?.getAttribute('content'),'#fbf9f8');
+  assert.ok(doc.querySelector('.v4-hero'),'V4 Editorial hero card exists on Home');
+  for(const target of ['beauty','filters','makeup','body-reshape']){
+   assert.ok(doc.querySelector(`[data-v4-launch="${target}"]`),`V4 Quick Access launch button ${target} exists`);
+  }
+  assert.ok(doc.querySelector('.v4-style-card'),'V4 Style Collection cards exist on Home');
+  doc.querySelector('[data-v4-launch="body-reshape"]').click();
+  for(let i=0;i<80&&ui.tool!=='reshape';i++)await new Promise(r=>setTimeout(r,25));
+  await ui.navigation;
+  assert.equal(ui.libraryVisible,false);
+  assert.equal(ui.tool,'reshape');
+  assert.equal(ui.reshapeMode,'body');
+  assert.equal(doc.querySelector('meta[name="theme-color"]')?.getAttribute('content'),'#19191D');
+
+  await ui.showHome('studio');
+  doc.querySelector('[data-v2-sample-look="seoul"][data-v4-filter-group="korean"]').click();
+  for(let i=0;i<240&&ui.tool!=='filters';i++)await new Promise(r=>setTimeout(r,25));
+  await ui.navigation;
+  assert.equal(ui.tool,'filters');
+  assert.equal(ui.filterGroup,'korean');
+  assert.equal(f.basePhotoLayer().studio.preset,'seoul');
+
+  await ui.switchCategory('creative');
+  for(const sub of ['text','stickers','collage','frames','templates','geometry','layers','draw']){
+   assert.ok(doc.querySelector(`[data-v3-subtool="${sub}"]`),`Creative/Utility sub-tool ${sub} exists in V4 subnav`);
+  }
+  await ui.showHome('studio');
+  assert.equal(doc.querySelector('meta[name="theme-color"]')?.getAttribute('content'),'#fbf9f8');
+ }finally{await app.close();}
+});
