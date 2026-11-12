@@ -1,0 +1,82 @@
+{
+  "colors": {
+    "pearl": "#F9F6F7",
+    "mist": "#EAD9E4",
+    "rose": "#DF75A3",
+    "berry": "#AF5B86",
+    "charcoal": "#242229",
+    "white": "#FFFFFF",
+    "berryInk": "#8C3B63",
+    "muted": "#76636F",
+    "line": "#E3D7DE",
+    "stageRaised": "#302D35"
+  },
+  "space": {
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 20,
+    "xxl": 24,
+    "section": 32,
+    "control": 44
+  },
+  "radius": {
+    "sm": 8,
+    "md": 12,
+    "sheet": 20,
+    "pill": 999
+  },
+  "layout": {
+    "phoneWidth": 440,
+    "phoneHeight": 956,
+    "safeTop": 62,
+    "safeBottom": 34,
+    "dock": 76,
+    "header": 52
+  },
+  "type": {
+    "display": {
+      "family": "Manrope",
+      "style": "Medium",
+      "size": 36,
+      "line": 43
+    },
+    "title": {
+      "family": "Manrope",
+      "style": "SemiBold",
+      "size": 20,
+      "line": 28
+    },
+    "header": {
+      "family": "Manrope",
+      "style": "SemiBold",
+      "size": 16,
+      "line": 22
+    },
+    "body": {
+      "family": "Manrope",
+      "style": "Regular",
+      "size": 13,
+      "line": 20
+    },
+    "label": {
+      "family": "Manrope",
+      "style": "Medium",
+      "size": 11,
+      "line": 16
+    },
+    "caption": {
+      "family": "Manrope",
+      "style": "Regular",
+      "size": 10,
+      "line": 15
+    },
+    "editorial": {
+      "family": "Lora",
+      "style": "Italic",
+      "size": 30,
+      "line": 38
+    }
+  }
+}

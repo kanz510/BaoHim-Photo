@@ -1,0 +1,3 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';
+const {DocumentSession}=await import('../src/js/studio/document-session.mjs').catch(()=>({}));
+test('document loading has one owner and stale completions cannot clear the current status',()=>{assert.ok(DocumentSession);const events=[],s=new DocumentSession(x=>events.push(x));const a=s.begin('Mở ảnh');assert.throws(()=>s.begin('Mở ảnh khác'),/đang|Đang/);s.finish(a);const b=s.begin('Mở dự án');assert.equal(s.finish(a),false);assert.equal(s.phase,'opening');s.finish(b,new Error('Không đọc được'));assert.equal(s.phase,'error');s.begin('Thử lại');assert.equal(events.at(-1).label,'Thử lại');});

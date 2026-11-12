@@ -1,0 +1,7 @@
+# Preserve upstream license text verbatim, including original line whitespace.
+assets/licenses/*.txt -whitespace
+assets/fonts/*-OFL.txt -whitespace
+THIRD_PARTY_NOTICES.txt -whitespace
+dist/assets/licenses/*.txt -whitespace
+dist/assets/fonts/*-OFL.txt -whitespace
+dist/THIRD_PARTY_NOTICES.txt -whitespace

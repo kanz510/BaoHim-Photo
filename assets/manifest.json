@@ -1,0 +1,495 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "file": "stickers/bloom.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "e002ac8166b2ff56264bb8e0e9cce557fdec6e0a615755e5bd82631c6b04ef77",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "stickers/sparkle.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "85f9f73cb17ed64c19d72704d98605f608d50acbc781cbfed0abb02cba239fcd",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "stickers/heart.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "dc788f7421160e8922e587a24493e6efdf282c385d0f28ced74c097484582e87",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "stickers/bow.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "ea82c2250c4d04f6d94e8d482bff158994ef910dbf4f7f79f8a52e9389962eaa",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "stickers/daisy.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "8c2dd35c4d41ec0e18f0a82c3351c1e16c62f220e28573c86460bf6b41d314ed",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "stickers/star.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "3cd0d8eb92b321f6a890cb91db1e3cd47d260a564f12582352435b4861bb922c",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "stickers/moon.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "519c3aa1bfb418f9f80a274f79882bb626900c133a0f9416a9e4c79c6ac06e36",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "stickers/butterfly.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "c85b7ed6dd53277b052d0eb893a1ad1a212e4d4de7158620b35c4f4e290e8e2a",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "stickers/ribbon.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "9ae068e58788576c65ae4db00abd94b54860a9b770d5d987b96c0dfc0565fef2",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "stickers/petals.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "373aa6b11287b3a566c56f4964f4aae8bb2f8dcfaab96bc7c3544cf87cc7d5a3",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "stickers/sun.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "d1b0f30cb54104761d9a06462548ca20ca6f60b8eaa87a3923d1c0425cace247",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "stickers/pearl.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "9dee4d46887ee102a43b3d8901dcaf38e3267ef07ef816ef36d16ba482f5c60d",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "stickers/frame.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "cec09324ff6467c3e0bbd4205aba783eabe6b74c2f79e8eab5572994e19b4680",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "stickers/kiss.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "421e86aaee0124f13dcc1a024ca5e58d4708f0d56679424ed0e953b707e1255e",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "stickers/cloud.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "83159202c65ceb7cb1625ea070b990f7144b95ea630c74c3137e78f31cccb4c5",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "stickers/lovely.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "23a118dc5dd5d0026bdaaf48d0ba8efff1729ff96b83f72d92005941df7b6157",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "photos/portrait.jpg",
+      "author": null,
+      "sha256": "ed9bd9aab35cc21c0d7b7b70c536e7f51a24c7181938cd36b52cc78386e9afd6",
+      "license": "Unsplash License",
+      "source": "https://images.unsplash.com/photo-1534528741775-53994a69daeb"
+    },
+    {
+      "file": "photos/sunlight.jpg",
+      "author": null,
+      "sha256": "3ace71f9d6245c3a63847f8cc948f607fdb2cc6e9ccce4bce4d617a01d55aef7",
+      "license": "Unsplash License",
+      "source": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1"
+    },
+    {
+      "file": "photos/muse.jpg",
+      "author": null,
+      "sha256": "4628a7c5d0d56a0c3a9ab197b2923fd444b4ae1f2549fdae5400589db0e73c28",
+      "license": "Unsplash License",
+      "source": "https://images.unsplash.com/photo-1517841905240-472988babdf9"
+    },
+    {
+      "file": "fonts/Manrope.ttf",
+      "author": "Manrope Project Authors",
+      "sha256": "3ae11c49db0455a3cc33e37d380f20fdb8c7f8b41dc07625c177e3d87a9d6ae6",
+      "license": "SIL Open Font License 1.1",
+      "source": "https://github.com/google/fonts"
+    },
+    {
+      "file": "fonts/PlayfairDisplay.ttf",
+      "author": "Playfair Display Project Authors",
+      "sha256": "c40f2293766a503bc70cce9e512ef844a4ccb7cbcde792fe2ea31d191917d8d6",
+      "license": "SIL Open Font License 1.1",
+      "source": "https://github.com/google/fonts"
+    },
+    {
+      "file": "fonts/DancingScript.ttf",
+      "author": "Dancing Script Project Authors",
+      "sha256": "21808625578fe8d8cd10cb684be546dca077b27cd03a53a2f1ec11dc743c924c",
+      "license": "SIL Open Font License 1.1",
+      "source": "https://github.com/google/fonts"
+    },
+    {
+      "file": "fonts/Lora.ttf",
+      "author": "Lora Project Authors",
+      "sha256": "822a6621ccbe8d97d20ac88c1c41f5615c9c2c202eaa75f272cd452aac6475a7",
+      "license": "SIL Open Font License 1.1",
+      "source": "https://github.com/google/fonts"
+    },
+    {
+      "file": "icon.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "37115eb2da9c6a660cc70cad4fdd0b384ba2bc856b6359bb6bdefa8bc1bc67b8",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "app-icon.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "19881e6fc0576826335ef3eca21183e916fa5651ebe7ce52d53d8e63c84de4db",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/arrow-down.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "4477f6233149f34c43cc3ecaf4bd53fef637f3de92c982d305ee2d2a0c775cc5",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/blur.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "90614b73c971dca27229d1a043b357daefc21ec99483998baf8da12d039a753a",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/bold.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "1a3267240559b67b368f65ce69d31cbafe856a3b744aef3f4990c3a18d9e854b",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/brush.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "2e29e05b61f21ca2f2546f8c3f38425024ff2c1386759c230c118fa8b52b4c0b",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/bulge_pinch.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "df723458f259bb8810c7e95f59c80b9e217cbd9a1a9d517a3ec4465ca0d7e633",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/clone.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "9677e080d21eb6e77868311afc5800af61fb03aab30ad768dfb8324b3e1b9751",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/crop.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "3ad6869f3b60e2e85f6e2ee6212863f811901a5e400e4e8777b7fd39bc94fa8d",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/delete.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "b6005d42f8dc2ad9f2536e3c77dab7281cc20a68e7ae93d8f277fb7f3d5e75fe",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/desaturate.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "40022ab06f5ca22fb08730663a98c23558d05ae729dd6d4b8280e913a0e97c73",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/erase.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "cd1e9b50a7499c13bf6166294617c5ccb41e6c62a89d866d4fee44bdc5905b2d",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/external.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "87bf488878626803ee198cd72bce94ceb4c241758f052f3d8ce630cb5f16f7ce",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/fill.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "1a3267240559b67b368f65ce69d31cbafe856a3b744aef3f4990c3a18d9e854b",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/gradient.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "fac7638bce02f4783d571a1c72eab14e4c23c3ad211cb14fd3e7ecff10efa3ec",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/grid.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "d5172b0b2f32ca3b56fab1f2ad26868b8ebda2822e0a678b2236e7095cfb6194",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/italic.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "1a3267240559b67b368f65ce69d31cbafe856a3b744aef3f4990c3a18d9e854b",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/magic_erase.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "1a3267240559b67b368f65ce69d31cbafe856a3b744aef3f4990c3a18d9e854b",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/menu.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "af378a30b16d27501f24610d94f4058d06a8bb79b694a2eff3085653c30fdfbc",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/pencil.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "2e29e05b61f21ca2f2546f8c3f38425024ff2c1386759c230c118fa8b52b4c0b",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/pick_color.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "51f7a40f69c3e58e9b167f0b75048ebbc7f6eaa600fa5df3852f5d974c1804ef",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/refresh.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "f6ad57459df5fa1601b0735ba6d5e5811b14ce3764ec6676946c460557d039e7",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/select.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "822ad56f6670fa6450b16fa4074c58e7406e9412d708b5d6efdc6073fc939864",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/selection.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "3ad6869f3b60e2e85f6e2ee6212863f811901a5e400e4e8777b7fd39bc94fa8d",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/shape.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "f1ff397510502badf6106e53e388ea9aa5b49940f8de2f218d4d7cab2f43692f",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/sharpen.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "3c5254eeaab9eeec3d66416626190708b5c61985f2f97583f7f8bd8362334e27",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/strikethrough.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "1a3267240559b67b368f65ce69d31cbafe856a3b744aef3f4990c3a18d9e854b",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/text.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "08218b468f3dd3d8ad46536766385f453a592dbeaf0b960f75c99445e3dd30df",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/underline.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "1a3267240559b67b368f65ce69d31cbafe856a3b744aef3f4990c3a18d9e854b",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/undo.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "63593668f42d172b259485b9f4b26a6e9514c9546c0256002bc85c42d95e5c35",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "ui-icons/view.svg",
+      "author": "PHOTO BEAUTY STUDIO",
+      "sha256": "260e6d578c9506ca2b73e636e9c1477534ae5d0d464d0319ca69c714300cdfc5",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/assets.mjs"
+    },
+    {
+      "file": "fonts/NotoSansSC.woff2",
+      "author": "Google / Noto contributors",
+      "license": "OFL-1.1",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/NotoSansSC[wght].ttf",
+      "sha256": "721939fdba0a5e963acd8eebd344805f64653fda8708a5d928a83db080ec905f",
+      "bytes": 7782076,
+      "coverage": {
+        "Tiếng Việt đẹp": true,
+        "你好世界": true,
+        "日本の写真": true,
+        "아름다운사진": false
+      }
+    },
+    {
+      "file": "fonts/NotoSansJP.woff2",
+      "author": "Google / Noto contributors",
+      "license": "OFL-1.1",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansjp/NotoSansJP[wght].ttf",
+      "sha256": "9e3a99810f75424d2512f495831faea70ab2ab7d20932a845de82e2f6f11c6e8",
+      "bytes": 4349804,
+      "coverage": {
+        "Tiếng Việt đẹp": true,
+        "你好世界": true,
+        "日本の写真": true,
+        "아름다운사진": false
+      }
+    },
+    {
+      "file": "fonts/NotoSansKR.woff2",
+      "author": "Google / Noto contributors",
+      "license": "OFL-1.1",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanskr/NotoSansKR[wght].ttf",
+      "sha256": "df400436fc83bf844f5c0b9bf9d5b69b81465aedf64c76e1fa72b1e87b43e274",
+      "bytes": 3908288,
+      "coverage": {
+        "Tiếng Việt đẹp": true,
+        "你好世界": false,
+        "日本の写真": true,
+        "아름다운사진": true
+      }
+    },
+    {
+      "file": "fonts/Itim.woff2",
+      "author": "Cadson Demak",
+      "license": "OFL-1.1",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/itim/Itim-Regular.ttf",
+      "sha256": "45ce9b1e09793c8097884b3a4c62707db66150522ce07c7b820caeaf3163661c",
+      "bytes": 105368,
+      "coverage": {
+        "Tiếng Việt đẹp": true,
+        "你好世界": false,
+        "日本の写真": false,
+        "아름다운사진": false
+      }
+    },
+    {
+      "file": "stickers/cherry.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/pro-assets.mjs",
+      "sha256": "4beef355a0c576a2a968a134706cbcec8924ade90e7ed45d37ade1035ce2fd4b"
+    },
+    {
+      "file": "stickers/tulip.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/pro-assets.mjs",
+      "sha256": "e1780a6d56c4844afb1d5b37867caf490546839e5995e996690552c300d52e8c"
+    },
+    {
+      "file": "stickers/coffee.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/pro-assets.mjs",
+      "sha256": "e929f092a8ddc66c6a065f9883623ea1a3505ea51a8b011d1449832c1eed3c4b"
+    },
+    {
+      "file": "stickers/paperclip.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/pro-assets.mjs",
+      "sha256": "a0dc2c98f3f5f0c9e5bbe4430950466930c33b83ef2d549fc33c32faddf24f15"
+    },
+    {
+      "file": "stickers/photoNote.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/pro-assets.mjs",
+      "sha256": "c03bc6cecf16176ebc7bebd2993ed18a37816baf61c2777fe431ecfccbdba96c"
+    },
+    {
+      "file": "stickers/music.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/pro-assets.mjs",
+      "sha256": "fe0be8d097d6e1ccbc7a693a4e96d99b9f38b8e0ed73ecbf54a59044d0dd0ffd"
+    },
+    {
+      "file": "stickers/leaf.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/pro-assets.mjs",
+      "sha256": "de8adbcce733318a6e07c3f3018c8816333c8b373f7bc7cab76ff9a249c661a5"
+    },
+    {
+      "file": "stickers/smile.png",
+      "author": "PHOTO BEAUTY STUDIO",
+      "license": "MIT",
+      "source": "Original vector geometry; scripts/pro-assets.mjs",
+      "sha256": "2154029a29c8b10502f21c84dee793703591d83079d3fe93fbcc1d12a86fd0f3"
+    }
+  ]
+}

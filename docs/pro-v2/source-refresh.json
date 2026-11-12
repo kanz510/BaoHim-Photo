@@ -1,0 +1,92 @@
+{
+  "checked": "2026-11-12",
+  "method": "GitHub MCP get_repo/fetch repository metadata and latest default-branch commit; pinned source audit retained since all heads match",
+  "records": [
+    {
+      "repository": "viliusle/miniPaint",
+      "head": "c9192c15918eb61f7dd89e362cf8065a276b89e9",
+      "date": "2026-11-09T18:19:35Z",
+      "archived": false,
+      "lastPush": "2026-11-09T18:19:35Z",
+      "licenseClassifier": "NOASSERTION",
+      "branch": "master"
+    },
+    {
+      "repository": "scaleflex/filerobot-image-editor",
+      "head": "a7cce3173cb380c4900b9cb9fb8d91f7f33a7a26",
+      "date": "2026-06-04T13:35:57Z",
+      "archived": false,
+      "lastPush": "2026-06-16T10:27:27Z",
+      "licenseClassifier": "MIT",
+      "branch": "master"
+    },
+    {
+      "repository": "xdadda/mini-photo-editor",
+      "head": "475a0e9dcb5bb6925d9b7f3c522a1312aeefad3d",
+      "date": "2025-10-29T18:05:07Z",
+      "archived": false,
+      "lastPush": "2025-10-29T18:05:12Z",
+      "licenseClassifier": "MIT",
+      "branch": "main"
+    },
+    {
+      "repository": "evanw/glfx.js",
+      "head": "86ae72acfffcd50774507eb7b69887ba2493dc35",
+      "date": "2022-01-10T17:03:52Z",
+      "archived": false,
+      "lastPush": "2023-10-23T13:33:18Z",
+      "licenseClassifier": "MIT",
+      "branch": "master"
+    },
+    {
+      "repository": "ikuaitu/vue-fabric-editor",
+      "head": "b3bdcfb0bd6d8f98e7483cf561ac03ba56c0d889",
+      "date": "2026-07-21T09:02:59Z",
+      "archived": false,
+      "lastPush": "2026-07-21T09:03:00Z",
+      "licenseClassifier": "MIT",
+      "branch": "main"
+    },
+    {
+      "repository": "dromara/yft-design",
+      "head": "f1328edcd07373267bc372bab19be466c7482fc3",
+      "date": "2026-09-04T03:21:06Z",
+      "archived": false,
+      "lastPush": "2026-09-04T03:21:06Z",
+      "licenseClassifier": "MIT",
+      "branch": "main"
+    },
+    {
+      "repository": "Qiu-Jun/diy-platform",
+      "head": "49c65a3fecb0f27a834b27769057f0b833edbdc7",
+      "date": "2026-11-09T03:28:37Z",
+      "archived": false,
+      "licenseClassifier": null,
+      "branch": "main",
+      "notes": "Requested name redirects. Master rewrite has no LICENSE in pinned source; backup branch snapshot retains MIT. Do not integrate current master without license clarification."
+    },
+    {
+      "repository": "mtsee/image-editor",
+      "head": "c284e1ffa25ada7e494817d9f3f0bedbfb3f979b",
+      "date": "2024-05-24T06:53:39Z",
+      "archived": false,
+      "lastPush": "2024-05-24T06:53:49Z",
+      "licenseClassifier": "MIT",
+      "branch": "master"
+    },
+    {
+      "repository": "ximing/fabric-photo",
+      "head": "6d5a06b56a353334923d6b127a66186e36f1e693",
+      "date": "2026-10-31T14:21:37Z",
+      "archived": false,
+      "lastPush": "2026-10-31T14:22:35Z",
+      "licenseClassifier": "MIT",
+      "branch": "master"
+    }
+  ],
+  "qiuJunRedirect": {
+    "requested": "Qiu-Jun/mobile-fabric-editor",
+    "canonical": "Qiu-Jun/diy-platform",
+    "backup": "71f4a9599d756a3557c9faccb674b51040ea79fe"
+  }
+}

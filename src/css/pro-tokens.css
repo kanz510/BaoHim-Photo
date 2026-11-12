@@ -1,0 +1,25 @@
+/* Figma: mcOqBkZMYZF8d7eqW7mTk5 / 00 Foundations. */
+:root{
+ --pro-color-pearl:#F9F6F7;
+ --pro-color-mist:#EAD9E4;
+ --pro-color-rose:#DF75A3;
+ --pro-color-berry:#AF5B86;
+ --pro-color-charcoal:#242229;
+ --pro-color-white:#FFFFFF;
+ --pro-color-berryInk:#8C3B63;
+ --pro-color-muted:#76636F;
+ --pro-color-line:#E3D7DE;
+ --pro-color-stageRaised:#302D35;
+ --pro-space-xs:4px;
+ --pro-space-sm:8px;
+ --pro-space-md:12px;
+ --pro-space-lg:16px;
+ --pro-space-xl:20px;
+ --pro-space-xxl:24px;
+ --pro-space-section:32px;
+ --pro-space-control:44px;
+ --pro-radius-sm:8px;
+ --pro-radius-md:12px;
+ --pro-radius-sheet:20px;
+ --pro-radius-pill:999px;
+}

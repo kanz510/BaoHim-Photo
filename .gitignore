@@ -1,0 +1,30 @@
+# OS generated files #
+.DS_Store
+.DS_Store?
+._*
+.Trashes
+ehthumbs.db
+Thumbs.db
+nbproject/
+.idea/
+.git/
+.vscode
+/.project
+*.log
+
+/node_modules/
+*.js.ignore
+
+
+.superpowers/
+/node_modules
+/coverage/
+.openai/*.local.json
+
+/work/
+/scripts/qa/node_modules/
+
+# Portable GitHub source export
+/dist/
+.openai/
+/artifacts/

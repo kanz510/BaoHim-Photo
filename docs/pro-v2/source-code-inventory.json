@@ -1,0 +1,961 @@
+[
+  {
+    "source": "Qiu-Jun__diy-platform",
+    "rootFiles": [
+      ".gitignore",
+      ".npmrc",
+      "README.md",
+      "apps",
+      "package.json",
+      "packages",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml"
+    ],
+    "documents": [
+      {
+        "name": "README.md",
+        "bytes": 3308,
+        "opening": "# diy-platform\n\nDIY 定制平台-衣服印花系统。商品定制编辑器 + 管理后台 + 服务端\n***(需要定制+v:  June_Qiu_0324)***\n\n## 结构\n\n```\napps/\n  h5/        @diy/h5       移动端定制编辑器（Vue3 + Vant + fabric v6，vue-router 双页面）\n  admin/     @diy/admin    管理后台（Vue3 + TS + SCSS + UnoCSS + Element Plus，含登录/RBAC）\n  server/    @diy/server   服务端（NestJS 10 + node:sqlite，端口 4000）\n             ├ data/       SQLite 数据库（diy.db，运行时生成）\n             └ uploads/"
+      }
+    ],
+    "package": {
+      "name": "diy-platform",
+      "private": true,
+      "version": "0.1.0",
+      "scripts": {
+        "dev:server": "pnpm --filter @diy/server start:dev",
+        "dev:admin": "pnpm --filter @diy/admin dev",
+        "dev:h5": "pnpm --filter @diy/h5 dev",
+        "build:admin": "pnpm --filter @diy/admin build",
+        "build:server": "pnpm --filter @diy/server build"
+      },
+      "packageManager": "pnpm@11.8.0"
+    }
+  },
+  {
+    "source": "Qiu-Jun__mobile-fabric-editor-backup",
+    "rootFiles": [
+      ".commitlintrc.json",
+      ".env.development",
+      ".env.production",
+      ".eslintignore",
+      ".eslintrc-auto-import.json",
+      ".eslintrc.json",
+      ".git-cz.json",
+      ".gitignore",
+      ".npmrc",
+      ".prettierignore",
+      ".prettierrc.js",
+      "CONTRIBUTING.md",
+      "LICENSE",
+      "README.md",
+      "index.html",
+      "package.json",
+      "pnpm-lock.yaml",
+      "src",
+      "tsconfig.json",
+      "uno.config.ts",
+      "vite.config.ts"
+    ],
+    "documents": [
+      {
+        "name": "LICENSE",
+        "bytes": 1061,
+        "opening": "MIT License\n\nCopyright (c) 2024 June\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom th"
+      },
+      {
+        "name": "README.md",
+        "bytes": 2513,
+        "opening": "<!--\n * @Description: md\n * @Author: June\n * @Date: 2024-04-24 09:32:13\n * @FilePath: \\mobile-fabric-editor\\README.md\n * @LastEditTime: 2024-11-23 10:21:16\n * @LastEditors: June\n-->\n\n## mobile-fabric-editor\n\n`mobile-fabric-editor`是基于fabric的移动端简易图片编辑器, 开源版本仅有编辑器，非开源版本附带后台管理(`非开源版本，除了附带后台管理外，代码也比开源版本更优雅`)，区别如下。<br />\n| | 编辑器 | 小程序 | 后台 |\n| -- | -- | -- | -- |\n| 开源版 | √ | × | × |\n| 非开源版 | √ | √ | √ |"
+      }
+    ],
+    "package": {
+      "name": "editor",
+      "version": "0.0.1",
+      "scripts": {
+        "preinstall": "npx only-allow pnpm",
+        "dev:h5": "uni",
+        "dev:h5:ssr": "uni --ssr",
+        "build:h5": "uni build ",
+        "build:h5:ssr": "uni build --ssr",
+        "type-check": "vue-tsc --noEmit",
+        "lint": "eslint --ext .vue,.js,.ts,.jsx,.tsx src --fix",
+        "format": "prettier --write \"./**/*.{html,vue,ts,js,json,md}\"",
+        "prepare": "husky install",
+        "commit": "git-cz"
+      },
+      "dependencies": {
+        "@dcloudio/uni-app": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/uni-app-harmony": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/uni-app-plus": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/uni-components": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/uni-h5": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/uni-mp-alipay": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/uni-mp-baidu": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/uni-mp-harmony": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/uni-mp-jd": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/uni-mp-kuaishou": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/uni-mp-lark": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/uni-mp-qq": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/uni-mp-toutiao": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/uni-mp-weixin": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/uni-mp-xhs": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/uni-quickapp-webview": "3.0.0-alpha-4070620250731002",
+        "color-gradient-picker-vue3": "latest",
+        "editor": "link:",
+        "fabric": "^5.4.0",
+        "fontfaceobserver": "^2.3.0",
+        "lodash-es": "^4.17.21",
+        "pinia": "2.0.36",
+        "vue": "^3.4.21",
+        "vue-i18n": "^9.14.5",
+        "wot-design-uni": "^1.2.18"
+      },
+      "devDependencies": {
+        "@commitlint/cli": "^19.3.0",
+        "@commitlint/config-conventional": "^19.2.2",
+        "@dcloudio/types": "^3.4.19",
+        "@dcloudio/uni-automator": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/uni-cli-shared": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/uni-stacktracey": "3.0.0-alpha-4070620250731002",
+        "@dcloudio/vite-plugin-uni": "3.0.0-alpha-4070620250731002",
+        "@types/fabric": "^5.3.8",
+        "@types/fontfaceobserver": "^2.1.3",
+        "@types/lodash-es": "^4.17.12",
+        "@types/node": "^22.3.0",
+        "@typescript-eslint/eslint-plugin": "^6.1.0",
+        "@typescript-eslint/parser": "^6.1.0",
+        "@uni-helper/uni-app-types": "^0.5.8",
+        "@vue/runtime-core": "^3.4.38",
+        "@vue/tsconfig": "^0.1.3",
+        "eslint": "^8.45.0",
+        "eslint-config-prettier": "^8.8.0",
+        "eslint-plugin-prettier": "^5.0.0",
+        "eslint-plugin-vue": "^9.15.1",
+        "git-cz": "^4.9.0",
+        "husky": "^8.0.3",
+        "lint-staged": "^15.2.2",
+        "prettier": "^3.0.0",
+        "sass": "^1.63.6",
+        "sass-loader": "^13.3.2",
+        "typescript": "^5.4.5",
+        "unocss": "^0.58.0",
+        "unocss-preset-weapp": "^0.57.1",
+        "unplugin-auto-import": "^0.16.6",
+        "vite": "^5.2.8",
+        "vite-plugin-svg-icons": "^2.0.1",
+        "vue-tsc": "^1.0.24"
+      },
+      "config": {
+        "commitizen": {
+          "path": "git-cz"
+        }
+      },
+      "engines": {
+        "node": ">=16",
+        "pnpm": ">=8"
+      },
+      "lint-staged": {
+        "src/**/*.{js,jsx,ts,tsx,json,scss}": [
+          "eslint --fix",
+          "prettier --write"
+        ]
+      }
+    }
+  },
+  {
+    "source": "dromara__yft-design",
+    "rootFiles": [
+      ".eslintrc-auto-import.json",
+      ".eslintrc.js",
+      ".gitignore",
+      ".npmrc",
+      ".prettierignore",
+      ".stylelintrc.js",
+      "LICENSE",
+      "README.md",
+      "build",
+      "components.d.ts",
+      "docs",
+      "index.html",
+      "package.json",
+      "src",
+      "tailwind.config.js",
+      "tsconfig.json",
+      "tsconfig.node.json",
+      "vite.config.mts"
+    ],
+    "documents": [
+      {
+        "name": "LICENSE",
+        "bytes": 1065,
+        "opening": "MIT License\n\nCopyright (c) 2023 Nevermore\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to wh"
+      },
+      {
+        "name": "README.md",
+        "bytes": 10186,
+        "opening": "# yft-design\n1，一款美观且功能强大的在线设计工具，具备海报设计和图片编辑功能，基于Canvas的开源版【稿定设计】。适用于多种场景，如海报生成、电商产品图制作、文章长图设计、视频/公众号封面编辑等。  \n2，适配稿定设计pdf还原，支持导入psd还原  \n3，可导出图片，svg，pdf  \n## 📞 联系我们\n\n<div align=\"left\">\n\n### 🌐 在线体验\n\n| 版本     | 链接                                               | 描述         |\n| -------- | -------------------------------------------------- | ------------ |\n| **Demo** | [https://demo.yft.design](https://d"
+      }
+    ],
+    "package": {
+      "name": "yft-design",
+      "version": "0.1.0",
+      "private": true,
+      "keywords": [
+        "Vue3",
+        "fabric.js",
+        "Typescript",
+        "Element-plus"
+      ],
+      "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "deploy": "bash deploy.sh"
+      },
+      "dependencies": {
+        "@element-plus/icons-vue": "^2.1.0",
+        "@icon-park/vue-next": "^1.4.2",
+        "@vueuse/core": "^10.11.0",
+        "@vueuse/shared": "^10.11.0",
+        "axios": "^1.7.2",
+        "beautify-qrcode": "^1.0.3",
+        "changedpi": "^1.0.4",
+        "chroma-js": "^2.4.2",
+        "clipboard": "^2.0.11",
+        "clipper-lib": "^6.4.2",
+        "core-js": "^3.37.1",
+        "crypto-js": "^4.2.0",
+        "delaunator": "^5.0.1",
+        "dexie": "^3.2.7",
+        "element-plus": "^2.7.6",
+        "fabric": "^6.4.1",
+        "file-saver": "^2.0.5",
+        "gifler": "^0.1.0",
+        "html-to-image": "^1.11.11",
+        "jsbarcode": "^3.11.6",
+        "lodash-es": "^4.17.21",
+        "mousetrap": "^1.6.5",
+        "nanoid": "^5.0.3",
+        "number-precision": "^1.6.0",
+        "opentype.js": "^1.3.4",
+        "pako": "^2.1.0",
+        "perfect-freehand": "^1.2.0",
+        "pinia": "^2.1.7",
+        "raphael": "^2.3.0",
+        "tinycolor2": "^1.6.0",
+        "vue": "^3.4.30",
+        "vue-i18n": "^9.13.1",
+        "vue-router": "^4.4.0",
+        "vuedraggable": "^4.1.0"
+      },
+      "devDependencies": {
+        "@types/chroma-js": "^2.4.3",
+        "@types/clipboard": "^2.0.7",
+        "@types/crypto-js": "^4.2.1",
+        "@types/delaunator": "^5.0.2",
+        "@types/file-saver": "^2.0.7",
+        "@types/hammerjs": "^2.0.45",
+        "@types/lodash-es": "^4.17.12",
+        "@types/mousetrap": "^1.6.15",
+        "@types/opentype.js": "^1.3.8",
+        "@types/pako": "^2.0.3",
+        "@types/raphael": "^2.3.9",
+        "@types/tinycolor2": "^1.4.6",
+        "@typescript-eslint/eslint-plugin": "^5.62.0",
+        "@typescript-eslint/parser": "^5.62.0",
+        "@vitejs/plugin-vue": "^4.5.0",
+        "@vue/eslint-config-typescript": "^11.0.3",
+        "autoprefixer": "^10.4.19",
+        "eslint": "^7.32.0",
+        "eslint-config-prettier": "^8.10.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "eslint-plugin-vue": "^9.18.1",
+        "less": "^4.2.0",
+        "less-loader": "^11.1.4",
+        "postcss": "^8.4.38",
+        "postcss-loader": "^8.1.1",
+        "prettier": "^2.8.8",
+        "rollup-plugin-visualizer": "^5.12.0",
+        "sass": "1.63.6",
+        "sass-loader": "13.3.2",
+        "stylelint-config-standard": "^29.0.0",
+        "stylelint-webpack-plugin": "^3.3.0",
+        "svg-sprite-loader": "^6.0.11",
+        "tailwindcss": "^3.4.4",
+        "typescript": "^4.9.5",
+        "unplugin-auto-import": "^0.16.7",
+        "unplugin-vue-components": "^0.25.2",
+        "vite": "^5.4.3",
+        "vite-plugin-compression": "^0.5.1",
+        "vite-plugin-html": "^3.2.2",
+        "vite-plugin-svg-icons": "^2.0.1",
+        "vue-tsc": "^1.8.22"
+      },
+      "volta": {
+        "node": "18.19.0"
+      }
+    }
+  },
+  {
+    "source": "evanw__glfx.js",
+    "rootFiles": [
+      ".gitignore",
+      "LICENSE",
+      "README.md",
+      "build.py",
+      "src",
+      "tests"
+    ],
+    "documents": [
+      {
+        "name": "LICENSE",
+        "bytes": 1059,
+        "opening": "Copyright (C) 2011 by Evan Wallace\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the "
+      },
+      {
+        "name": "README.md",
+        "bytes": 649,
+        "opening": "# glfx.js\nAdjust photos in your browser in realtime with glfx.js, an image effects library powered by WebGL. It uses your graphics card for image effects that would be impossible to apply in real-time with JavaScript alone.\n\nThere are two caveats to glfx.js. First, WebGL is a new technology that is only available in the latest browsers and it will be quite a while before the majority of users have"
+      }
+    ],
+    "package": null
+  },
+  {
+    "source": "ikuaitu__vue-fabric-editor",
+    "rootFiles": [
+      ".browserslistrc",
+      ".dockerignore",
+      ".editorconfig",
+      ".env",
+      ".env.development",
+      ".env.production",
+      ".env.staging",
+      ".eslintrc-auto-import.json",
+      ".eslintrc.js",
+      ".gitignore",
+      ".npmrc",
+      ".prettierignore",
+      ".prettierrc.js",
+      "CODE_OF_CONDUCT.md",
+      "CONTRIBUTING.md",
+      "Dockerfile",
+      "LICENSE",
+      "README-en.md",
+      "README.md",
+      "commitlint.config.js",
+      "docker-compose.yml",
+      "index.html",
+      "nginx.conf",
+      "package.json",
+      "packages",
+      "pnpm-workspace.yaml",
+      "src",
+      "tsconfig.json",
+      "tsconfig.node.json",
+      "typings",
+      "vite.config.ts"
+    ],
+    "documents": [
+      {
+        "name": "LICENSE",
+        "bytes": 1066,
+        "opening": "MIT License\n\nCopyright (c) 2022 秦少卫\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the"
+      },
+      {
+        "name": "README-en.md",
+        "bytes": 21726,
+        "opening": "English| [中文](https://github.com/ikuaitu/vue-fabric-editor/blob/main/README.md)\n\n<p align=\"center\">\n  <a href=\"https://pro.kuaitu.cc/index-en.html\" target=\"_blank\">  \n\t  <img src=\"https://github.com/user-attachments/assets/a0f4b8b8-a8d2-480b-b43e-49c0faaff917\" width=\"418px\" alt=\"Open source image editor\" />\n<!-- \t  <img src=\"https://github.com/user-attachments/assets/aff17bdf-cea6-4b7e-8091-6661ea"
+      },
+      {
+        "name": "README.md",
+        "bytes": 23811,
+        "opening": "<!--\n * @Author: 秦少卫\n * @Date: 2024-09-11 17:07:42\n * @LastEditors: 秦少卫\n * @LastEditTime: 2025-02-20 14:10:05\n * @Description: file content\n-->\n\n[English](https://github.com/ikuaitu/vue-fabric-editor/blob/main/README-en.md)| 中文\n\n<p align=\"center\">\n  <a href=\"https://pro.kuaitu.cc\" target=\"_blank\">\n    <img src=\"https://github.com/user-attachments/assets/4e519179-8d19-41cc-ad2b-a1d7ebc63836\" width="
+      }
+    ],
+    "package": {
+      "name": "view-ui-project-ts",
+      "private": true,
+      "version": "1.0.0",
+      "description": "a template project for vue3, ViewUIPlus, TypeScript and Vite.",
+      "scripts": {
+        "preinstall": "npx only-allow pnpm",
+        "serve": "pnpm dev",
+        "dev": "vite serve",
+        "dev:staging": "vite serve --mode=staging",
+        "dev:prod": "vite serve --mode=production",
+        "build": "vite build",
+        "build:sdk": "pnpm -C packages/core build",
+        "build:staging": "vite build --mode=staging",
+        "preview": "pnpm build && vite preview",
+        "preview:staging": "pnpm build:staging && vite preview --mode=staging",
+        "prepare": "husky install",
+        "test": "pnpm -C packages/core test"
+      },
+      "dependencies": {
+        "@kuaitu/core": "workspace:^",
+        "@vueuse/core": "^10.1.0",
+        "axios": "^1.3.4",
+        "color-gradient-picker-vue3": "^3.1.0",
+        "dayjs": "^1.11.11",
+        "events": "^3.3.0",
+        "fabric": "5.3.0",
+        "fontfaceobserver": "^2.1.0",
+        "lodash-es": "^4.17.21",
+        "number-precision": "^1.6.0",
+        "qs": "^6.12.1",
+        "uuid": "^8.3.2",
+        "view-ui-plus": "1.3.7",
+        "vite-svg-loader": "^5.1.0",
+        "vue": "^3.2.25",
+        "vue-cropper": "^1.1.4",
+        "vue-i18n": "9.0.0",
+        "vue-masonry": "^0.16.0",
+        "vue-router": "^4.0.16",
+        "vue3-lazyload": "^0.3.6"
+      },
+      "workspaces": [
+        "packages/*"
+      ],
+      "devDependencies": {
+        "@commitlint/cli": "^17.4.2",
+        "@commitlint/config-conventional": "^17.4.2",
+        "@types/events": "^3.0.0",
+        "@types/fabric": "^5.3.0",
+        "@types/fontfaceobserver": "^2.1.3",
+        "@types/lodash-es": "^4.17.7",
+        "@types/node": "^18.15.13",
+        "@types/uuid": "^9.0.1",
+        "@typescript-eslint/eslint-plugin": "^5.54.1",
+        "@typescript-eslint/parser": "^5.54.1",
+        "@vitejs/plugin-vue": "^4.1.0",
+        "@vitejs/plugin-vue-jsx": "^3.0.1",
+        "autoprefixer": "^10.4.16",
+        "eslint": "^7.32.0",
+        "eslint-config-prettier": "^8.6.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "eslint-plugin-vue": "^9.9.0",
+        "husky": "^8.0.0",
+        "less": "^4.1.3",
+        "less-loader": "^11.1.0",
+        "lint-staged": "^13.1.1",
+        "prettier": "2.8.4",
+        "typescript": "5.1.6",
+        "unplugin-auto-import": "^0.16.0",
+        "vite": "^4.2.1",
+        "vite-plugin-compression": "^0.5.1",
+        "vite-plugin-eslint": "^1.8.1",
+        "vite-plugin-html": "^3.2.0",
+        "vite-plugin-vue-setup-extend-plus": "^0.1.0",
+        "vue-tsc": "^0.34.7"
+      },
+      "lint-staged": {
+        "*.{ts,tsx,js,vue}": [
+          "eslint --fix",
+          "prettier --write"
+        ]
+      },
+      "pnpm": {
+        "overrides": {
+          "@jridgewell/gen-mapping": "0.3.5"
+        }
+      }
+    }
+  },
+  {
+    "source": "mtsee__image-editor",
+    "rootFiles": [
+      ".editorconfig",
+      ".gitignore",
+      ".prettierrc.js",
+      ".yarnrc",
+      "CHANGELOG.md",
+      "LICENSE",
+      "README.md",
+      "doc",
+      "index.html",
+      "package.json",
+      "package.sdk.json",
+      "sdk-test",
+      "src",
+      "tsconfig.json",
+      "tsconfig.node.json",
+      "vite.config.ts",
+      "vite.coresdk.config.ts",
+      "vite.coresdk.react.config.ts",
+      "yarn.lock"
+    ],
+    "documents": [
+      {
+        "name": "LICENSE",
+        "bytes": 1063,
+        "opening": "MIT License\n\nCopyright (c) 2018 mantou\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom "
+      },
+      {
+        "name": "README.md",
+        "bytes": 5399,
+        "opening": "# 简介\n\n无界云图是<a href=\"https://www.h5ds.com\" target=\"_blank\">四川爱趣五科技</a>推出的一款开源的图片设计工具，使用\n了`React Hooks`，`Typescript`，`Vite`，`Leaferjs`等主流的技术开发，开箱即用，如果想直接使用，请访问我们的在线版\n<a href=\"https://image.h5ds.com\" target=\"_blank\">无界云图</a>。\n\n# 是否可商用？\n\n项目采用 MIT 协议，可免费商用。\n\n# 项目预览\n\n- 地址：<a href=\"https://image.h5ds.com\" target=\"_blank\">无界云图</a>\n\n黑色主题：\n\n![image](https://cdn.h5ds.com/doc/hdesign-1.png)\n\n白色主题：\n\n![image](h"
+      }
+    ],
+    "package": {
+      "name": "image-editor",
+      "version": "1.0.2",
+      "author": "mantou <676015863@qq.com>",
+      "license": "MIT",
+      "scripts": {
+        "dev": "vite",
+        "build": "vite build && yarn build:sdk && yarn build:sdkreact",
+        "sdk": "yarn build:sdk && yarn build:sdkreact",
+        "build:sdk": "vite build --config vite.coresdk.config.ts",
+        "build:sdkreact": "vite build --config vite.coresdk.react.config.ts",
+        "server": "node ./server/index.js",
+        "preview": "vite preview --port 8080",
+        "lint": "eslint src --fix",
+        "clean": "rimraf dist"
+      },
+      "dependencies": {
+        "@daybrush/utils": "^1.13.0",
+        "@douyinfe/semi-icons": "^2.57.0",
+        "@douyinfe/semi-illustrations": "^2.57.0",
+        "@douyinfe/semi-ui": "2.54.0",
+        "@icon-park/react": "^1.4.2",
+        "@leafer-in/editor": "1.0.0-rc.21",
+        "@leafer-in/scroll": "1.0.0-rc.21",
+        "@monaco-editor/react": "^4.6.0",
+        "asset-require-hook": "^1.2.0",
+        "axios": "^0.24.0",
+        "classnames": "^2.3.2",
+        "cropperjs": "^1.6.2",
+        "dayjs": "^1.11.10",
+        "ignore-styles": "^5.0.1",
+        "jquery": "^3.5.19",
+        "jsbarcode": "^3.11.6",
+        "leafer-ui": "1.0.0-rc.21",
+        "leafer-x-ruler": "1.0.7",
+        "localStorage": "^1.0.4",
+        "lodash": "^4.17.21",
+        "mobx": "^5.15.4",
+        "mobx-react": "^6.2.2",
+        "moveable-helper": "^0.4.0",
+        "nanoid": "^4.0.2",
+        "offset": "^0.0.1",
+        "p-limit": "^4.0.0",
+        "pubsub-js": "^1.9.4",
+        "qrcode": "^1.5.3",
+        "qrcode.react": "^3.0.2",
+        "rc-tree": "^5.8.5",
+        "react": "^18.2.0",
+        "react-angle-picker": "^1.0.8",
+        "react-beautiful-dnd": "^13.1.1",
+        "react-color": "^2.19.3",
+        "react-colorful": "^5.6.1",
+        "react-contexify": "^6.0.0",
+        "react-cropper": "^2.3.3",
+        "react-dom": "^18.2.0",
+        "react-easy-crop": "^5.0.6",
+        "react-fast-compare": "^3.2.2",
+        "react-hotkeys-hook": "^4.5.0",
+        "react-infinite-scroll-component": "^6.1.0",
+        "react-masonry-css": "^1.0.16",
+        "react-resize-detector": "^10.0.1",
+        "react-router": "^5.2.0",
+        "react-router-config": "^5.1.1",
+        "react-router-dom": "^5.1.0",
+        "resize-detector": "^0.3.0",
+        "simple-query-string": "^1.3.2",
+        "tinycolor2": "^1.6.0",
+        "undo-redo-manager2": "^1.0.4"
+      },
+      "optionalDependencies": {
+        "esbuild-windows-64": "^0.15.18"
+      },
+      "devDependencies": {
+        "@babel/plugin-proposal-class-properties": "^7.18.6",
+        "@babel/plugin-proposal-decorators": "^7.22.7",
+        "@leafer-ui/interface": "1.0.0-rc.21",
+        "@rollup/plugin-commonjs": "^25.0.3",
+        "@types/gif.js": "^0.2.5",
+        "@types/jquery": "^3.5.18",
+        "@types/lodash": "^4.17.0",
+        "@types/pubsub-js": "^1.8.4",
+        "@types/react": "^18.2.15",
+        "@types/react-beautiful-dnd": "^13.1.8",
+        "@types/react-color": "^3.0.6",
+        "@types/react-cropper": "^1.3.5",
+        "@types/react-dom": "^18.2.7",
+        "@types/react-loadable": "^5.5.6",
+        "@types/react-router": "^5.1.20",
+        "@types/react-router-config": "^5.0.6",
+        "@types/react-router-dom": "^5.3.3",
+        "@types/simple-query-string": "^1.3.1",
+        "@vitejs/plugin-react": "^4.0.3",
+        "babel-plugin-import": "^1.13.8",
+        "husky": "^8.0.1",
+        "less": "^4.1.3",
+        "less-loader": "^11.1.3",
+        "lint-staged": "^12.4.2",
+        "rollup-plugin-node-externals": "^6.1.1",
+        "stylus": "^0.57.0",
+        "terser": "^5.24.0",
+        "typescript": "^5.1.6",
+        "vite": "^4.4.4",
+        "vite-plugin-imp": "^2.4.0"
+      }
+    }
+  },
+  {
+    "source": "scaleflex__filerobot-image-editor",
+    "rootFiles": [
+      ".editorconfig",
+      ".env.example",
+      ".eslintrc.js",
+      ".gitignore",
+      ".prettierrc",
+      "CHANGELOG.md",
+      "DEVELOPMENT.md",
+      "LICENSE",
+      "README.md",
+      "babel.config.json",
+      "index.html",
+      "jsconfig.json",
+      "lerna.json",
+      "package.json",
+      "packages",
+      "vite.config.js",
+      "yarn.lock"
+    ],
+    "documents": [
+      {
+        "name": "LICENSE",
+        "bytes": 1066,
+        "opening": "MIT License\n\nCopyright (c) 2022 scaleflex\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to wh"
+      },
+      {
+        "name": "README.md",
+        "bytes": 73836,
+        "opening": "<p align=\"center\">\n\t<a href=\"https://github.com/scaleflex/filerobot-image-editor/blob/master/LICENSE\">\n\t\t<img src=\"https://img.shields.io/npm/l/filerobot-image-editor?style=for-the-badge\" alt=\"License (MIT)\" />\n\t</a>\n\t<a href=\"#installation\">\n\t\t<img src=\"https://img.shields.io/npm/v/filerobot-image-editor/latest?label=Version&style=for-the-badge&logo=npm\" alt=\"Version\" />\n\t</a>\n\t<a href=\"#\">\n\t\t<im"
+      }
+    ],
+    "package": {
+      "name": "filerobot-image-editor-root",
+      "version": "4.0.0",
+      "license": "MIT",
+      "private": true,
+      "workspaces": [
+        "packages/*"
+      ],
+      "author": "Scaleflex",
+      "homepage": "https://github.com/scaleflex/filerobot-image-editor/#readme",
+      "main": "lib/index.js",
+      "types": "lib/index.d.ts",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/scaleflex/filerobot-image-editor"
+      },
+      "keywords": [
+        "image editor",
+        "filerobot image editor",
+        "edit image",
+        "modify image",
+        "update image",
+        "finetune",
+        "filters",
+        "weatermark",
+        "resize",
+        "annotate"
+      ],
+      "files": [
+        "lib"
+      ],
+      "devDependencies": {
+        "@babel/cli": "^7.21.5",
+        "@babel/core": "^7.21.5",
+        "@babel/plugin-transform-runtime": "^7.21.4",
+        "@babel/preset-env": "^7.21.5",
+        "@babel/preset-react": "^7.16.0",
+        "@rollup/plugin-node-resolve": "^13.1.3",
+        "@types/react": "^18.2.0",
+        "@vitejs/plugin-react": "^1.2.0",
+        "babel-loader": "^9.1.2",
+        "babel-plugin-module-resolver": "^5.0.0",
+        "babel-plugin-styled-components": "^2.1.1",
+        "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+        "babel-preset-minify": "^0.5.1",
+        "cross-env": "^7.0.3",
+        "dotenv-cli": "^7.2.1",
+        "eslint": "^8.39.0",
+        "eslint-config-airbnb": "^19.0.4",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-import": "^2.24.2",
+        "eslint-plugin-jsx-a11y": "^6.4.1",
+        "eslint-plugin-prettier": "^4.0.0",
+        "eslint-plugin-react": "^7.21.5",
+        "eslint-plugin-react-hooks": "^4",
+        "form-data": "^4.0.4",
+        "gh-pages": "^5.0.0",
+        "isomorphic-fetch": "^3.0.0",
+        "lerna": "^6.6.1",
+        "lerna-update-wizard": "1.1.2",
+        "prettier": "^2.8.8",
+        "prettier-eslint-cli": "^7.1.0",
+        "react": "18.2.0",
+        "react-dom": "18.2.0",
+        "react-konva": "18.2.7",
+        "rimraf": "^5.0.0",
+        "source-map-explorer": "^2.5.2",
+        "styled-components": "5.3.10",
+        "vite": "^2.8.6"
+      },
+      "resolutions": {
+        "@babel/runtime": "^7.26.10",
+        "@babel/helpers": "^7.26.10",
+        "@babel/plugin-transform-modules-systemjs": "^7.29.4",
+        "form-data": "^4.0.4",
+        "serialize-javascript": "^6.0.2",
+        "axios": "^1.8.2",
+        "handlebars": "^4.7.9",
+        "semver": "^7.6.2",
+        "js-yaml": "^4.1.1",
+        "uuid": "^9.0.1",
+        "ip-address": "^9.0.5",
+        "micromatch": "^4.0.8",
+        "braces": "^3.0.3",
+        "tar": "^6.2.1",
+        "yaml": "^2.4.5",
+        "follow-redirects": "^1.16.0",
+        "tmp": "^0.2.4",
+        "postcss": "^8.4.31",
+        "nanoid": "^3.3.8",
+        "flatted": "^3.3.2",
+        "lodash": "^4.18.1",
+        "picomatch": "^2.3.2",
+        "cross-spawn": "^7.0.6",
+        "@messageformat/runtime": "^3.0.2"
+      },
+      "scripts": {
+        "fix": "prettier-eslint \"packages/**/src/**/*.(js|jsx)\"",
+        "dev": "vite",
+        "dev:force-prebundle-deps": "vite --force",
+        "update": "lernaupdate",
+        "set-prod-env": "cross-env BABEL_ENV=production NODE_ENV=production",
+        "build:js-bundle": "yarn set-prod-env vite build",
+        "publish:js-bundle": "yarn build:js-bundle && dotenv -- node bin/deploy-js-bundle-to-filerobot.js",
+        "build:gh-pages": "yarn set-prod-env cross-env VITE_BUILD_TYPE=gh-pages vite build",
+        "deploy:gh-pages": "gh-pages -d demo-dist",
+        "release:gh-pages": "yarn build:gh-pages && yarn deploy:gh-pages",
+        "build:packages": "lerna run build:lib",
+        "publish:packages": "yarn build:packages && lerna publish",
+        "analyze:bundle": "source-map-explorer dist/filerobot-image-editor.min.js{,.map}",
+        "release:beta": "yarn && yarn publish:packages --dist-tag beta && yarn publish:js-bundle beta",
+        "release:prod": "yarn && yarn publish:packages && yarn publish:js-bundle latest && yarn release:gh-pages"
+      }
+    }
+  },
+  {
+    "source": "viliusle__miniPaint",
+    "rootFiles": [
+      ".babelrc",
+      ".gitignore",
+      "MIT-LICENSE.txt",
+      "README.md",
+      "SECURITY.md",
+      "examples",
+      "index.html",
+      "manifest-disabled.json",
+      "package-lock.json",
+      "package.json",
+      "service-worker.js",
+      "src",
+      "webpack.config.js"
+    ],
+    "documents": [
+      {
+        "name": "MIT-LICENSE.txt",
+        "bytes": 1074,
+        "opening": "Copyright (c) ViliusL\nhttps://github.com/viliusle\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit perso"
+      },
+      {
+        "name": "README.md",
+        "bytes": 2880,
+        "opening": "# miniPaint\n\nOnline image editor lets you create and edit images using HTML5 technologies. No need to buy, download, install, or have outdated flash. No ads. Key features: layers, filters, open source Photoshop alternative.\n\nminiPaint operates directly in the browser. You can create images by pasting from the clipboard (ctrl+v) or uploading from the computer (_using menu or drag & drop_). Nothing "
+      }
+    ],
+    "package": {
+      "name": "miniPaint",
+      "version": "4.14.3",
+      "author": "Vilius L.",
+      "description": "Online graphics editing tool lets create, edit images using HTML5 technologies.",
+      "keywords": [
+        "canvas",
+        "drawing",
+        "paint",
+        "layers",
+        "effects"
+      ],
+      "scripts": {
+        "server": "webpack serve --mode development --env development --open",
+        "dev": "webpack --mode development",
+        "build": "webpack --mode production"
+      },
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/viliusle/miniPaint"
+      },
+      "homepage": "https://github.com/viliusle/miniPaint",
+      "license": "MIT",
+      "devDependencies": {
+        "@babel/core": "^7.14.5",
+        "@babel/plugin-transform-runtime": "^7.14.5",
+        "@babel/preset-env": "^7.14.5",
+        "babel-loader": "^8.2.2",
+        "css-loader": "^5.2.6",
+        "source-map-loader": "^3.0.0",
+        "style-loader": "^2.0.0",
+        "webpack": "^5.106.2",
+        "webpack-cli": "^7.0.2",
+        "webpack-dev-server": "^5.2.3"
+      },
+      "dependencies": {
+        "@babel/runtime": "^7.14.5",
+        "alertifyjs": "^1.13.1",
+        "blueimp-canvas-to-blob": "^3.28.0",
+        "exif-js": "^2.3.0",
+        "file-saver": "^2.0.5",
+        "fuzzysort": "^1.1.4",
+        "gif.js.optimized": "^1.0.1",
+        "hermite-resize": "git+https://github.com/viliusle/Hermite-resize.git",
+        "jquery": "^3.5.1",
+        "pica": "^7.0.0",
+        "semver-compare": "^1.0.0",
+        "uuid": "^8.3.2",
+        "webfontloader": "^1.6.28"
+      }
+    }
+  },
+  {
+    "source": "xdadda__mini-photo-editor",
+    "rootFiles": [
+      ".gitignore",
+      "LICENSE",
+      "README.md",
+      "index.html",
+      "libvite.config.js",
+      "package.json",
+      "screenshot.jpg",
+      "src",
+      "vite.config.js"
+    ],
+    "documents": [
+      {
+        "name": "LICENSE",
+        "bytes": 1063,
+        "opening": "MIT License\n\nCopyright (c) 2025 xdadda\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom "
+      },
+      {
+        "name": "README.md",
+        "bytes": 1166,
+        "opening": "# mini-img-editor\n\nOnline webgl2 photo editor  \n(https://mini2-photo-editor.netlify.app)  \n\n\n![Screenshot](screenshot.jpg)  \n\n100% privacy! images are edited locally in the browser, no uploads to backend server.\n\nCurrent features: \n* Crop\n* Perspective correction\n* Image resize\n* Lights and colors adjustments\n* Vignette\n* Clarity/ sharpening\n* Noise reduction\n* Color curves\n* Insta-like filters\n* "
+      }
+    ],
+    "package": {
+      "name": "mini-img-editor",
+      "version": "0.1.1",
+      "description": "",
+      "type": "module",
+      "scripts": {
+        "dev": "vite --port 5174 --host 0.0.0.0",
+        "build": "vite build",
+        "buildlib": "vite build --config libvite.config.js",
+        "serve": "vite preview"
+      },
+      "author": "",
+      "license": "ISC",
+      "dependencies": {
+        "@xdadda/mini": "file:../minijs",
+        "@xdadda/mini-exif": "^0.2.2",
+        "@xdadda/mini-gl": "file:../mini_gl",
+        "ismobilejs": "^1.1.1"
+      },
+      "devDependencies": {
+        "rollup-plugin-minify-template-literals": "^1.1.7",
+        "vite": "^6.2.2"
+      },
+      "exports": {
+        ".": {
+          "import": "./lib/mini-img-editor.js",
+          "require": "./lib/mini-img-editor.umd.cjs"
+        },
+        "./styles.css": "./lib/mini-img-editor.css"
+      }
+    }
+  },
+  {
+    "source": "ximing__fabric-photo",
+    "rootFiles": [
+      ".editorconfig",
+      ".gitignore",
+      ".nvmrc",
+      ".prettierignore",
+      ".prettierrc",
+      "AGENTS.md",
+      "CLAUDE.md",
+      "LICENSE",
+      "aihub.config.mjs",
+      "demo",
+      "docs",
+      "package.json",
+      "packages",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml",
+      "readme.md",
+      "tsconfig.base.json"
+    ],
+    "documents": [
+      {
+        "name": "readme.md",
+        "bytes": 5574,
+        "opening": "# Fabric Photo\n\n🎨 基于 Canvas 的纯前端图片编辑器，无需后端支持，提供丰富的图片编辑功能。\n\n新一代架构：不可变数据模型内核（state / step / transaction）+ fabric 6 渲染投影 + Figma 式 React 组件。\n\n![截图](./assets/main.png)\n\n**在线演示**：[https://ximing.github.io/fabric-photo/](https://ximing.github.io/fabric-photo/)\n\n## 📁 Monorepo 结构\n\n| 目录 | 包名 | 说明 |\n| --- | --- | --- |\n| `packages/core` | `@gmi/fp-core` | 编辑器内核：不可变 Doc / EditorState / Step / Transaction，UI "
+      },
+      {
+        "name": "LICENSE",
+        "bytes": 1091,
+        "opening": "The MIT License (MIT)\n\nCopyright (c) 2017-present, Yuxi (Evan) You\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, an"
+      }
+    ],
+    "package": {
+      "name": "fabric-photo",
+      "version": "0.2.0",
+      "description": "web 图片编辑器",
+      "repository": "",
+      "author": "ximing",
+      "private": true,
+      "packageManager": "pnpm@10.33.0",
+      "engines": {
+        "node": ">=22"
+      },
+      "scripts": {
+        "i": "pnpm install",
+        "dev": "pnpm --filter fabric-photo-demo dev",
+        "build": "pnpm -r build",
+        "build:demo": "pnpm --filter fabric-photo-demo build",
+        "preview:demo": "pnpm --filter fabric-photo-demo preview",
+        "typecheck": "pnpm -r typecheck",
+        "test": "pnpm -r test"
+      },
+      "devDependencies": {
+        "prettier": "^3.8.1",
+        "tslib": "^2.8.1",
+        "typescript": "^5.9.3"
+      },
+      "onlyBuiltDependencies": [
+        "canvas"
+      ],
+      "pnpm": {
+        "overrides": {
+          "tar": ">=7.5.21",
+          "esbuild": ">=0.28.1",
+          "nanoid": "^3.3.18"
+        }
+      }
+    }
+  }
+]

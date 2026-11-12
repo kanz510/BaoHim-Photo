@@ -1,0 +1,58 @@
+[
+  {
+    "file": "fonts/NotoSansSC.woff2",
+    "author": "Google / Noto contributors",
+    "license": "OFL-1.1",
+    "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/NotoSansSC[wght].ttf",
+    "sha256": "721939fdba0a5e963acd8eebd344805f64653fda8708a5d928a83db080ec905f",
+    "bytes": 7782076,
+    "coverage": {
+      "Tiếng Việt đẹp": true,
+      "你好世界": true,
+      "日本の写真": true,
+      "아름다운사진": false
+    }
+  },
+  {
+    "file": "fonts/NotoSansJP.woff2",
+    "author": "Google / Noto contributors",
+    "license": "OFL-1.1",
+    "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansjp/NotoSansJP[wght].ttf",
+    "sha256": "9e3a99810f75424d2512f495831faea70ab2ab7d20932a845de82e2f6f11c6e8",
+    "bytes": 4349804,
+    "coverage": {
+      "Tiếng Việt đẹp": true,
+      "你好世界": true,
+      "日本の写真": true,
+      "아름다운사진": false
+    }
+  },
+  {
+    "file": "fonts/NotoSansKR.woff2",
+    "author": "Google / Noto contributors",
+    "license": "OFL-1.1",
+    "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanskr/NotoSansKR[wght].ttf",
+    "sha256": "df400436fc83bf844f5c0b9bf9d5b69b81465aedf64c76e1fa72b1e87b43e274",
+    "bytes": 3908288,
+    "coverage": {
+      "Tiếng Việt đẹp": true,
+      "你好世界": false,
+      "日本の写真": true,
+      "아름다운사진": true
+    }
+  },
+  {
+    "file": "fonts/Itim.woff2",
+    "author": "Cadson Demak",
+    "license": "OFL-1.1",
+    "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/itim/Itim-Regular.ttf",
+    "sha256": "45ce9b1e09793c8097884b3a4c62707db66150522ce07c7b820caeaf3163661c",
+    "bytes": 105368,
+    "coverage": {
+      "Tiếng Việt đẹp": true,
+      "你好世界": false,
+      "日本の写真": false,
+      "아름다운사진": false
+    }
+  }
+]

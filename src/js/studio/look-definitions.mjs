@@ -1,0 +1,28 @@
+// Original color recipes. Reuse the existing grading operators; no external LUT or API.
+export const ADDITIONAL_LOOKS=[
+ {id:'rose',name:'Rose Studio',tag:'Chân dung',params:{temperature:7,tint:14,saturation:-8,contrast:-9,brightness:4,fade:3}},
+ {id:'ivory',name:'Ivory',tag:'Chân dung',params:{temperature:6,brightness:9,contrast:-8,saturation:-16,highlights:-8}},
+ {id:'petal',name:'Cánh hồng',tag:'Chân dung',params:{tint:12,brightness:6,contrast:-13,saturation:-5,fade:6}},
+ {id:'porcelain',name:'Sứ trắng',tag:'Chân dung',params:{temperature:-5,tint:3,brightness:7,shadows:8,contrast:-6,saturation:-14}},
+ {id:'cocoa',name:'Cacao',tag:'Film',params:{temperature:16,contrast:15,saturation:-32,shadows:-6,fade:10,grain:10}},
+ {id:'latte',name:'Latte',tag:'Film',params:{temperature:14,tint:4,contrast:-10,saturation:-26,fade:14,highlights:-10}},
+ {id:'amber',name:'Hổ phách',tag:'Film',params:{temperature:25,contrast:8,saturation:-9,shadows:5,fade:7,grain:8}},
+ {id:'daylight',name:'Nắng trong',tag:'Tự nhiên',params:{temperature:4,brightness:4,contrast:6,saturation:5,highlights:-8}},
+ {id:'cedar',name:'Gỗ tuyết tùng',tag:'Tự nhiên',params:{temperature:10,tint:-8,saturation:-18,contrast:10,shadows:6,fade:5}},
+ {id:'olive',name:'Olive',tag:'Tự nhiên',params:{temperature:8,tint:-12,saturation:-10,contrast:5,highlights:-12}},
+ {id:'frost',name:'Sương lạnh',tag:'Điện ảnh',params:{temperature:-18,tint:4,contrast:-7,saturation:-22,brightness:4,fade:4}},
+ {id:'silver',name:'Silver',tag:'Đen trắng',params:{saturation:-100,contrast:4,brightness:4,shadows:12,grain:7}},
+ {id:'noir',name:'Noir',tag:'Đen trắng',params:{saturation:-100,contrast:28,shadows:-15,highlights:5,grain:12}},
+ {id:'charcoal',name:'Charcoal',tag:'Đen trắng',params:{saturation:-100,contrast:13,brightness:-5,fade:14,grain:10}},
+ {id:'vintage-paper',name:'Giấy ảnh',tag:'Vintage',params:{fade:20,temperature:18,saturation:-30,grain:16,highlights:-15}},
+ {id:'vintage-90',name:'90s Diary',tag:'Vintage',params:{fade:12,tint:-9,contrast:8,saturation:-18,grain:22}},
+ {id:'seoul',name:'Seoul Soft',tag:'Hàn',params:{brightness:9,temperature:-3,tint:6,contrast:-14,saturation:-15}},
+ {id:'morning-seoul',name:'Morning Seoul',tag:'Hàn',params:{exposure:.15,shadows:12,highlights:-16,temperature:4,saturation:-9}},
+ {id:'peony',name:'Peony Light',tag:'Trung',params:{brightness:7,tint:12,contrast:9,saturation:6,highlights:-8}},
+ {id:'mist-rose',name:'Hồng sương',tag:'Trung',params:{tint:15,fade:5,contrast:-8,shadows:9,temperature:4}},
+ {id:'kyoto',name:'Kyoto Air',tag:'Nhật',params:{shadows:16,highlights:-18,contrast:-12,temperature:7,saturation:-18,fade:6}},
+ {id:'tokyo',name:'Tokyo Blue',tag:'Nhật',params:{temperature:-10,tint:-6,brightness:5,fade:8,saturation:-12}},
+ {id:'y2k-flash',name:'Flash 02',tag:'Y2K',params:{contrast:20,brightness:6,saturation:18,temperature:-8,grain:7}},
+ {id:'y2k-pop',name:'Pink Pop',tag:'Y2K',params:{tint:20,contrast:14,saturation:23,shadows:8}},
+ {id:'city',name:'City Night',tag:'Điện ảnh',params:{temperature:-14,tint:9,contrast:22,saturation:-20,shadows:-7,highlights:8}}
+];

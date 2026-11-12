@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="vi">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+ <meta name="theme-color" content="#fbf9f8"><meta name="description" content="Không gian chỉnh ảnh của riêng bạn. Chỉnh màu, làm đẹp thủ công, typography và ghép ảnh, ngay trên thiết bị.">
+ <title>PHOTO BEAUTY STUDIO PRO — Premium V2</title>
+ <link rel="icon" type="image/svg+xml" href="./assets/icon.svg"><link rel="apple-touch-icon" href="./assets/app-icon.png"><link rel="manifest" href="./manifest.json">
+ <link rel="preload" href="./assets/fonts/Manrope.ttf" as="font" type="font/ttf" crossorigin><script defer src="./bundle.js"></script>
+<style>html,body{margin:0;background:#f8f4f5}#v2-launch{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;background:#fcf9f8;color:#493741;font:14px -apple-system,BlinkMacSystemFont,sans-serif}#v2-launch strong{font-size:37px;letter-spacing:-1.8px;font-weight:500}#v2-launch small{font-size:9px;letter-spacing:4.5px;margin:9px 0 36px;color:#b97690}#v2-launch i{width:40px;height:2px;background:#cd829d;border-radius:2px;animation:v2-breathe 1s ease-in-out infinite alternate}#v2-launch[hidden]{display:none}@keyframes v2-breathe{to{opacity:.2;transform:scaleX(.5)}}@media(prefers-reduced-motion:reduce){#v2-launch i{animation:none}}</style></head>
+<body class="studio-app mobile-preview premium-v2">
+ <div id="v2-launch" role="status"><strong>beauty</strong><small>STUDIO PRO</small><i></i></div>
+ <div id="mobile-shell" class="mobile-shell" data-view="editor">
+  <header class="mobile-header">
+   <button class="mobile-back" data-mobile-action="back" aria-label="Quay lại"><span data-icon="chevronLeft"></span></button>
+   <div class="v2-header-title"><h1 id="mobile-title">Chỉnh ảnh</h1><span id="v2-save-state" aria-live="polite"></span></div>
+   <button class="mobile-save" data-action="export">Lưu</button>
+  </header>
+  <main class="mobile-workspace" aria-label="Vùng chỉnh ảnh">
+   <div class="studio-stage" id="studio-stage">
+    <div class="loading-studio" id="studio-loading"><span class="loading-flower">✳</span><span>Đang mở ảnh của bạn…</span></div>
+    <div class="middle_area" id="middle_area"><canvas class="ruler_left" id="ruler_left"></canvas><canvas class="ruler_top" id="ruler_top"></canvas><div class="main_wrapper" id="main_wrapper"><div class="canvas_wrapper" id="canvas_wrapper"><div id="mouse"></div><div class="transparent-grid" id="canvas_minipaint_background"></div><canvas id="canvas_minipaint" aria-label="Ảnh đang chỉnh sửa; dùng hai ngón để thu phóng"></canvas><div class="brush-cursor" id="brush-cursor" hidden></div></div></div></div>
+    <div class="v2-photo-caption"><span id="v2-photo-name"></span><span id="v2-photo-size"></span></div>
+    <span class="comparison-badge" id="comparison-badge" hidden>Ảnh gốc</span>
+    <div class="mobile-canvas-controls">
+     <div class="mobile-history"><button class="mobile-icon-button" data-action="undo" aria-label="Hoàn tác"><span data-icon="undo"></span></button><button class="mobile-icon-button" data-action="redo" aria-label="Làm lại"><span data-icon="redo"></span></button></div>
+     <button class="mobile-compare" data-v2-action="compare" aria-pressed="false" title="Nhấn giữ để so sánh"><span data-icon="compare"></span>Trước / sau</button>
+     <button class="mobile-icon-button mobile-fit" data-action="fit" aria-label="Ảnh vừa màn hình"><span data-icon="fit"></span></button><button class="mobile-icon-button" data-v2-action="history" aria-label="Lịch sử chỉnh sửa"><span data-icon="history"></span></button><button class="mobile-icon-button" data-action="more" aria-label="Thao tác dự án"><span data-icon="more"></span></button>
+    </div>
+   </div>
+  </main>
+  <section class="studio-inspector mobile-sheet" id="studio-inspector" aria-label="Bảng chỉnh sửa" data-detent="closed">
+   <div id="sheet-drag-zone" class="sheet-drag-zone"><button class="sheet-grabber" data-mobile-action="sheet-toggle" aria-label="Kéo hoặc chạm để mở rộng bảng chỉnh sửa"><i></i></button><div id="panel-header" class="panel-header"></div></div>
+   <div id="panel-content" class="panel-content"></div><div id="panel-footer" class="panel-footer"></div>
+  </section>
+  <nav id="mobile-nav" class="mobile-nav" aria-label="Danh mục chỉnh ảnh">
+   <button class="nav-tool" data-tool="beauty" aria-pressed="false"><span data-icon="beauty"></span><span>Làm đẹp</span></button>
+   <button class="nav-tool" data-tool="adjust" aria-pressed="false"><span data-icon="sliders"></span><span>Chỉnh</span></button>
+   <button class="nav-tool" data-tool="filters" aria-pressed="false"><span data-icon="filters"></span><span>Filter</span></button>
+   <button class="nav-tool" data-tool="reshape" aria-pressed="false"><span data-icon="reshape"></span><span>Dáng</span></button>
+   <button class="nav-tool" data-tool="makeup" aria-pressed="false"><span data-icon="makeup"></span><span>Makeup</span></button>
+   <button class="nav-tool" data-tool="text" aria-pressed="false"><span data-icon="text"></span><span>Chữ</span></button>
+   <button class="nav-tool" data-tool="stickers" aria-pressed="false"><span data-icon="sticker"></span><span>Sticker</span></button>
+   <button class="nav-tool" data-tool="frames" aria-pressed="false"><span data-icon="frame"></span><span>Khung</span></button>
+   <button class="nav-tool" data-tool="collage" aria-pressed="false"><span data-icon="collage"></span><span>Ghép</span></button>
+   <button class="nav-tool" data-tool="templates" aria-pressed="false"><span data-icon="template"></span><span>Mẫu</span></button>
+   <button class="nav-tool" data-tool="geometry" aria-pressed="false"><span data-icon="crop"></span><span>Cắt</span></button>
+   <button class="nav-tool" data-tool="layers" aria-pressed="false"><span data-icon="layers"></span><span>Lớp</span></button>
+   <button class="nav-tool" data-tool="draw" aria-pressed="false"><span data-icon="brush"></span><span>Vẽ</span></button>
+  </nav>
+  <section id="mobile-library" class="mobile-library" aria-label="Beauty Studio Pro" hidden>
+   <div class="v2-home-top"><a href="#studio" data-v2-home="studio" class="v2-wordmark">beauty<span>STUDIO PRO</span></a><button class="v2-plain-icon" data-v2-action="settings" aria-label="Cài đặt và thông tin"><span data-icon="sliders"></span></button></div>
+   <div id="v2-home-content"></div>
+   <nav class="v2-home-nav" aria-label="Không gian của bạn"><button data-v2-home="studio" class="active"><span data-icon="beauty"></span>Studio</button><button data-v2-home="looks"><span data-icon="filters"></span>Màu của bạn</button><button data-v2-home="projects"><span data-icon="folder"></span>Dự án</button></nav>
+  </section>
+  <div class="toast" id="studio-toast" role="status" aria-live="polite" hidden></div>
+  <dialog id="studio-dialog" class="studio-dialog"><div id="dialog-content"></div></dialog>
+ </div>
+ <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" hidden multiple><input type="file" id="project-input" accept=".json,.pbs" hidden>
+ <div class="ui-support" aria-hidden="true" inert><input id="document-name"><span id="save-status"></span><span id="project-count"></span><span id="layer-count"></span><span id="photo-info"></span><span id="stage-mode"></span><span id="zoom-value"></span><span id="workspace-hint"></span><span class="offline-tag"></span></div>
+ <div class="native-support" aria-hidden="true" inert><nav id="main_menu"></nav><div class="submenu"><div id="action_attributes"></div><button id="undo_button"></button></div><div class="sidebar_left" id="tools_container"></div><div class="sidebar_right"><div id="toggle_preview"></div><div id="toggle_colors"></div><div id="info_base"><div id="toggle_info"></div></div><div id="details_base"><div id="toggle_details"></div></div><div id="layers_base"></div></div><button id="left_mobile_menu_button"></button><button id="mobile_menu_button"></button><div id="tmp"></div></div><div id="popups"></div>
+</body>
+</html>

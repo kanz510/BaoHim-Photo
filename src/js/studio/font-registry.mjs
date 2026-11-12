@@ -1,0 +1,9 @@
+/** OFL fonts stay local. CJK faces are fetched/cached only when actually used. */
+export const FONT_BANK=[{family:'Manrope',sample:'Đẹp theo cách của bạn'},{family:'Playfair Display',sample:'The art of everyday'},{family:'Dancing Script',sample:'Một chút dịu dàng'},{family:'Lora',sample:'Chăm chút chất riêng'},{family:'Itim',sample:'Hôm nay thật xinh',download:true},{family:'Noto Sans SC',sample:'你好，美丽世界',download:true},{family:'Noto Sans JP',sample:'私だけの写真',download:true},{family:'Noto Sans KR',sample:'나만의 아름다움',download:true},{family:'Arial',sample:'Tối giản · Hệ thống'},{family:'Georgia',sample:'Thanh lịch · Hệ thống'}];
+export function scriptFonts(text){const result=[];if(/[\u3400-\u9fff]/u.test(text))result.push('Noto Sans SC');if(/[\u3040-\u30ff]/u.test(text))result.push('Noto Sans JP');if(/[\u1100-\u11ff\u3130-\u318f\uac00-\ud7af]/u.test(text))result.push('Noto Sans KR');return result;}
+export function textFont(meta={},text=''){const family=String(meta.family||'Arial').replace(/["\\\n\r]/g,'');return `${meta.italic?'italic ':''}${meta.bold?'700':'400'} ${meta.size||40}px "${family}"${scriptFonts(text).map(f=>`,"${f}"`).join('')},sans-serif`;}
+export async function ensureTextFonts(layers,fonts=globalThis.document?.fonts){
+ if(!fonts)return;const requests=new Map();
+ for(const layer of layers||[])if(layer.type==='text')for(const line of layer.data||[])for(const span of line){const text=span.text||'',meta=span.meta||{};for(const family of [meta.family||'Arial',...scriptFonts(text)]){const descriptor=`${meta.italic?'italic ':''}${meta.bold?'700':'400'} 24px "${String(family).replace(/["\\\n\r]/g,'')}"`;requests.set(descriptor,(requests.get(descriptor)||'')+text);}}
+ await Promise.all([...requests].map(async([font,text])=>{try{await fonts.load(font,text);if(fonts.check&&!fonts.check(font,text))throw Error('not ready');}catch{throw new Error('Chưa tải được phông chữ. Hãy kết nối mạng một lần để tải phông, rồi thử lại.');}}));
+}

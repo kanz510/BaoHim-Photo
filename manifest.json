@@ -1,0 +1,19 @@
+{
+  "name": "PHOTO BEAUTY STUDIO PRO · V2 Preview",
+  "short_name": "Beauty Pro V2",
+  "description": "Bản preview giao diện mobile để duyệt, tách riêng ứng dụng chính.",
+  "lang": "vi",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fdfbfa",
+  "theme_color": "#fdfbfa",
+  "icons": [
+    {
+      "src": "./assets/app-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

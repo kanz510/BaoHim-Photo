@@ -1,0 +1,27 @@
+import {spawnSync} from 'node:child_process';
+import {readFile,writeFile,mkdir,cp,readdir,rm} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {resolve,relative} from 'node:path';
+const root=resolve(import.meta.dirname,'..');
+await mkdir(resolve(root,'dist'),{recursive:true});
+const notices=spawnSync(process.execPath,[resolve(root,'scripts/notices.mjs')],{cwd:root,stdio:'inherit'});if(notices.status!==0)process.exit(notices.status||1);
+for(const file of await readdir(resolve(root,'dist')))if(/^studio-pixels\.[a-f0-9]{12}\.js(?:\.map)?$/.test(file))await rm(resolve(root,'dist',file));
+const result=spawnSync(process.execPath,[resolve(root,'node_modules/webpack/bin/webpack.js'),'--mode','production'],{cwd:root,stdio:'inherit'});
+if(result.status!==0)process.exit(result.status||1);
+const bundle=await readFile(resolve(root,'dist/bundle.js')),bundleName='studio.'+createHash('sha256').update(bundle).digest('hex').slice(0,12)+'.js';
+for(const file of await readdir(resolve(root,'dist')))if(/^studio\.[a-f0-9]{12}\.js$/.test(file)||/^v2\.[a-f0-9]{12}\.html$/.test(file))await rm(resolve(root,'dist',file));
+await writeFile(resolve(root,'dist',bundleName),bundle);await rm(resolve(root,'dist/bundle.js'));
+const html=(await readFile(resolve(root,'index.html'),'utf8')).replace('src="./bundle.js"','src="./'+bundleName+'"');
+await writeFile(resolve(root,'dist/index.html'),html);await writeFile(resolve(root,'dist/v2.html'),html);await writeFile(resolve(root,'dist','v2.'+bundleName.split('.')[1]+'.html'),html);
+await cp(resolve(root,'assets'),resolve(root,'dist/assets'),{recursive:true});
+await rm(resolve(root,'dist/images/icons'),{recursive:true,force:true});await mkdir(resolve(root,'dist/images'),{recursive:true});await cp(resolve(root,'assets/ui-icons'),resolve(root,'dist/images/icons'),{recursive:true});
+for(const file of ['manifest.json','licenses.html','v2-report.html','THIRD_PARTY_NOTICES.txt','MIT-LICENSE.txt'])await cp(resolve(root,file),resolve(root,'dist',file));
+await rm(resolve(root,'dist/bundle.js.map'),{force:true});
+async function files(dir){const all=[];for(const f of await readdir(dir,{withFileTypes:true})){const path=resolve(dir,f.name);if(f.isDirectory())all.push(...await files(path));else all.push('./'+relative(resolve(root,'dist'),path));}return all;}
+const precache=(await files(resolve(root,'dist'))).filter(f=>!['./service-worker.js','./asset-inventory.json'].includes(f)&&!/^\.\/assets\/fonts\/NotoSans/.test(f)&&!f.startsWith('./assets/qa/')).sort();
+const digest=createHash('sha256');for(const file of precache)digest.update(file).update(await readFile(resolve(root,'dist',file)));
+const revision=digest.digest('hex').slice(0,12);
+const worker=`const CACHE='pbs-${revision}';const FILES=${JSON.stringify(['./',...precache])};\nself.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting())));\nself.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('pbs-')&&k!==CACHE&&k!=='pbs-fonts-v1').map(k=>caches.delete(k)))).then(()=>self.clients.claim())));\nself.addEventListener('fetch',e=>{if(e.request.method!=='GET'||new URL(e.request.url).origin!==self.location.origin)return;const url=new URL(e.request.url);if(e.request.mode==='navigate'){e.respondWith(fetch(e.request).then(response=>{if(!response.ok)throw new Error('Navigation unavailable');return response;}).catch(()=>caches.match(e.request,{ignoreSearch:true}).then(cached=>cached||caches.match('./index.html'))));return;}e.respondWith(caches.match(e.request,{ignoreSearch:true}).then(cached=>cached||fetch(e.request).then(response=>{if(response.ok&&url.pathname.startsWith('/assets/fonts/NotoSans')){const copy=response.clone();e.waitUntil(caches.open('pbs-fonts-v1').then(cache=>cache.put(e.request,copy)));}return response;})));});`;
+await writeFile(resolve(root,'dist/service-worker.js'),worker);
+await writeFile(resolve(root,'dist/asset-inventory.json'),JSON.stringify({revision,files:precache},null,2));
+console.log(`Studio static build: ${precache.length} offline resources, revision ${revision}`);

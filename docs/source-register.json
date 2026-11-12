@@ -1,0 +1,520 @@
+{
+  "research_date": "2026-11-11",
+  "timezone": "Asia/Bangkok",
+  "requested_repositories": 9,
+  "source_snapshots": 10,
+  "scope": "README, source tree and targeted execution paths, dependencies, licensing, maintenance, registry advisory checks. Static research only; no product implementation, dependency installation, builds or device tests.",
+  "osv_method": "OSV querybatch, exact npm versions in tracked lockfiles; includes development, optional, and server packages; no reachability determination; excludes vendored code and Git/local dependencies",
+  "osv_unique_pairs": 3459,
+  "records": [
+    {
+      "snapshot": "Qiu-Jun__diy-platform",
+      "repository": "Qiu-Jun/diy-platform",
+      "sha": "49c65a3fecb0f27a834b27769057f0b833edbdc7",
+      "tree_url": "https://github.com/Qiu-Jun/diy-platform/tree/49c65a3fecb0f27a834b27769057f0b833edbdc7",
+      "head_date_bangkok": "2026-11-09T10:28:37+07:00",
+      "license_files": [],
+      "clean_research_checkout": true,
+      "packages": [
+        {
+          "path": "package.json",
+          "name": "diy-platform",
+          "version": "0.1.0",
+          "license_field": null,
+          "dependencies": {},
+          "peerDependencies": {}
+        },
+        {
+          "path": "packages/shared/package.json",
+          "name": "@diy/shared",
+          "version": "0.1.0",
+          "license_field": null,
+          "dependencies": {},
+          "peerDependencies": {}
+        },
+        {
+          "path": "apps/h5/package.json",
+          "name": "@diy/h5",
+          "version": "0.1.0",
+          "license_field": null,
+          "dependencies": {
+            "axios": "^1.7.9",
+            "fabric": "^6.4.3",
+            "pinia": "^2.2.6",
+            "vant": "^4.9.15",
+            "vue": "^3.5.13",
+            "vue-router": "^4.5.0"
+          },
+          "peerDependencies": {}
+        },
+        {
+          "path": "apps/server/package.json",
+          "name": "@diy/server",
+          "version": "0.1.0",
+          "license_field": null,
+          "dependencies": {
+            "@nestjs/common": "^10.4.15",
+            "@nestjs/core": "^10.4.15",
+            "@nestjs/platform-express": "^10.4.15",
+            "class-transformer": "^0.5.1",
+            "class-validator": "^0.14.1",
+            "jsonwebtoken": "^9.0.3",
+            "multer": "^1.4.5-lts.1",
+            "reflect-metadata": "^0.2.2",
+            "rxjs": "^7.8.1"
+          },
+          "peerDependencies": {}
+        },
+        {
+          "path": "apps/admin/package.json",
+          "name": "@diy/admin",
+          "version": "0.1.0",
+          "license_field": null,
+          "dependencies": {
+            "@element-plus/icons-vue": "^2.3.1",
+            "@diy/shared": "workspace:*",
+            "axios": "^1.7.9",
+            "element-plus": "^2.9.3",
+            "vue": "^3.5.13",
+            "vue-router": "^4.5.0"
+          },
+          "peerDependencies": {}
+        }
+      ],
+      "osv_locked_pairs": 770,
+      "osv_pairs_with_advisories": 24
+    },
+    {
+      "snapshot": "Qiu-Jun__mobile-fabric-editor-backup",
+      "repository": "Qiu-Jun/diy-platform",
+      "sha": "71f4a9599d756a3557c9faccb674b51040ea79fe",
+      "tree_url": "https://github.com/Qiu-Jun/diy-platform/tree/71f4a9599d756a3557c9faccb674b51040ea79fe",
+      "head_date_bangkok": "2026-05-31T11:02:03+07:00",
+      "license_files": [
+        "LICENSE"
+      ],
+      "clean_research_checkout": true,
+      "packages": [
+        {
+          "path": "package.json",
+          "name": "editor",
+          "version": "0.0.1",
+          "license_field": null,
+          "dependencies": {
+            "@dcloudio/uni-app": "3.0.0-alpha-4070620250731002",
+            "@dcloudio/uni-app-harmony": "3.0.0-alpha-4070620250731002",
+            "@dcloudio/uni-app-plus": "3.0.0-alpha-4070620250731002",
+            "@dcloudio/uni-components": "3.0.0-alpha-4070620250731002",
+            "@dcloudio/uni-h5": "3.0.0-alpha-4070620250731002",
+            "@dcloudio/uni-mp-alipay": "3.0.0-alpha-4070620250731002",
+            "@dcloudio/uni-mp-baidu": "3.0.0-alpha-4070620250731002",
+            "@dcloudio/uni-mp-harmony": "3.0.0-alpha-4070620250731002",
+            "@dcloudio/uni-mp-jd": "3.0.0-alpha-4070620250731002",
+            "@dcloudio/uni-mp-kuaishou": "3.0.0-alpha-4070620250731002",
+            "@dcloudio/uni-mp-lark": "3.0.0-alpha-4070620250731002",
+            "@dcloudio/uni-mp-qq": "3.0.0-alpha-4070620250731002",
+            "@dcloudio/uni-mp-toutiao": "3.0.0-alpha-4070620250731002",
+            "@dcloudio/uni-mp-weixin": "3.0.0-alpha-4070620250731002",
+            "@dcloudio/uni-mp-xhs": "3.0.0-alpha-4070620250731002",
+            "@dcloudio/uni-quickapp-webview": "3.0.0-alpha-4070620250731002",
+            "color-gradient-picker-vue3": "latest",
+            "editor": "link:",
+            "fabric": "^5.4.0",
+            "fontfaceobserver": "^2.3.0",
+            "lodash-es": "^4.17.21",
+            "pinia": "2.0.36",
+            "vue": "^3.4.21",
+            "vue-i18n": "^9.14.5",
+            "wot-design-uni": "^1.2.18"
+          },
+          "peerDependencies": {}
+        }
+      ],
+      "osv_locked_pairs": 1433,
+      "osv_pairs_with_advisories": 74
+    },
+    {
+      "snapshot": "dromara__yft-design",
+      "repository": "dromara/yft-design",
+      "sha": "f1328edcd07373267bc372bab19be466c7482fc3",
+      "tree_url": "https://github.com/dromara/yft-design/tree/f1328edcd07373267bc372bab19be466c7482fc3",
+      "head_date_bangkok": "2026-09-04T10:21:06+07:00",
+      "license_files": [
+        "LICENSE"
+      ],
+      "clean_research_checkout": true,
+      "packages": [
+        {
+          "path": "package.json",
+          "name": "yft-design",
+          "version": "0.1.0",
+          "license_field": null,
+          "dependencies": {
+            "@element-plus/icons-vue": "^2.1.0",
+            "@icon-park/vue-next": "^1.4.2",
+            "@vueuse/core": "^10.11.0",
+            "@vueuse/shared": "^10.11.0",
+            "axios": "^1.7.2",
+            "beautify-qrcode": "^1.0.3",
+            "changedpi": "^1.0.4",
+            "chroma-js": "^2.4.2",
+            "clipboard": "^2.0.11",
+            "clipper-lib": "^6.4.2",
+            "core-js": "^3.37.1",
+            "crypto-js": "^4.2.0",
+            "delaunator": "^5.0.1",
+            "dexie": "^3.2.7",
+            "element-plus": "^2.7.6",
+            "fabric": "^6.4.1",
+            "file-saver": "^2.0.5",
+            "gifler": "^0.1.0",
+            "html-to-image": "^1.11.11",
+            "jsbarcode": "^3.11.6",
+            "lodash-es": "^4.17.21",
+            "mousetrap": "^1.6.5",
+            "nanoid": "^5.0.3",
+            "number-precision": "^1.6.0",
+            "opentype.js": "^1.3.4",
+            "pako": "^2.1.0",
+            "perfect-freehand": "^1.2.0",
+            "pinia": "^2.1.7",
+            "raphael": "^2.3.0",
+            "tinycolor2": "^1.6.0",
+            "vue": "^3.4.30",
+            "vue-i18n": "^9.13.1",
+            "vue-router": "^4.4.0",
+            "vuedraggable": "^4.1.0"
+          },
+          "peerDependencies": {}
+        }
+      ],
+      "osv_locked_pairs": 0,
+      "osv_pairs_with_advisories": null
+    },
+    {
+      "snapshot": "evanw__glfx.js",
+      "repository": "evanw/glfx.js",
+      "sha": "86ae72acfffcd50774507eb7b69887ba2493dc35",
+      "tree_url": "https://github.com/evanw/glfx.js/tree/86ae72acfffcd50774507eb7b69887ba2493dc35",
+      "head_date_bangkok": "2022-01-11T00:03:52+07:00",
+      "license_files": [
+        "LICENSE"
+      ],
+      "clean_research_checkout": true,
+      "packages": [],
+      "osv_locked_pairs": 0,
+      "osv_pairs_with_advisories": null
+    },
+    {
+      "snapshot": "ikuaitu__vue-fabric-editor",
+      "repository": "ikuaitu/vue-fabric-editor",
+      "sha": "b3bdcfb0bd6d8f98e7483cf561ac03ba56c0d889",
+      "tree_url": "https://github.com/ikuaitu/vue-fabric-editor/tree/b3bdcfb0bd6d8f98e7483cf561ac03ba56c0d889",
+      "head_date_bangkok": "2026-07-21T16:02:59+07:00",
+      "license_files": [
+        "LICENSE"
+      ],
+      "clean_research_checkout": true,
+      "packages": [
+        {
+          "path": "package.json",
+          "name": "view-ui-project-ts",
+          "version": "1.0.0",
+          "license_field": null,
+          "dependencies": {
+            "@kuaitu/core": "workspace:^",
+            "@vueuse/core": "^10.1.0",
+            "axios": "^1.3.4",
+            "color-gradient-picker-vue3": "^3.1.0",
+            "dayjs": "^1.11.11",
+            "events": "^3.3.0",
+            "fabric": "5.3.0",
+            "fontfaceobserver": "^2.1.0",
+            "lodash-es": "^4.17.21",
+            "number-precision": "^1.6.0",
+            "qs": "^6.12.1",
+            "uuid": "^8.3.2",
+            "view-ui-plus": "1.3.7",
+            "vite-svg-loader": "^5.1.0",
+            "vue": "^3.2.25",
+            "vue-cropper": "^1.1.4",
+            "vue-i18n": "9.0.0",
+            "vue-masonry": "^0.16.0",
+            "vue-router": "^4.0.16",
+            "vue3-lazyload": "^0.3.6"
+          },
+          "peerDependencies": {}
+        },
+        {
+          "path": "packages/core/package.json",
+          "name": "@kuaitu/core",
+          "version": "1.0.0",
+          "license_field": "ISC",
+          "dependencies": {
+            "@webtoon/psd": "^0.4.0",
+            "events": "^3.3.0",
+            "fabric-history": "^1.6.0",
+            "fontfaceobserver": "^2.1.0",
+            "hotkeys-js": "^3.8.8",
+            "jsbarcode": "^3.11.6",
+            "qr-code-styling": "1.6.0-rc.1",
+            "qs": "^6.12.1",
+            "tapable": "^2.2.1",
+            "uuid": "^8.3.2"
+          },
+          "peerDependencies": {}
+        }
+      ],
+      "osv_locked_pairs": 0,
+      "osv_pairs_with_advisories": null
+    },
+    {
+      "snapshot": "mtsee__image-editor",
+      "repository": "mtsee/image-editor",
+      "sha": "c284e1ffa25ada7e494817d9f3f0bedbfb3f979b",
+      "tree_url": "https://github.com/mtsee/image-editor/tree/c284e1ffa25ada7e494817d9f3f0bedbfb3f979b",
+      "head_date_bangkok": "2024-05-24T13:53:39+07:00",
+      "license_files": [
+        "LICENSE"
+      ],
+      "clean_research_checkout": true,
+      "packages": [
+        {
+          "path": "package.json",
+          "name": "image-editor",
+          "version": "1.0.2",
+          "license_field": "MIT",
+          "dependencies": {
+            "@daybrush/utils": "^1.13.0",
+            "@douyinfe/semi-icons": "^2.57.0",
+            "@douyinfe/semi-illustrations": "^2.57.0",
+            "@douyinfe/semi-ui": "2.54.0",
+            "@icon-park/react": "^1.4.2",
+            "@leafer-in/editor": "1.0.0-rc.21",
+            "@leafer-in/scroll": "1.0.0-rc.21",
+            "@monaco-editor/react": "^4.6.0",
+            "asset-require-hook": "^1.2.0",
+            "axios": "^0.24.0",
+            "classnames": "^2.3.2",
+            "cropperjs": "^1.6.2",
+            "dayjs": "^1.11.10",
+            "ignore-styles": "^5.0.1",
+            "jquery": "^3.5.19",
+            "jsbarcode": "^3.11.6",
+            "leafer-ui": "1.0.0-rc.21",
+            "leafer-x-ruler": "1.0.7",
+            "localStorage": "^1.0.4",
+            "lodash": "^4.17.21",
+            "mobx": "^5.15.4",
+            "mobx-react": "^6.2.2",
+            "moveable-helper": "^0.4.0",
+            "nanoid": "^4.0.2",
+            "offset": "^0.0.1",
+            "p-limit": "^4.0.0",
+            "pubsub-js": "^1.9.4",
+            "qrcode": "^1.5.3",
+            "qrcode.react": "^3.0.2",
+            "rc-tree": "^5.8.5",
+            "react": "^18.2.0",
+            "react-angle-picker": "^1.0.8",
+            "react-beautiful-dnd": "^13.1.1",
+            "react-color": "^2.19.3",
+            "react-colorful": "^5.6.1",
+            "react-contexify": "^6.0.0",
+            "react-cropper": "^2.3.3",
+            "react-dom": "^18.2.0",
+            "react-easy-crop": "^5.0.6",
+            "react-fast-compare": "^3.2.2",
+            "react-hotkeys-hook": "^4.5.0",
+            "react-infinite-scroll-component": "^6.1.0",
+            "react-masonry-css": "^1.0.16",
+            "react-resize-detector": "^10.0.1",
+            "react-router": "^5.2.0",
+            "react-router-config": "^5.1.1",
+            "react-router-dom": "^5.1.0",
+            "resize-detector": "^0.3.0",
+            "simple-query-string": "^1.3.2",
+            "tinycolor2": "^1.6.0",
+            "undo-redo-manager2": "^1.0.4"
+          },
+          "peerDependencies": {}
+        }
+      ],
+      "osv_locked_pairs": 473,
+      "osv_pairs_with_advisories": 29
+    },
+    {
+      "snapshot": "scaleflex__filerobot-image-editor",
+      "repository": "scaleflex/filerobot-image-editor",
+      "sha": "a7cce3173cb380c4900b9cb9fb8d91f7f33a7a26",
+      "tree_url": "https://github.com/scaleflex/filerobot-image-editor/tree/a7cce3173cb380c4900b9cb9fb8d91f7f33a7a26",
+      "head_date_bangkok": "2026-06-04T20:35:57+07:00",
+      "license_files": [
+        "LICENSE",
+        "packages/filerobot-image-editor/LICENSE",
+        "packages/react-filerobot-image-editor/LICENSE"
+      ],
+      "clean_research_checkout": true,
+      "packages": [
+        {
+          "path": "package.json",
+          "name": "filerobot-image-editor-root",
+          "version": "4.0.0",
+          "license_field": "MIT",
+          "dependencies": {},
+          "peerDependencies": {}
+        },
+        {
+          "path": "packages/filerobot-image-editor/package.json",
+          "name": "filerobot-image-editor",
+          "version": "4.8.1",
+          "license_field": "MIT",
+          "dependencies": {
+            "@babel/runtime": "^7.26.10",
+            "react": "^18.2.0",
+            "react-dom": "^18.2.0",
+            "react-konva": "^18.2.10",
+            "styled-components": "^5.3.5"
+          },
+          "peerDependencies": {
+            "react-filerobot-image-editor": "^4.7.0"
+          }
+        },
+        {
+          "path": "packages/react-filerobot-image-editor/package.json",
+          "name": "react-filerobot-image-editor",
+          "version": "4.9.1",
+          "license_field": "MIT",
+          "dependencies": {
+            "@babel/runtime": "^7.26.10",
+            "@scaleflex/icons": "2.10.27",
+            "@scaleflex/ui": "2.10.27",
+            "konva": "9.3.6",
+            "prop-types": "15.7.2"
+          },
+          "peerDependencies": {
+            "react": ">=17.0.0",
+            "react-dom": ">=17.0.0",
+            "react-konva": ">=17.0.0",
+            "styled-components": ">=5.3.5"
+          }
+        }
+      ],
+      "osv_locked_pairs": 1194,
+      "osv_pairs_with_advisories": 36
+    },
+    {
+      "snapshot": "viliusle__miniPaint",
+      "repository": "viliusle/miniPaint",
+      "sha": "c9192c15918eb61f7dd89e362cf8065a276b89e9",
+      "tree_url": "https://github.com/viliusle/miniPaint/tree/c9192c15918eb61f7dd89e362cf8065a276b89e9",
+      "head_date_bangkok": "2026-11-10T01:19:35+07:00",
+      "license_files": [
+        "MIT-LICENSE.txt",
+        "dist/bundle.js.LICENSE.txt"
+      ],
+      "clean_research_checkout": true,
+      "packages": [
+        {
+          "path": "package.json",
+          "name": "miniPaint",
+          "version": "4.14.3",
+          "license_field": "MIT",
+          "dependencies": {
+            "@babel/runtime": "^7.14.5",
+            "alertifyjs": "^1.13.1",
+            "blueimp-canvas-to-blob": "^3.28.0",
+            "exif-js": "^2.3.0",
+            "file-saver": "^2.0.5",
+            "fuzzysort": "^1.1.4",
+            "gif.js.optimized": "^1.0.1",
+            "hermite-resize": "git+https://github.com/viliusle/Hermite-resize.git",
+            "jquery": "^3.5.1",
+            "pica": "^7.0.0",
+            "semver-compare": "^1.0.0",
+            "uuid": "^8.3.2",
+            "webfontloader": "^1.6.28"
+          },
+          "peerDependencies": {}
+        }
+      ],
+      "osv_locked_pairs": 490,
+      "osv_pairs_with_advisories": 22
+    },
+    {
+      "snapshot": "xdadda__mini-photo-editor",
+      "repository": "xdadda/mini-photo-editor",
+      "sha": "475a0e9dcb5bb6925d9b7f3c522a1312aeefad3d",
+      "tree_url": "https://github.com/xdadda/mini-photo-editor/tree/475a0e9dcb5bb6925d9b7f3c522a1312aeefad3d",
+      "head_date_bangkok": "2025-10-30T01:05:07+07:00",
+      "license_files": [
+        "LICENSE"
+      ],
+      "clean_research_checkout": true,
+      "packages": [
+        {
+          "path": "package.json",
+          "name": "mini-img-editor",
+          "version": "0.1.1",
+          "license_field": "ISC",
+          "dependencies": {
+            "@xdadda/mini": "file:../minijs",
+            "@xdadda/mini-exif": "^0.2.2",
+            "@xdadda/mini-gl": "file:../mini_gl",
+            "ismobilejs": "^1.1.1"
+          },
+          "peerDependencies": {}
+        }
+      ],
+      "osv_locked_pairs": 0,
+      "osv_pairs_with_advisories": null
+    },
+    {
+      "snapshot": "ximing__fabric-photo",
+      "repository": "ximing/fabric-photo",
+      "sha": "6d5a06b56a353334923d6b127a66186e36f1e693",
+      "tree_url": "https://github.com/ximing/fabric-photo/tree/6d5a06b56a353334923d6b127a66186e36f1e693",
+      "head_date_bangkok": "2026-10-31T21:21:37+07:00",
+      "license_files": [
+        "LICENSE"
+      ],
+      "clean_research_checkout": true,
+      "packages": [
+        {
+          "path": "package.json",
+          "name": "fabric-photo",
+          "version": "0.2.0",
+          "license_field": null,
+          "dependencies": {},
+          "peerDependencies": {}
+        },
+        {
+          "path": "packages/react/package.json",
+          "name": "@gmi/fp-react",
+          "version": "0.1.0",
+          "license_field": null,
+          "dependencies": {
+            "@gmi/fp-core": "workspace:*",
+            "lucide-react": "^0.344.0"
+          },
+          "peerDependencies": {
+            "react": ">=18",
+            "react-dom": ">=18"
+          }
+        },
+        {
+          "path": "packages/core/package.json",
+          "name": "@gmi/fp-core",
+          "version": "0.1.0",
+          "license_field": null,
+          "dependencies": {
+            "fabric": "^6"
+          },
+          "peerDependencies": {}
+        }
+      ],
+      "osv_locked_pairs": 418,
+      "osv_pairs_with_advisories": 5
+    }
+  ]
+}

@@ -1,0 +1,408 @@
+{
+  "engine": "Chromium mobile emulation; not physical Safari",
+  "viewport": {
+    "width": 440,
+    "height": 956,
+    "dpr": 3
+  },
+  "checks": [
+    {
+      "name": "Home, real import and DPR3 fit",
+      "status": "pass",
+      "ms": 5680
+    },
+    {
+      "name": "Two-finger pinch and pan preserve layers and edit history",
+      "status": "pass",
+      "ms": 2195
+    },
+    {
+      "name": "Dock scrolls horizontally and never wraps labels",
+      "status": "pass",
+      "ms": 514
+    },
+    {
+      "name": "Filter groups, thumbnails and live intensity use real color recipes",
+      "status": "pass",
+      "ms": 4155
+    },
+    {
+      "name": "Undo, redo and hold comparison preserve the native history",
+      "status": "pass",
+      "ms": 6362
+    },
+    {
+      "name": "Bottom sheet drags between expanded and compact without editing",
+      "status": "pass",
+      "ms": 3571
+    },
+    {
+      "name": "HSL sliders persist per band and change the current photo",
+      "status": "pass",
+      "ms": 2361
+    },
+    {
+      "name": "Manual healing picks a source and commits one brush gesture",
+      "status": "pass",
+      "ms": 2752
+    },
+    {
+      "name": "Face and body tools use manually placed centers and anchors",
+      "status": "pass",
+      "ms": 4049
+    },
+    {
+      "name": "Brows paint is a real linked transparent layer",
+      "status": "pass",
+      "ms": 5264
+    },
+    {
+      "name": "Vietnamese composition and CJK text load local OFL fonts",
+      "status": "pass",
+      "ms": 4835
+    },
+    {
+      "name": "Typography glow, depth and speech bubble controls update native text",
+      "status": "pass",
+      "ms": 4550
+    },
+    {
+      "name": "Original sticker catalog adds a manipulable native image layer",
+      "status": "pass",
+      "ms": 2678
+    },
+    {
+      "name": "A destructive composition presents a working confirmation",
+      "status": "pass",
+      "ms": 6327
+    },
+    {
+      "name": "Checkpoint history is stored independently of current-session undo",
+      "status": "pass",
+      "ms": 5798
+    },
+    {
+      "name": "Actual JPEG export download",
+      "status": "pass",
+      "ms": 3869
+    },
+    {
+      "name": "Actual PNG export download",
+      "status": "pass",
+      "ms": 2203
+    },
+    {
+      "name": "Portable PBS v1 downloads and reopens through the real file input",
+      "status": "pass",
+      "ms": 11595
+    },
+    {
+      "name": "Reload keeps projects, checkpoints and fonts offline",
+      "status": "pass",
+      "ms": 13938
+    },
+    {
+      "name": "Landscape resize and return to portrait refit without changing the project",
+      "status": "pass",
+      "ms": 3222
+    }
+  ],
+  "errors": [],
+  "network": [],
+  "downloads": [
+    {
+      "format": "jpeg",
+      "name": "portrait.jpg",
+      "bytes": 192441
+    },
+    {
+      "format": "png",
+      "name": "portrait.png",
+      "bytes": 1251017
+    }
+  ],
+  "browser": "156.0.8078.79",
+  "safeArea": "env insets not simulated; physical Safari remains unverified",
+  "offlineCache": [
+    "pbs-77216170e858",
+    "pbs-fonts-v1"
+  ],
+  "metrics": {
+    "metrics": [
+      {
+        "name": "Timestamp",
+        "value": 61703.195461
+      },
+      {
+        "name": "AudioHandlers",
+        "value": 0
+      },
+      {
+        "name": "AudioWorkletProcessors",
+        "value": 0
+      },
+      {
+        "name": "Documents",
+        "value": 18
+      },
+      {
+        "name": "Frames",
+        "value": 18
+      },
+      {
+        "name": "JSEventListeners",
+        "value": 704
+      },
+      {
+        "name": "LayoutObjects",
+        "value": 601
+      },
+      {
+        "name": "MediaKeySessions",
+        "value": 0
+      },
+      {
+        "name": "MediaKeys",
+        "value": 0
+      },
+      {
+        "name": "Nodes",
+        "value": 1908
+      },
+      {
+        "name": "Resources",
+        "value": 50
+      },
+      {
+        "name": "ContextLifecycleStateObservers",
+        "value": 30
+      },
+      {
+        "name": "V8PerContextDatas",
+        "value": 2
+      },
+      {
+        "name": "WorkerGlobalScopes",
+        "value": 2
+      },
+      {
+        "name": "UACSSResources",
+        "value": 0
+      },
+      {
+        "name": "RTCPeerConnections",
+        "value": 0
+      },
+      {
+        "name": "ResourceFetchers",
+        "value": 19
+      },
+      {
+        "name": "AdSubframes",
+        "value": 0
+      },
+      {
+        "name": "DetachedScriptStates",
+        "value": 0
+      },
+      {
+        "name": "ArrayBufferContents",
+        "value": 20
+      },
+      {
+        "name": "LayoutCount",
+        "value": 100
+      },
+      {
+        "name": "RecalcStyleCount",
+        "value": 201
+      },
+      {
+        "name": "LayoutDuration",
+        "value": 0.105576
+      },
+      {
+        "name": "RecalcStyleDuration",
+        "value": 0.092926
+      },
+      {
+        "name": "DevToolsCommandDuration",
+        "value": 0.239642
+      },
+      {
+        "name": "ScriptDuration",
+        "value": 0.519883
+      },
+      {
+        "name": "V8CompileDuration",
+        "value": 0.000032
+      },
+      {
+        "name": "TaskDuration",
+        "value": 11.552531
+      },
+      {
+        "name": "TaskOtherDuration",
+        "value": 10.594472
+      },
+      {
+        "name": "ThreadTime",
+        "value": 1.057994
+      },
+      {
+        "name": "ProcessTime",
+        "value": 23.97
+      },
+      {
+        "name": "JSHeapUsedSize",
+        "value": 11239980
+      },
+      {
+        "name": "JSHeapTotalSize",
+        "value": 17268736
+      },
+      {
+        "name": "FirstMeaningfulPaint",
+        "value": 61686.932682
+      },
+      {
+        "name": "DomContentLoaded",
+        "value": 61686.738814
+      },
+      {
+        "name": "NavigationStart",
+        "value": 61686.239711
+      }
+    ]
+  },
+  "heap": {
+    "usedSize": 11239980,
+    "totalSize": 17268736,
+    "embedderHeapUsedSize": 7734088,
+    "backingStorageSize": 1783366
+  },
+  "dom": {
+    "documents": 18,
+    "nodes": 1908,
+    "jsEventListeners": 704
+  },
+  "longTasks": [
+    {
+      "start": 169,
+      "duration": 337
+    },
+    {
+      "start": 508.69999999552965,
+      "duration": 84
+    },
+    {
+      "start": 687.8999999985099,
+      "duration": 210
+    },
+    {
+      "start": 1790.1999999955297,
+      "duration": 94
+    },
+    {
+      "start": 2051.5999999940395,
+      "duration": 144
+    },
+    {
+      "start": 2213.0999999940395,
+      "duration": 494
+    },
+    {
+      "start": 3081.7999999970198,
+      "duration": 185
+    },
+    {
+      "start": 3273.89999999851,
+      "duration": 451
+    },
+    {
+      "start": 3725.7999999970198,
+      "duration": 147
+    },
+    {
+      "start": 3918.7999999970198,
+      "duration": 484
+    },
+    {
+      "start": 4677.29999999702,
+      "duration": 397
+    },
+    {
+      "start": 5079.39999999851,
+      "duration": 499
+    },
+    {
+      "start": 5580.19999999553,
+      "duration": 123
+    },
+    {
+      "start": 5771.19999999553,
+      "duration": 479
+    },
+    {
+      "start": 6528.79999999702,
+      "duration": 242
+    },
+    {
+      "start": 6777,
+      "duration": 504
+    },
+    {
+      "start": 7282.5,
+      "duration": 195
+    },
+    {
+      "start": 7522.19999999553,
+      "duration": 483
+    },
+    {
+      "start": 8321.89999999851,
+      "duration": 342
+    },
+    {
+      "start": 8666.89999999851,
+      "duration": 515
+    },
+    {
+      "start": 9182.79999999702,
+      "duration": 207
+    },
+    {
+      "start": 9433.89999999851,
+      "duration": 488
+    },
+    {
+      "start": 10111.59999999404,
+      "duration": 444
+    },
+    {
+      "start": 10561.19999999553,
+      "duration": 545
+    },
+    {
+      "start": 11108.39999999851,
+      "duration": 169
+    },
+    {
+      "start": 11282.5,
+      "duration": 510
+    },
+    {
+      "start": 12113,
+      "duration": 249
+    },
+    {
+      "start": 12372,
+      "duration": 410
+    }
+  ],
+  "worker": {
+    "completed": 45,
+    "fallbacks": 0,
+    "disabled": false
+  }
+}

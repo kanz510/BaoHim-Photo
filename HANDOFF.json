@@ -1,0 +1,33 @@
+{
+  "product": "PHOTO BEAUTY STUDIO PRO V2",
+  "source_commit": "4d12c126928df9672828b0996208d5d053ada0da",
+  "format": "portable GitHub source export",
+  "excluded": [
+    "dist/ (regenerate with npm run build)",
+    ".openai/ (preview Site binding)",
+    ".git/",
+    "node_modules/",
+    "work/"
+  ],
+  "packaging_changes": [
+    "README.md updated; original preserved in docs/README-original-release.md",
+    "scripts/build.mjs creates dist/ before first read",
+    "scripts/check.mjs treats hosting metadata as optional",
+    ".gitignore excludes generated output and local host bindings",
+    ".nvmrc specifies Node24"
+  ],
+  "editing_engine_changes": false,
+  "validation": {
+    "build": "passed from a directory initially without dist/",
+    "static_check": "passed with hosting binding removed; 66 licensed assets",
+    "native_smoke_tests": "2 passed: boot and portable project roundtrip",
+    "editing_source_matches_release": true,
+    "modified_tracked_files": [
+      ".gitignore",
+      "README.md",
+      "scripts/build.mjs",
+      "scripts/check.mjs"
+    ],
+    "dependency_note": "Validation reused installed dependencies through a temporary symlink; a fresh network npm ci was not run."
+  }
+}

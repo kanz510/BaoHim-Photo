@@ -1,0 +1,62 @@
+{
+  "date": "2026-11-12",
+  "timeZone": "Asia/Bangkok",
+  "fullSuite": {
+    "tests": 95,
+    "passed": 95,
+    "failed": 0
+  },
+  "largePhoto": {
+    "environment": "Node 24, jsdom native canvas bridge, CPU fallback; synthetic 48 MP JPEG, not Safari",
+    "operations": [
+      {
+        "operation": "Open + preview",
+        "ms": 340,
+        "rssMiB": 413
+      },
+      {
+        "operation": "Export jpeg",
+        "ms": 7089,
+        "bytes": 539254,
+        "width": 3000,
+        "height": 4000,
+        "rssMiB": 529
+      },
+      {
+        "operation": "Export png",
+        "ms": 7448,
+        "bytes": 56626,
+        "width": 3000,
+        "height": 4000,
+        "rssMiB": 620
+      }
+    ],
+    "peakRssMiB": 711
+  },
+  "warp": {
+    "environment": "Node 24 + Skia, CPU, synthetic 960×1280, 100 dense warps, 1 warm-up + 5 alternating samples; not Safari",
+    "samplesMs": {
+      "reference": [
+        332,
+        329,
+        383,
+        363,
+        369
+      ],
+      "indexed": [
+        234,
+        275,
+        288,
+        270,
+        255
+      ]
+    },
+    "medianMs": {
+      "reference": 363,
+      "indexed": 270
+    }
+  },
+  "physicalSafari": {
+    "verified": false
+  }
+}

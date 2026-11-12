@@ -1,0 +1,3 @@
+import {test} from'node:test';import assert from'node:assert/strict';
+const fonts=await import('../src/js/studio/font-registry.mjs').catch(()=>({}));
+test('font readiness loads the exact text and script fallback before rendering or export',async()=>{assert.ok(fonts.ensureTextFonts);const loaded=[];const api={load:async(...args)=>loaded.push(args),check:()=>true};await fonts.ensureTextFonts([{type:'text',data:[[{text:'Đẹp 你好 日本 아름다워',meta:{family:'Manrope',bold:true}}]]}],api);assert.ok(loaded.some(([font])=>font.includes('Noto Sans KR')));assert.ok(loaded.some(([font])=>font.includes('Noto Sans SC')));assert.ok(loaded.some(([,text])=>text.includes('Đẹp')));assert.equal(fonts.FONT_BANK.filter(x=>x.download).length>=3,true);});

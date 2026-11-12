@@ -1,0 +1,68 @@
+/* Premium mobile presentation. Logical viewport and native document stay shared. */
+body.premium-v2{--pearl:var(--pro-color-pearl);--rose:var(--pro-color-berry);--rose-strong:var(--pro-color-berryInk);--rose-wash:var(--pro-color-mist);--ink:var(--pro-color-charcoal);--muted:var(--pro-color-muted);background:#eae6e9;font-family:'Manrope',-apple-system,BlinkMacSystemFont,sans-serif}
+.premium-v2 #mobile-shell,.premium-v2 #mobile-shell .mobile-header,.premium-v2 #mobile-shell .studio-stage,.premium-v2 #mobile-shell .loading-studio{background:var(--pro-color-charcoal)}
+.premium-v2 #mobile-shell .mobile-header h1{font-size:16px;font-weight:600}
+.premium-v2 #mobile-shell #v2-save-state{font-size:9px;color:#beb0ba}
+.premium-v2 #mobile-shell .mobile-save{background:var(--pro-color-rose);color:var(--ink);height:40px;min-width:60px}
+.premium-v2 #mobile-shell .mobile-icon-button{width:44px;min-width:44px}
+.premium-v2 #mobile-shell .mobile-compare{min-height:44px;background:none;font-size:11px}
+.premium-v2 #mobile-shell .v2-photo-caption{font-size:10px;color:#bcafb9}
+.premium-v2 #mobile-shell #main_wrapper{top:24px!important;bottom:48px!important;height:calc(100% - 72px)!important}
+.premium-v2 #mobile-shell #mobile-nav .nav-tool{font-size:11px!important;color:var(--pro-color-muted)}
+.premium-v2 #mobile-shell #mobile-nav .nav-tool.active{color:var(--pro-color-berryInk)}
+.premium-v2 #mobile-shell #mobile-nav .nav-tool.active::after{background:var(--pro-color-berry)}
+.premium-v2 #mobile-shell .mobile-sheet{border-radius:20px 20px 0 0;grid-template-rows:52px minmax(0,1fr) 48px}
+.premium-v2 #mobile-shell .mobile-sheet[data-detent=peek]{grid-template-rows:52px 0 0}
+.premium-v2 #mobile-shell .sheet-drag-zone{height:52px}
+.premium-v2 #mobile-shell .mobile-panel-heading{height:39px}
+.premium-v2 #mobile-shell .mobile-panel-heading h2{font-size:16px;color:var(--ink)}
+.premium-v2 #mobile-shell .sheet-close,.premium-v2 #mobile-shell .sheet-detail-toggle{width:40px;height:40px}
+.premium-v2 #mobile-shell .v2-manual-label{font-size:8px;color:var(--muted)}
+.premium-v2 #mobile-shell .sheet-secondary,.premium-v2 #mobile-shell .sheet-confirm{height:44px;min-height:44px;font-size:12px;background:transparent}
+.premium-v2 #mobile-shell .sheet-confirm{color:var(--pro-color-berryInk);font-weight:700}
+.premium-v2 #mobile-shell .slider-heading{font-size:12px;color:var(--pro-color-muted)}
+.premium-v2 #mobile-shell .slider-heading output{font-size:11px;color:var(--pro-color-berryInk)}
+.premium-v2 #mobile-shell .studio-range{height:44px!important;touch-action:pan-y}
+.premium-v2 #mobile-shell .studio-range::-webkit-slider-runnable-track{background:linear-gradient(to right,var(--pro-color-berry) var(--range),var(--pro-color-mist) var(--range))}
+.premium-v2 #mobile-shell .studio-range::-webkit-slider-thumb{background:var(--pearl);border-color:var(--pro-color-berry);box-shadow:none}
+.premium-v2 #mobile-shell .v2-tabs{min-height:40px;gap:22px}
+.premium-v2 #mobile-shell .v2-tabs button{height:40px;color:var(--pro-color-muted);font-size:12px}
+.premium-v2 #mobile-shell .v2-tabs button.active{color:var(--pro-color-berryInk)}
+.premium-v2 #mobile-shell .v2-tool-strip .tool-card{flex:1 0 64px;min-width:64px;font-size:11px!important;color:var(--pro-color-muted)}
+.premium-v2 #mobile-shell .v2-tool-strip .tool-card.active{color:var(--pro-color-berryInk)}
+.premium-v2 #mobile-shell .v2-tool-note{font-size:10px;color:var(--pro-color-muted)}
+.premium-v2 #mobile-shell .v2-filter-strip .filter-card{flex-basis:72px;width:72px;min-width:72px;max-width:72px}
+.premium-v2 #mobile-shell .v2-filter-strip .filter-preview{width:72px;height:88px;border-radius:8px}
+.premium-v2 #mobile-shell .v2-filter-strip .filter-name{font-size:10px;color:var(--pro-color-muted)}
+.premium-v2 #mobile-shell .v2-filter-strip .active .filter-name{color:var(--pro-color-berryInk)}
+.premium-v2 #mobile-shell .v2-makeup-roles{overflow-x:auto}
+.premium-v2 #mobile-shell .v2-makeup-roles button{font-size:10px;min-width:54px;min-height:56px;color:var(--muted)}
+.premium-v2 #mobile-shell .v2-makeup-roles button.active{color:var(--pro-color-berryInk)}
+.premium-v2 #mobile-shell .v2-mask-status{font-size:10px;min-height:30px}
+.premium-v2 #mobile-shell .v2-mask-status button{font-size:10px;min-height:40px}
+.premium-v2 #mobile-shell .v2-inline-action,.premium-v2 #mobile-shell .v2-body-actions button{min-height:44px;font-size:11px;color:var(--pro-color-berryInk)}
+.premium-v2 #mobile-shell .pro-hsl-bands{display:flex;justify-content:space-between;gap:2px}
+.premium-v2 #mobile-shell .pro-hsl-bands button{display:grid;place-items:center;width:44px;height:44px;flex:0 0 44px}
+.premium-v2 #mobile-shell .pro-hsl-bands i{width:24px;height:24px;border-radius:50%;outline:1px solid transparent;outline-offset:4px}
+.premium-v2 #mobile-shell .pro-hsl-bands [aria-pressed=true] i{outline-color:var(--pro-color-berryInk)}
+.premium-v2 #mobile-shell .pro-effect-list{display:flex;gap:18px;overflow-x:auto;min-height:44px;align-items:center}
+.premium-v2 #mobile-shell .pro-effect-list button{min-height:44px;font-size:11px;white-space:nowrap;color:var(--muted)}
+.premium-v2 #mobile-shell .pro-effect-list .active{color:var(--pro-color-berryInk)}
+.premium-v2 #mobile-shell .v2-home-top{background:var(--pearl)}
+.premium-v2 #mobile-shell .v2-home-intro h2{font-size:36px;line-height:1.2;color:var(--ink);font-weight:500;letter-spacing:-1.6px}
+.premium-v2 #mobile-shell .v2-home-intro p{font-size:13px;color:var(--muted)}
+.premium-v2 #mobile-shell .v2-primary{background:var(--pro-color-berry);border-radius:12px;color:#fff;font-size:13px;min-height:52px}
+.premium-v2 #mobile-shell .v2-editorial{border-radius:12px}
+.premium-v2 #mobile-shell .v2-editorial em{font-family:'Lora',serif}
+.premium-v2 #mobile-shell .v2-home-quick button{font-size:11px;min-height:76px;color:var(--muted)}
+.premium-v2 #mobile-shell .v2-home-nav{background:var(--pearl)}
+.premium-v2 #mobile-shell .v2-section-heading h3{color:var(--ink);font-size:17px}
+.premium-v2 #mobile-shell .v2-font-list button{min-height:74px}
+.premium-v2 #mobile-shell .v2-font-list small{font-size:12px}
+@media(prefers-reduced-motion:reduce){.premium-v2 #mobile-shell *{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+@font-face{font-family:'Noto Sans SC';src:url('./assets/fonts/NotoSansSC.woff2') format('woff2');font-weight:100 900;font-display:block}
+@font-face{font-family:'Noto Sans JP';src:url('./assets/fonts/NotoSansJP.woff2') format('woff2');font-weight:100 900;font-display:block}
+@font-face{font-family:'Noto Sans KR';src:url('./assets/fonts/NotoSansKR.woff2') format('woff2');font-weight:100 900;font-display:block}
+@font-face{font-family:'Itim';src:url('./assets/fonts/Itim.woff2') format('woff2');font-weight:400;font-display:block}
+/* The upstream icon filter targets button img globally; photo media keep their real colors. */
+.premium-v2 #mobile-shell button img{filter:none}

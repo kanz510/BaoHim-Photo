@@ -1,0 +1,309 @@
+{
+  "browser": "Chromium; no physical iPhone/Safari measurement",
+  "viewport": {
+    "width": 440,
+    "height": 956,
+    "dpr": 3
+  },
+  "timings": [
+    {
+      "label": "Before: existing warp and color",
+      "ms": 432,
+      "maxTimerGapMs": 436,
+      "hash": "294e785c95b869f950170f74eb2e8ee6ddaec44559cc2b6cbacfc466d7616929",
+      "width": 1024,
+      "height": 1280
+    },
+    {
+      "label": "Before: existing warp and color",
+      "ms": 413,
+      "maxTimerGapMs": 418,
+      "hash": "294e785c95b869f950170f74eb2e8ee6ddaec44559cc2b6cbacfc466d7616929",
+      "width": 1024,
+      "height": 1280
+    },
+    {
+      "label": "Before: existing warp and color",
+      "ms": 435,
+      "maxTimerGapMs": 440,
+      "hash": "294e785c95b869f950170f74eb2e8ee6ddaec44559cc2b6cbacfc466d7616929",
+      "width": 1024,
+      "height": 1280
+    },
+    {
+      "label": "After: worker warp and color",
+      "ms": 512,
+      "maxTimerGapMs": 47,
+      "hash": "294e785c95b869f950170f74eb2e8ee6ddaec44559cc2b6cbacfc466d7616929",
+      "width": 1024,
+      "height": 1280
+    },
+    {
+      "label": "After: worker warp and color",
+      "ms": 483,
+      "maxTimerGapMs": 41,
+      "hash": "294e785c95b869f950170f74eb2e8ee6ddaec44559cc2b6cbacfc466d7616929",
+      "width": 1024,
+      "height": 1280
+    },
+    {
+      "label": "After: worker warp and color",
+      "ms": 454,
+      "maxTimerGapMs": 43,
+      "hash": "294e785c95b869f950170f74eb2e8ee6ddaec44559cc2b6cbacfc466d7616929",
+      "width": 1024,
+      "height": 1280
+    },
+    {
+      "label": "After: worker 8 manual heal strokes",
+      "ms": 970,
+      "maxTimerGapMs": 31,
+      "hash": "4c752dff15550fd5fa4b2f85df961bb36fac6d690d1f47b45cac31d12819b766",
+      "width": 1024,
+      "height": 1280
+    },
+    {
+      "label": "After: worker 8 manual heal strokes",
+      "ms": 752,
+      "maxTimerGapMs": 19,
+      "hash": "4c752dff15550fd5fa4b2f85df961bb36fac6d690d1f47b45cac31d12819b766",
+      "width": 1024,
+      "height": 1280
+    },
+    {
+      "label": "After: worker 8 manual heal strokes",
+      "ms": 886,
+      "maxTimerGapMs": 47,
+      "hash": "4c752dff15550fd5fa4b2f85df961bb36fac6d690d1f47b45cac31d12819b766",
+      "width": 1024,
+      "height": 1280
+    },
+    {
+      "label": "Reference: same new heal math on main thread",
+      "ms": 1114,
+      "maxTimerGapMs": 1122,
+      "hash": "4c752dff15550fd5fa4b2f85df961bb36fac6d690d1f47b45cac31d12819b766",
+      "width": 1024,
+      "height": 1280
+    },
+    {
+      "label": "Reference: same new heal math on main thread",
+      "ms": 791,
+      "maxTimerGapMs": 795,
+      "hash": "4c752dff15550fd5fa4b2f85df961bb36fac6d690d1f47b45cac31d12819b766",
+      "width": 1024,
+      "height": 1280
+    },
+    {
+      "label": "Reference: same new heal math on main thread",
+      "ms": 774,
+      "maxTimerGapMs": 779,
+      "hash": "4c752dff15550fd5fa4b2f85df961bb36fac6d690d1f47b45cac31d12819b766",
+      "width": 1024,
+      "height": 1280
+    }
+  ],
+  "errors": [],
+  "memoryNote": "CDP JS heap excludes decoded image, GPU and canvas memory. These are not total device memory readings.",
+  "beforeLarge": {
+    "usedSize": 6138656,
+    "totalSize": 8388608,
+    "embedderHeapUsedSize": 3562888,
+    "backingStorageSize": 66409040
+  },
+  "largeOpen": {
+    "ms": 682,
+    "zoom": 0.07,
+    "backingWidth": 1263,
+    "backingHeight": 1680,
+    "cssWidth": 421,
+    "cssHeight": 560,
+    "sourceWidth": 6000,
+    "sourceHeight": 8000
+  },
+  "jpeg12MP": {
+    "ms": 1561,
+    "bytes": 1115682,
+    "type": "image/jpeg",
+    "width": 3000,
+    "height": 4000
+  },
+  "png12MP": {
+    "ms": 1037,
+    "bytes": 7606630,
+    "type": "image/png",
+    "width": 3000,
+    "height": 4000
+  },
+  "afterLarge": {
+    "usedSize": 7577620,
+    "totalSize": 9551872,
+    "embedderHeapUsedSize": 3616760,
+    "backingStorageSize": 117243835
+  },
+  "afterGC": {
+    "usedSize": 6131388,
+    "totalSize": 6930432,
+    "embedderHeapUsedSize": 3682120,
+    "backingStorageSize": 1779163
+  },
+  "metrics": {
+    "metrics": [
+      {
+        "name": "Timestamp",
+        "value": 61564.884817
+      },
+      {
+        "name": "AudioHandlers",
+        "value": 0
+      },
+      {
+        "name": "AudioWorkletProcessors",
+        "value": 0
+      },
+      {
+        "name": "Documents",
+        "value": 18
+      },
+      {
+        "name": "Frames",
+        "value": 18
+      },
+      {
+        "name": "JSEventListeners",
+        "value": 700
+      },
+      {
+        "name": "LayoutObjects",
+        "value": 321
+      },
+      {
+        "name": "MediaKeySessions",
+        "value": 0
+      },
+      {
+        "name": "MediaKeys",
+        "value": 0
+      },
+      {
+        "name": "Nodes",
+        "value": 1809
+      },
+      {
+        "name": "Resources",
+        "value": 259
+      },
+      {
+        "name": "ContextLifecycleStateObservers",
+        "value": 30
+      },
+      {
+        "name": "V8PerContextDatas",
+        "value": 2
+      },
+      {
+        "name": "WorkerGlobalScopes",
+        "value": 3
+      },
+      {
+        "name": "UACSSResources",
+        "value": 0
+      },
+      {
+        "name": "RTCPeerConnections",
+        "value": 0
+      },
+      {
+        "name": "ResourceFetchers",
+        "value": 22
+      },
+      {
+        "name": "AdSubframes",
+        "value": 0
+      },
+      {
+        "name": "DetachedScriptStates",
+        "value": 0
+      },
+      {
+        "name": "ArrayBufferContents",
+        "value": 5
+      },
+      {
+        "name": "LayoutCount",
+        "value": 44
+      },
+      {
+        "name": "RecalcStyleCount",
+        "value": 60
+      },
+      {
+        "name": "LayoutDuration",
+        "value": 0.055969
+      },
+      {
+        "name": "RecalcStyleDuration",
+        "value": 0.046423
+      },
+      {
+        "name": "DevToolsCommandDuration",
+        "value": 2.224734
+      },
+      {
+        "name": "ScriptDuration",
+        "value": 0.335388
+      },
+      {
+        "name": "V8CompileDuration",
+        "value": 0.000032
+      },
+      {
+        "name": "TaskDuration",
+        "value": 11.143482
+      },
+      {
+        "name": "TaskOtherDuration",
+        "value": 8.480936
+      },
+      {
+        "name": "ThreadTime",
+        "value": 5.442185
+      },
+      {
+        "name": "ProcessTime",
+        "value": 14.21
+      },
+      {
+        "name": "JSHeapUsedSize",
+        "value": 6131388
+      },
+      {
+        "name": "JSHeapTotalSize",
+        "value": 6930432
+      },
+      {
+        "name": "FirstMeaningfulPaint",
+        "value": 61547.342958
+      },
+      {
+        "name": "DomContentLoaded",
+        "value": 61547.071936
+      },
+      {
+        "name": "NavigationStart",
+        "value": 61546.824354
+      }
+    ]
+  },
+  "dom": {
+    "documents": 18,
+    "nodes": 1809,
+    "jsEventListeners": 700
+  },
+  "worker": {
+    "completed": 45,
+    "disabled": false,
+    "fallbacks": 0
+  },
+  "status": "pass"
+}
