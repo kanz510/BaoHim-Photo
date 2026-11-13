@@ -1,0 +1,309 @@
+{
+  "engine": "WebKit (Playwright)",
+  "timestamp": "2026-11-13T01:33:12.045Z",
+  "viewports": {
+    "440x956": {
+      "clientWidth": 440,
+      "scrollWidth": 440,
+      "hasHorizontalScroll": false,
+      "scrollX": 0,
+      "navHeight": 59,
+      "navBottom": 956,
+      "vipInDOM": false,
+      "bellInDOM": false,
+      "inertHeader": true,
+      "inertInspector": true,
+      "detent": "compact",
+      "dockNavNoOverlap": true,
+      "filter": {
+        "categoryClipped": false,
+        "rangeVisible": true,
+        "fRangeRect": {
+          "top": 871,
+          "bottom": 895
+        },
+        "contentRect": {
+          "top": 783,
+          "bottom": 906
+        },
+        "catRect": {
+          "top": 786,
+          "bottom": 810
+        },
+        "catHit": "BUTTON .active",
+        "catVisible": true
+      },
+      "makeup": {
+        "rangeVisible": true,
+        "outputVisible": true,
+        "rangeTop": 872.25,
+        "rangeBottom": 896.25
+      },
+      "reshape": {
+        "rangeVisible": true,
+        "outputVisible": true,
+        "rangeTop": 872,
+        "rangeBottom": 896
+      }
+    },
+    "390x844": {
+      "clientWidth": 390,
+      "scrollWidth": 390,
+      "hasHorizontalScroll": false,
+      "scrollX": 0,
+      "navHeight": 59,
+      "navBottom": 844,
+      "vipInDOM": false,
+      "bellInDOM": false,
+      "inertHeader": true,
+      "inertInspector": true,
+      "detent": "compact",
+      "dockNavNoOverlap": true,
+      "filter": {
+        "categoryClipped": false,
+        "rangeVisible": true,
+        "fRangeRect": {
+          "top": 760,
+          "bottom": 784
+        },
+        "contentRect": {
+          "top": 672,
+          "bottom": 795
+        },
+        "catRect": {
+          "top": 675,
+          "bottom": 699
+        },
+        "catHit": "BUTTON .active",
+        "catVisible": true
+      },
+      "makeup": {
+        "rangeVisible": true,
+        "outputVisible": true,
+        "rangeTop": 761.25,
+        "rangeBottom": 785.25
+      },
+      "reshape": {
+        "rangeVisible": true,
+        "outputVisible": true,
+        "rangeTop": 761,
+        "rangeBottom": 785
+      }
+    },
+    "375x812": {
+      "clientWidth": 375,
+      "scrollWidth": 375,
+      "hasHorizontalScroll": false,
+      "scrollX": 0,
+      "navHeight": 59,
+      "navBottom": 812,
+      "vipInDOM": false,
+      "bellInDOM": false,
+      "inertHeader": true,
+      "inertInspector": true,
+      "detent": "compact",
+      "dockNavNoOverlap": true,
+      "filter": {
+        "categoryClipped": false,
+        "rangeVisible": true,
+        "fRangeRect": {
+          "top": 728.015625,
+          "bottom": 752.015625
+        },
+        "contentRect": {
+          "top": 640.015625,
+          "bottom": 763
+        },
+        "catRect": {
+          "top": 643.015625,
+          "bottom": 667.015625
+        },
+        "catHit": "BUTTON .active",
+        "catVisible": true
+      },
+      "makeup": {
+        "rangeVisible": true,
+        "outputVisible": true,
+        "rangeTop": 729.25,
+        "rangeBottom": 753.25
+      },
+      "reshape": {
+        "rangeVisible": true,
+        "outputVisible": true,
+        "rangeTop": 729,
+        "rangeBottom": 753
+      }
+    }
+  },
+  "realImages": {
+    "tall-crop-border": {
+      "loadedWidth": 1000,
+      "loadedHeight": 2000,
+      "layerWidth": 1000,
+      "layerHeight": 2000,
+      "zoom": 0.392,
+      "isFit": true
+    },
+    "landscape": {
+      "loadedWidth": 1500,
+      "loadedHeight": 1000,
+      "layerWidth": 1500,
+      "layerHeight": 1000,
+      "zoom": 0.2853333333333333,
+      "isFit": true
+    },
+    "square": {
+      "loadedWidth": 1000,
+      "loadedHeight": 1000,
+      "layerWidth": 1000,
+      "layerHeight": 1000,
+      "zoom": 0.428,
+      "isFit": true
+    }
+  },
+  "interactions": {
+    "manualMode": true,
+    "zoomPreserved": true,
+    "fitRestored": true,
+    "compareWorks": true,
+    "undoRedoWorks": true,
+    "homeTransition": {
+      "homeVisible": true,
+      "inertEditorOnHome": true,
+      "homeRestoredEditor": true,
+      "inertCleared": true
+    }
+  },
+  "tapTargets": {
+    "totalMeasured": 20,
+    "smallTargetCount": 1,
+    "footerConfirmSize": {
+      "w": 78.4375,
+      "h": 44
+    },
+    "footerSecondarySize": {
+      "w": 75.25,
+      "h": 44
+    }
+  },
+  "toolTransitions": {
+    "baselineZoom": 0.428,
+    "baselineCenter": {
+      "scale": 0.428,
+      "cx": 500,
+      "cy": 500
+    },
+    "log": [
+      {
+        "tool": "beauty",
+        "zoom": 0.428,
+        "center": {
+          "x": 500,
+          "y": 500
+        },
+        "zoomInvariant": true,
+        "centerInvariant": true
+      },
+      {
+        "tool": "reshape",
+        "zoom": 0.428,
+        "center": {
+          "x": 500,
+          "y": 500
+        },
+        "zoomInvariant": true,
+        "centerInvariant": true
+      },
+      {
+        "tool": "makeup",
+        "zoom": 0.428,
+        "center": {
+          "x": 500,
+          "y": 500
+        },
+        "zoomInvariant": true,
+        "centerInvariant": true
+      },
+      {
+        "tool": "filters",
+        "zoom": 0.428,
+        "center": {
+          "x": 500,
+          "y": 500
+        },
+        "zoomInvariant": true,
+        "centerInvariant": true
+      },
+      {
+        "tool": "adjust",
+        "zoom": 0.428,
+        "center": {
+          "x": 500,
+          "y": 500
+        },
+        "zoomInvariant": true,
+        "centerInvariant": true
+      },
+      {
+        "tool": "text",
+        "zoom": 0.428,
+        "center": {
+          "x": 500,
+          "y": 500
+        },
+        "zoomInvariant": true,
+        "centerInvariant": true
+      },
+      {
+        "tool": "stickers",
+        "zoom": 0.428,
+        "center": {
+          "x": 500,
+          "y": 500
+        },
+        "zoomInvariant": true,
+        "centerInvariant": true
+      },
+      {
+        "tool": "frames",
+        "zoom": 0.428,
+        "center": {
+          "x": 500,
+          "y": 500
+        },
+        "zoomInvariant": true,
+        "centerInvariant": true
+      },
+      {
+        "tool": "collage",
+        "zoom": 0.428,
+        "center": {
+          "x": 500,
+          "y": 500
+        },
+        "zoomInvariant": true,
+        "centerInvariant": true
+      },
+      {
+        "tool": "geometry",
+        "zoom": 0.428,
+        "center": {
+          "x": 500,
+          "y": 500
+        },
+        "zoomInvariant": true,
+        "centerInvariant": true
+      },
+      {
+        "tool": "draw",
+        "zoom": 0.428,
+        "center": {
+          "x": 500,
+          "y": 500
+        },
+        "zoomInvariant": true,
+        "centerInvariant": true
+      }
+    ]
+  }
+}
