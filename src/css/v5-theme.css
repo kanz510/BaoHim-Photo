@@ -173,38 +173,37 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
   display: none;
 }
 
-/* Full-width Portrait Hero Banner */
+/* Full-width Portrait Hero Banner (04_Trang_chu.webp) */
 .immersive-v5 .v5-hero {
   position: relative;
-  border-radius: var(--v5-radius-panel);
+  margin: -12px -16px 0;
+  border-radius: 0;
   overflow: hidden;
-  height: 236px;
-  background: var(--v5-bg-elevated);
-  border: 1px solid var(--v5-border);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.48);
+  height: 300px;
+  background: var(--v5-bg);
+  border: 0;
+  box-shadow: none;
 }
 
 .immersive-v5 .v5-hero-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 14%;
+  object-position: 86% 12%;
   display: block;
 }
 
 .immersive-v5 .v5-hero-scrim {
   position: absolute;
   inset: 0;
-  padding: 20px 18px 18px;
+  padding: 24px 18px 34px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  background: linear-gradient(
-    180deg,
-    rgba(20, 20, 22, 0.04) 0%,
-    rgba(20, 20, 22, 0.38) 46%,
-    rgba(20, 20, 22, 0.94) 100%
-  );
+  align-items: flex-start;
+  background:
+    linear-gradient(90deg, rgba(20, 20, 22, 0.92) 0%, rgba(20, 20, 22, 0.56) 42%, rgba(20, 20, 22, 0) 76%),
+    linear-gradient(180deg, rgba(20, 20, 22, 0.25) 0%, rgba(20, 20, 22, 0) 26%, rgba(20, 20, 22, 0.42) 74%, #141416 100%);
 }
 
 .immersive-v5 .v5-hero-kicker {
@@ -217,20 +216,29 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
 }
 
 .immersive-v5 .v5-hero-title {
-  margin: 0 0 4px;
-  font-size: 22px;
+  margin: 0 0 6px;
+  font-size: 26px;
+  font-style: italic;
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.15;
   letter-spacing: -0.02em;
-  color: var(--v5-text);
+  color: #ffffff;
+  background: linear-gradient(180deg, #ffffff 30%, #f5c2d9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .immersive-v5 .v5-hero-desc {
-  margin: 0 0 14px;
-  font-size: 11.5px;
+  margin: 0;
+  font-size: 12px;
   font-weight: 500;
   color: var(--v5-text-secondary);
   line-height: 1.35;
+}
+
+.immersive-v5 .v5-hero-flourish {
+  margin: 5px 0 14px;
+  opacity: 0.9;
 }
 
 .immersive-v5 .v5-hero-actions {
@@ -279,10 +287,12 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
 
 /* Primary Quick Access Grid (4 cols) */
 .immersive-v5 .v5-quick-grid {
+  position: relative;
+  z-index: 2;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
-  margin-top: 14px;
+  margin-top: -16px;
 }
 
 .immersive-v5 .v5-quick-item {
@@ -919,7 +929,7 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
   color: var(--v5-accent-active);
 }
 
-/* Single Unified Compact Dock (#studio-inspector) */
+/* Single Unified Dock (#studio-inspector) — auto height so controls never clip */
 .immersive-v5 #mobile-shell .mobile-sheet {
   background: var(--v5-bg-elevated);
   color: var(--v5-text);
@@ -928,24 +938,29 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
   box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.5);
   display: grid !important;
   grid-template-rows: auto minmax(0, 1fr) auto !important;
-  height: calc(var(--sheet-height, 196px) + env(safe-area-inset-bottom, 0px)) !important;
-  max-height: calc(100dvh - 58px);
+  height: auto !important;
+  max-height: 48dvh;
   overflow: hidden;
   box-sizing: border-box;
 }
 
+.immersive-v5 #mobile-shell .mobile-sheet[data-detent="compact"] {
+  min-height: 196px;
+}
+
 .immersive-v5 #mobile-shell .mobile-sheet[data-detent="expanded"] {
-  --sheet-height: min(320px, 44dvh);
+  height: auto !important;
+  max-height: 54dvh;
 }
 
 .immersive-v5 #mobile-shell .sheet-drag-zone {
   flex: 0 0 auto;
   background: var(--v5-bg-elevated);
-  border-bottom: 1px solid var(--v5-divider);
-  padding: 0 10px;
-  height: 26px !important;
-  min-height: 26px !important;
-  max-height: 26px !important;
+  border-bottom: 0;
+  padding: 6px 10px 2px;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1059,17 +1074,17 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
   min-height: 0 !important;
   overflow-y: auto !important;
   overscroll-behavior: contain;
-  padding: 2px 14px 2px !important;
+  padding: 4px 16px 8px !important;
   box-sizing: border-box;
 }
 
 .immersive-v5 #mobile-shell .panel-footer {
   flex: 0 0 auto;
-  min-height: 46px;
-  height: calc(46px + env(safe-area-inset-bottom, 0px));
+  min-height: 50px;
+  height: auto;
   background: var(--v5-bg-elevated);
   border-top: 1px solid var(--v5-divider);
-  padding: 0 16px env(safe-area-inset-bottom, 0px) !important;
+  padding: 6px 16px calc(8px + env(safe-area-inset-bottom, 0px)) !important;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1122,9 +1137,9 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
   display: grid !important;
   grid-template-columns: auto minmax(56px, 1fr) auto !important;
   align-items: center !important;
-  gap: 10px !important;
-  margin: 1px 0 !important;
-  min-height: 22px !important;
+  gap: 12px !important;
+  margin: 4px 0 2px !important;
+  min-height: 34px !important;
 }
 
 .immersive-v5 #mobile-shell .v5-slider-row .slider-heading {
@@ -1286,30 +1301,30 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
 
 .immersive-v5 #mobile-shell .v2-filter-strip,
 .immersive-v5 #mobile-shell .mobile-sheet[data-detent="compact"] .v2-filter-strip {
-  min-height: 56px;
-  max-height: 58px;
-  padding: 0 1px;
-  margin: 0 0 2px !important;
-  gap: 8px;
+  min-height: 92px;
+  max-height: none;
+  padding: 2px 0;
+  margin: 0 0 10px !important;
+  gap: 10px;
   overflow-y: hidden;
   scrollbar-width: none;
 }
 
 .immersive-v5 #mobile-shell .v2-filter-strip .filter-card,
 .immersive-v5 #mobile-shell .mobile-sheet[data-detent="compact"] .v2-filter-strip .filter-card {
-  flex: 0 0 54px;
-  width: 54px;
-  min-width: 54px;
-  max-width: 54px;
-  gap: 2px;
+  flex: 0 0 68px;
+  width: 68px;
+  min-width: 68px;
+  max-width: 68px;
+  gap: 6px;
   color: var(--v5-text-secondary);
 }
 
 .immersive-v5 #mobile-shell .v2-filter-strip .filter-preview,
 .immersive-v5 #mobile-shell .mobile-sheet[data-detent="compact"] .v2-filter-strip .filter-preview {
-  width: 54px;
-  height: 42px;
-  border-radius: 9px;
+  width: 68px;
+  height: 68px;
+  border-radius: 12px;
   border: 2px solid transparent;
   background: var(--v5-surface);
   box-sizing: border-box;
@@ -1334,21 +1349,30 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
   opacity: 0;
 }
 
+.immersive-v5 #mobile-shell .v2-tabs::-webkit-scrollbar,
+.immersive-v5 #mobile-shell .v2-filter-strip::-webkit-scrollbar,
+.immersive-v5 #mobile-shell .pro-effect-list::-webkit-scrollbar,
+.immersive-v5 #mobile-shell .v2-tool-strip::-webkit-scrollbar,
+.immersive-v5 #mobile-shell .v2-attributes::-webkit-scrollbar {
+  display: none;
+}
+
 .immersive-v5 #mobile-shell .v2-tabs {
   border-color: var(--v5-divider);
-  gap: 6px;
-  min-height: 22px;
-  margin: 0 0 4px !important;
+  gap: 18px;
+  min-height: 36px;
+  margin: 0 0 10px !important;
   padding-bottom: 0 !important;
+  scrollbar-width: none;
 }
 
 .immersive-v5 #mobile-shell .v2-tabs button {
   color: var(--v5-text-muted);
-  border-radius: var(--v5-radius-pill);
-  padding: 0 9px;
-  min-height: 22px;
-  height: 22px;
-  font-size: 11px;
+  border-radius: 0;
+  padding: 0 2px;
+  min-height: 38px;
+  height: 38px;
+  font-size: 13px;
   font-weight: 600;
 }
 

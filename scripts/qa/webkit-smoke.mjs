@@ -788,7 +788,9 @@ try{
  assert.ok(v5EditorMetrics.sheetH>=180&&v5EditorMetrics.sheetH<=210,`V5 sheet height ${v5EditorMetrics.sheetH}px fits ~196px compact dock`);
  assert.equal(v5EditorMetrics.unclipped,true,'Canvas fits cleanly inside stage without clipping in V5');
 
- await v5Page.click('[data-v3-subtool="face-reshape"]');
+ await v5Page.click('.sheet-confirm');
+ await v5Page.waitForTimeout(180);
+ await v5Page.click('#mobile-nav [data-v3-category="body"]');
  await v5Page.waitForTimeout(220);
  const v5ReshapeMetrics=await v5Page.evaluate(()=>{
   const canvas=document.querySelector('#canvas_minipaint').getBoundingClientRect();

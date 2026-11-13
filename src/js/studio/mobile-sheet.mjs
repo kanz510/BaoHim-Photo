@@ -17,9 +17,9 @@ export class MobileSheet{
  set(detent,{render=true}={}){
   if(!['closed','peek','compact','expanded'].includes(detent))return;const previous=this.detent;this.detent=detent;this.el.classList.remove('minimized');this.el.dataset.detent=detent;this.root.classList.toggle('sheet-open',detent!=='closed');this.write(this.stops()[detent]);
   this.handle.querySelector('.sheet-grabber')?.setAttribute('aria-expanded',String(detent==='expanded'));
-  if(render&&(previous==='expanded')!==(detent==='expanded'))this.ui.renderPanel();this.ui.mobileViewport?.schedule();
+  if(render&&(previous==='expanded')!==(detent==='expanded'))this.ui.renderPanel();this.write(this.stops()[detent]);this.ui.mobileViewport?.schedule();
  }
- write(height){this.height=height;this.root.style.setProperty('--sheet-height',`${Math.max(0,height||0)}px`);}
+ write(height){const actual=this.ui?.isV5&&this.detent!=='closed'&&!this.drag?Math.round(this.el?.getBoundingClientRect().height||0):0;const h=actual>0?actual:height;this.height=h;this.root.style.setProperty('--sheet-height',`${Math.max(0,h||0)}px`);}
  down(event){if(event.button!==0||event.target.closest('button,a,input,select,[role="button"],[data-v3-subtool],[data-mobile-action]'))return;this.drag={id:event.pointerId,y:event.clientY,height:this.height,detent:this.detent,time:performance.now()};this.handle.setPointerCapture?.(event.pointerId);this.el.classList.add('is-dragging');}
  move(event){if(this.drag?.id!==event.pointerId)return;event.preventDefault();const s=this.stops();this.write(Math.max(s.peek,Math.min(s.expanded,this.drag.height+this.drag.y-event.clientY)));}
  up(event){
