@@ -821,30 +821,19 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
 }
 
 .immersive-v5 #mobile-shell #main_wrapper {
-  top: 6px;
-  bottom: 42px;
-  left: 6px;
-  right: 6px;
+  top: 0;
+  bottom: 44px;
+  left: 0;
+  right: 0;
 }
 
 .immersive-v5 #mobile-shell #canvas_minipaint {
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
-  border-radius: 2px;
+  box-shadow: none;
+  border-radius: 0;
 }
 
 .immersive-v5 #mobile-shell .v2-photo-caption {
-  top: 6px;
-  right: 12px;
-  left: auto;
-  justify-content: flex-end;
-  gap: 6px;
-  padding: 2px 8px;
-  border-radius: var(--v5-radius-pill);
-  background: rgba(29, 29, 33, 0.78);
-  border: 1px solid var(--v5-border);
-  color: var(--v5-text-secondary);
-  font-size: 9.5px;
-  font-variant-numeric: tabular-nums;
+  display: none !important;
 }
 
 .immersive-v5 #mobile-shell .v2-photo-caption #v2-photo-name {
@@ -857,13 +846,13 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
   color: var(--v5-text);
 }
 
-/* Editor Floating HUD */
+/* Editor Flat Action Toolbar (Meitu / Xingtu style) */
 .immersive-v5 #mobile-shell .mobile-canvas-controls {
   height: 44px;
-  padding: 0 8px;
+  padding: 0 10px;
   bottom: 0;
   background: var(--v5-bg);
-  border-top: 1px solid var(--v5-divider);
+  border-top: 0 !important;
 }
 
 .immersive-v5 #mobile-shell .mobile-icon-button {
@@ -871,7 +860,7 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
   min-height: 44px;
   width: 44px;
   height: 44px;
-  border-radius: var(--v5-radius-sm);
+  border-radius: 0;
   background: transparent;
   color: var(--v5-text-secondary);
 }
@@ -883,19 +872,20 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
 .immersive-v5 #mobile-shell .mobile-compare {
   min-height: 44px;
   height: 44px;
-  padding: 0 14px;
-  border-radius: var(--v5-radius-pill);
-  background: var(--v5-surface);
-  border: 1px solid var(--v5-border);
-  color: var(--v5-text);
-  font-size: 11px;
-  font-weight: 600;
+  padding: 0 12px;
+  border-radius: 0;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: var(--v5-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .immersive-v5 #mobile-shell .mobile-compare[aria-pressed="true"] {
-  background: var(--v5-accent);
-  border-color: var(--v5-accent);
-  color: #ffffff;
+  background: transparent !important;
+  border: 0 !important;
+  color: var(--v5-accent-active);
 }
 
 /* Bottom Dock when Sheet Closed */
@@ -929,13 +919,13 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
   color: var(--v5-accent-active);
 }
 
-/* Single Unified Dock (#studio-inspector) — auto height so controls never clip */
+/* Single Seamless Flat Dock (#studio-inspector) */
 .immersive-v5 #mobile-shell .mobile-sheet {
-  background: var(--v5-bg-elevated);
+  background: var(--v5-bg) !important;
   color: var(--v5-text);
-  border-top: 1px solid var(--v5-border);
-  border-radius: var(--v5-radius-panel) var(--v5-radius-panel) 0 0;
-  box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.5);
+  border-top: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
   display: grid !important;
   grid-template-rows: auto minmax(0, 1fr) auto !important;
   height: auto !important;
@@ -955,9 +945,9 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
 
 .immersive-v5 #mobile-shell .sheet-drag-zone {
   flex: 0 0 auto;
-  background: var(--v5-bg-elevated);
+  background: var(--v5-bg) !important;
   border-bottom: 0;
-  padding: 6px 10px 2px;
+  padding: 0 10px;
   height: auto !important;
   min-height: 0 !important;
   max-height: none !important;
@@ -968,12 +958,7 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
 }
 
 .immersive-v5 #mobile-shell .sheet-grabber {
-  height: 8px;
-  min-height: 8px;
-  padding: 2px 0 1px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: none !important;
 }
 
 .immersive-v5 #mobile-shell .sheet-grabber i {
@@ -1069,22 +1054,22 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
 }
 
 .immersive-v5 #mobile-shell .panel-content {
-  background: var(--v5-bg-elevated);
+  background: var(--v5-bg) !important;
   color: var(--v5-text);
   min-height: 0 !important;
   overflow-y: auto !important;
   overscroll-behavior: contain;
-  padding: 4px 16px 8px !important;
+  padding: 2px 16px 6px !important;
   box-sizing: border-box;
 }
 
 .immersive-v5 #mobile-shell .panel-footer {
   flex: 0 0 auto;
-  min-height: 50px;
+  min-height: 48px;
   height: auto;
-  background: var(--v5-bg-elevated);
-  border-top: 1px solid var(--v5-divider);
-  padding: 6px 16px calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+  background: var(--v5-bg) !important;
+  border-top: 0 !important;
+  padding: 4px 16px calc(8px + env(safe-area-inset-bottom, 0px)) !important;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1390,53 +1375,61 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
 .immersive-v5 #mobile-shell .v2-inline-action,
 .immersive-v5 #mobile-shell .v2-crop-ratios button,
 .immersive-v5 #mobile-shell .v2-rotate-actions button {
-  background: var(--v5-surface) !important;
-  border: 1px solid var(--v5-divider) !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
   color: var(--v5-text-secondary) !important;
-  border-radius: var(--v5-radius-sm);
+  border-radius: 0;
 }
 
 .immersive-v5 #mobile-shell .v2-attributes button i {
-  background: var(--v5-surface-pill) !important;
-  color: var(--v5-text) !important;
+  background: transparent !important;
+  color: var(--v5-text-secondary) !important;
 }
 
 .immersive-v5 #mobile-shell .v2-tool-strip .tool-card.active,
 .immersive-v5 #mobile-shell .v2-attributes button.active,
-.immersive-v5 #mobile-shell .pro-effect-list button.active,
 .immersive-v5 #mobile-shell .v2-crop-ratios button.active {
-  background: var(--v5-accent-soft) !important;
-  border: 2px solid var(--v5-accent-active) !important;
+  background: transparent !important;
+  border: 0 !important;
+  color: var(--v5-accent-active) !important;
+}
+
+.immersive-v5 #mobile-shell .pro-effect-list button.active {
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1.5px solid var(--v5-accent-active) !important;
   color: var(--v5-text) !important;
 }
 
 .immersive-v5 #mobile-shell .v2-attributes button.active i {
-  background: rgba(196, 104, 144, 0.24) !important;
+  background: transparent !important;
   color: var(--v5-accent-active) !important;
 }
 
-/* Group 4: Reshape segmented switch (Face / Body) */
+/* Group 4: Reshape flat text tabs (same navigation language as all tools) */
 .immersive-v5 #mobile-shell .v2-tabs:has([data-reshape-group]) {
-  background: var(--v5-surface);
-  border: 1px solid var(--v5-divider);
-  border-radius: var(--v5-radius-pill);
-  padding: 2px;
-  gap: 2px;
-  width: fit-content;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--v5-divider);
+  border-radius: 0;
+  padding: 0;
+  gap: 18px;
+  width: 100%;
 }
 
 .immersive-v5 #mobile-shell .v2-tabs [data-reshape-group] {
-  border-radius: var(--v5-radius-pill);
-  border-bottom: 0;
-  padding: 4px 12px;
-  color: var(--v5-text-secondary);
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  padding: 0 2px;
+  color: var(--v5-text-muted);
 }
 
 .immersive-v5 #mobile-shell .v2-tabs [data-reshape-group].active {
-  background: var(--v5-accent);
-  color: #ffffff;
-  border-radius: var(--v5-radius-pill);
-  border-bottom: 0;
+  background: transparent;
+  color: var(--v5-text);
+  border-radius: 0;
+  border-bottom: 2px solid var(--v5-accent-active);
 }
 
 /* Group 5: HSL swatches & dark Tone Curve */
@@ -1481,10 +1474,9 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  background: #141416;
-  border: 1px solid var(--v5-border);
-  border-radius: var(--v5-radius-card);
-  padding: 8px;
+  background: transparent;
+  border: 0;
+  padding: 2px 0;
 }
 
 .immersive-v5 #mobile-shell #tone-curve {

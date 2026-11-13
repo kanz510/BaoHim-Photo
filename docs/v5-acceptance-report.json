@@ -1,6 +1,6 @@
 {
   "engine": "WebKit (Playwright)",
-  "timestamp": "2026-11-13T02:30:09.266Z",
+  "timestamp": "2026-11-13T03:13:29.016Z",
   "viewports": {
     "440x956": {
       "clientWidth": 440,
@@ -19,16 +19,16 @@
         "categoryClipped": false,
         "rangeVisible": true,
         "fRangeRect": {
-          "top": 818,
-          "bottom": 842
+          "top": 825,
+          "bottom": 849
         },
         "contentRect": {
-          "top": 680,
-          "bottom": 897
+          "top": 689,
+          "bottom": 900
         },
         "catRect": {
-          "top": 685,
-          "bottom": 709
+          "top": 692,
+          "bottom": 716
         },
         "catHit": "BUTTON .active",
         "catVisible": true
@@ -36,14 +36,14 @@
       "makeup": {
         "rangeVisible": true,
         "outputVisible": true,
-        "rangeTop": 689.5,
-        "rangeBottom": 713.5
+        "rangeTop": 694.5,
+        "rangeBottom": 718.5
       },
       "reshape": {
         "rangeVisible": true,
         "outputVisible": true,
-        "rangeTop": 776,
-        "rangeBottom": 800
+        "rangeTop": 781,
+        "rangeBottom": 805
       }
     },
     "390x844": {
@@ -63,16 +63,16 @@
         "categoryClipped": false,
         "rangeVisible": true,
         "fRangeRect": {
-          "top": 706,
-          "bottom": 730
+          "top": 713,
+          "bottom": 737
         },
         "contentRect": {
-          "top": 568,
-          "bottom": 785
+          "top": 577,
+          "bottom": 788
         },
         "catRect": {
-          "top": 573,
-          "bottom": 597
+          "top": 580,
+          "bottom": 604
         },
         "catHit": "BUTTON .active",
         "catVisible": true
@@ -80,14 +80,14 @@
       "makeup": {
         "rangeVisible": true,
         "outputVisible": true,
-        "rangeTop": 577.5,
-        "rangeBottom": 601.5
+        "rangeTop": 582.5,
+        "rangeBottom": 606.5
       },
       "reshape": {
         "rangeVisible": true,
         "outputVisible": true,
-        "rangeTop": 664,
-        "rangeBottom": 688
+        "rangeTop": 669,
+        "rangeBottom": 693
       }
     },
     "375x812": {
@@ -107,16 +107,16 @@
         "categoryClipped": false,
         "rangeVisible": true,
         "fRangeRect": {
-          "top": 674,
-          "bottom": 698
+          "top": 681,
+          "bottom": 705
         },
         "contentRect": {
-          "top": 536,
-          "bottom": 753
+          "top": 545,
+          "bottom": 756
         },
         "catRect": {
-          "top": 541,
-          "bottom": 565
+          "top": 548,
+          "bottom": 572
         },
         "catHit": "BUTTON .active",
         "catVisible": true
@@ -124,14 +124,14 @@
       "makeup": {
         "rangeVisible": true,
         "outputVisible": true,
-        "rangeTop": 545.5,
-        "rangeBottom": 569.5
+        "rangeTop": 550.5,
+        "rangeBottom": 574.5
       },
       "reshape": {
         "rangeVisible": true,
         "outputVisible": true,
-        "rangeTop": 632,
-        "rangeBottom": 656
+        "rangeTop": 637,
+        "rangeBottom": 661
       }
     }
   },
@@ -175,8 +175,8 @@
     }
   },
   "tapTargets": {
-    "totalMeasured": 20,
-    "smallTargetCount": 1,
+    "totalMeasured": 19,
+    "smallTargetCount": 0,
     "footerConfirmSize": {
       "w": 78.4375,
       "h": 44
