@@ -936,6 +936,7 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
 
 .immersive-v5 #mobile-shell .mobile-sheet[data-detent="compact"] {
   min-height: 196px;
+  max-height: 276px;
 }
 
 .immersive-v5 #mobile-shell .mobile-sheet[data-detent="expanded"] {
@@ -1430,6 +1431,73 @@ body:not(.immersive-v5) #mobile-shell .v5-home-nav {
   color: var(--v5-text);
   border-radius: 0;
   border-bottom: 2px solid var(--v5-accent-active);
+}
+
+.immersive-v5 #mobile-shell .v5-region-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  margin: 2px 0 2px;
+}
+
+.immersive-v5 #mobile-shell .v5-region-label {
+  font-size: 12px;
+  color: var(--v5-text-secondary);
+}
+
+.immersive-v5 #mobile-shell .v5-region-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 36px;
+  padding: 0 4px;
+  background: transparent;
+  border: 0;
+  color: var(--v5-accent-active);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.immersive-v5 #mobile-shell .v5-region-trigger .studio-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.immersive-v5 #mobile-shell .v5-region-popover {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  padding: 6px 0 8px;
+  margin: 2px 0 6px;
+  border-top: 1px solid var(--v5-divider);
+  border-bottom: 1px solid var(--v5-divider);
+}
+
+.immersive-v5 #mobile-shell .v5-region-popover button {
+  background: transparent;
+  border: 0;
+  border-bottom: 1.5px solid transparent;
+  min-height: 34px;
+  padding: 2px;
+  font-size: 12.5px;
+  color: var(--v5-text-secondary);
+}
+
+.immersive-v5 #mobile-shell .v5-region-popover button.active {
+  color: var(--v5-accent-active);
+  font-weight: 600;
+  border-bottom-color: var(--v5-accent-active);
+}
+
+.immersive-v5 #mobile-shell .v5-empty-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 72px;
+  color: var(--v5-text-secondary);
+  font-size: 13px;
 }
 
 /* Group 5: HSL swatches & dark Tone Curve */

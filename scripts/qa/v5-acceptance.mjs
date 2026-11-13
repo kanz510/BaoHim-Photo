@@ -168,11 +168,16 @@ try {
       const makeupRangeVisible = mRangeRect ? (mRangeRect.top >= mContentRect.top && mRangeRect.bottom <= mContentRect.bottom) : false;
       const makeupOutVisible = mOutRect ? (mOutRect.top >= mContentRect.top && mOutRect.bottom <= mContentRect.bottom) : false;
 
-      // 3. Reshape checks (Face -> Gọn mặt)
+      // 3. Reshape checks (Face -> Region popover -> Gọn mặt)
       await Studio.ui.switchTool('reshape');
+      content.querySelector('[data-v5-region-toggle]')?.click();
+      await new Promise(r => setTimeout(r, 80));
       const gonMat = content.querySelector('[data-v2-reshape-preset="face"]');
       if (gonMat) gonMat.click();
-      await new Promise(r => setTimeout(r, 260));
+      await new Promise(r => setTimeout(r, 320));
+      const c = document.getElementById('canvas_minipaint');
+      const ctx = c?.getContext('2d');
+      const centerAlpha = ctx ? ctx.getImageData(Math.floor(c.width / 2), Math.floor(c.height / 2), 1, 1).data[3] : 0;
 
       const reshapeRange = content.querySelector('.v2-brush-controls input[type="range"]');
       const reshapeOutput = content.querySelector('.v2-brush-controls .slider-field output');
@@ -203,6 +208,7 @@ try {
         reshape: {
           rangeVisible: reshapeRangeVisible,
           outputVisible: reshapeOutVisible,
+          canvasOpaque: centerAlpha > 0,
           rangeTop: rRangeRect?.top,
           rangeBottom: rRangeRect?.bottom
         }
@@ -217,6 +223,7 @@ try {
     assert.equal(editorMetrics.makeup.outputVisible, true, `Makeup intensity number visible in ${vp.name}`);
     assert.equal(editorMetrics.reshape.rangeVisible, true, `Reshape brush strength slider visible in ${vp.name}`);
     assert.equal(editorMetrics.reshape.outputVisible, true, `Reshape brush strength number visible in ${vp.name}`);
+    assert.equal(editorMetrics.reshape.canvasOpaque, true, `Reshape canvas shows portrait (not empty checkerboard) in ${vp.name}`);
 
     // Capture screenshots for editor states (clear transient toasts first)
     await page.evaluate(() => { document.querySelectorAll('.toast').forEach(t => t.remove()); return Studio.ui.switchTool('filters'); });
@@ -233,11 +240,24 @@ try {
 
     await page.evaluate(async () => {
       await Studio.ui.switchTool('reshape');
+      document.querySelector('[data-v5-region-toggle]')?.click();
+      await new Promise(r => setTimeout(r, 60));
       document.querySelector('[data-v2-reshape-preset="face"]')?.click();
       document.querySelectorAll('.toast').forEach(t => t.remove());
     });
-    await page.waitForTimeout(200);
+    await page.waitForTimeout(350);
     await page.screenshot({ path: `docs/screenshots/v5/v5-reshape-${vp.name}.png` });
+
+    if (vp.name === '440x956') {
+      await page.evaluate(async () => {
+        document.querySelector('[data-reshape-group="body"]')?.click();
+        await new Promise(r => setTimeout(r, 80));
+        document.querySelector('[data-v5-region-toggle]')?.click();
+        document.querySelectorAll('.toast').forEach(t => t.remove());
+      });
+      await page.waitForTimeout(250);
+      await page.screenshot({ path: `docs/screenshots/v5/v5-reshape-body-${vp.name}.png` });
+    }
 
     if (vp.name === '440x956') {
       await page.evaluate(async () => {

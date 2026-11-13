@@ -1,6 +1,6 @@
 {
   "engine": "WebKit (Playwright)",
-  "timestamp": "2026-11-13T03:13:29.016Z",
+  "timestamp": "2026-11-13T03:38:42.515Z",
   "viewports": {
     "440x956": {
       "clientWidth": 440,
@@ -36,14 +36,15 @@
       "makeup": {
         "rangeVisible": true,
         "outputVisible": true,
-        "rangeTop": 694.5,
-        "rangeBottom": 718.5
+        "rangeTop": 788.25,
+        "rangeBottom": 812.25
       },
       "reshape": {
         "rangeVisible": true,
         "outputVisible": true,
-        "rangeTop": 781,
-        "rangeBottom": 805
+        "canvasOpaque": true,
+        "rangeTop": 863,
+        "rangeBottom": 887
       }
     },
     "390x844": {
@@ -80,14 +81,15 @@
       "makeup": {
         "rangeVisible": true,
         "outputVisible": true,
-        "rangeTop": 582.5,
-        "rangeBottom": 606.5
+        "rangeTop": 676.25,
+        "rangeBottom": 700.25
       },
       "reshape": {
         "rangeVisible": true,
         "outputVisible": true,
-        "rangeTop": 669,
-        "rangeBottom": 693
+        "canvasOpaque": true,
+        "rangeTop": 751,
+        "rangeBottom": 775
       }
     },
     "375x812": {
@@ -124,14 +126,15 @@
       "makeup": {
         "rangeVisible": true,
         "outputVisible": true,
-        "rangeTop": 550.5,
-        "rangeBottom": 574.5
+        "rangeTop": 644.25,
+        "rangeBottom": 668.25
       },
       "reshape": {
         "rangeVisible": true,
         "outputVisible": true,
-        "rangeTop": 637,
-        "rangeBottom": 661
+        "canvasOpaque": true,
+        "rangeTop": 719,
+        "rangeBottom": 743
       }
     }
   },
