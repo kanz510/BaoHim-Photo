@@ -10,7 +10,7 @@ const root=resolve(import.meta.dirname,'..');
 GlobalFonts.registerFromPath(resolve(root,'assets/fonts/Manrope.ttf'),'Manrope');
 GlobalFonts.registerFromPath(resolve(root,'assets/fonts/PlayfairDisplay.ttf'),'Playfair Display');
 async function boot(options={}){
- const url=options.url||'https://studio.test';
+ const url=options.url||'https://studio.test/?ui=v4';
  const html=await readFile(resolve(root,'index.html'),'utf8'),built=await readFile(resolve(root,'dist/index.html'),'utf8'),script=built.match(/<script defer src="\.\/([^"]+)"/)[1],bundle=await readFile(process.env.PBS_TEST_BUNDLE||resolve(root,'dist',script),'utf8');
  const errors=[],vc=new VirtualConsole();vc.on('jsdomError',e=>errors.push(e.message));vc.on('error',(...e)=>errors.push(e.join(' ')));
  const dom=new JSDOM(html,{url,runScripts:'outside-only',pretendToBeVisual:true,virtualConsole:vc});
@@ -627,8 +627,8 @@ test('Phase 6 Mobile UX provides 5 primary categories (AUTO, MẶT, DÁNG, MÀU,
  }finally{await app.close();}
 });
 
-test('V4 Immersive Beauty UI renders Pearl Editorial Home, connects all tools, syncs theme-color and switches creative utility subtools',async()=>{
- const app=await boot();
+test('explicit ?ui=v4 retains the V4 interface as a rollback mode',async()=>{
+ const app=await boot({url:'https://studio.test/?ui=v4'});
  try{
   const {ui,facade:f}=app.w.Studio;
   const doc=app.w.document;
@@ -665,8 +665,8 @@ test('V4 Immersive Beauty UI renders Pearl Editorial Home, connects all tools, s
  }finally{await app.close();}
 });
 
-test('V5 CN Edition boots via ?ui=v5, applies dark editorial shell, 4 quick tools, secondary pills, 5-tab nav, 196px dock and preserves engine',async()=>{
- const app=await boot({url:'https://studio.test/?ui=v5'});
+test('V5 CN Edition is the default release on main with full editing engine',async()=>{
+ const app=await boot({url:'https://studio.test/'});
  try{
   const {ui,facade:f}=app.w.Studio;
   const doc=app.w.document;

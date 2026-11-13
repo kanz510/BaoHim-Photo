@@ -50,7 +50,7 @@ try{
  });
 
  const tBoot0=performance.now();
- await page.goto(`${base}/index.html`,{waitUntil:'networkidle'});
+ await page.goto(`${base}/index.html?ui=v4`,{waitUntil:'networkidle'});
  await page.waitForFunction(()=>window.Studio&&window.StudioReady);
  await page.evaluate(()=>window.StudioReady);
  const bootMs=Math.round(performance.now()-tBoot0);
@@ -707,9 +707,11 @@ try{
  v5Page.on('pageerror',e=>errors.push(`[V5 PageError] ${e.message}`));
  v5Page.on('console',m=>{if(m.type()==='error')errors.push(`[V5 ConsoleError] ${m.text()}`);});
 
- await v5Page.goto(`${base}/index.html?ui=v5`,{waitUntil:'networkidle'});
+ await v5Page.goto(`${base}/index.html`,{waitUntil:'networkidle'});
  await v5Page.waitForFunction(()=>window.Studio&&window.StudioReady);
  await v5Page.evaluate(()=>window.StudioReady);
+ const releaseVersion=await v5Page.locator('meta[name="app-version"]').getAttribute('content');
+ assert.equal(releaseVersion,'5.0.0','Main entrypoint exposes the production release version');
 
  const v5HomeMetrics=await v5Page.evaluate(async()=>{
   await Studio.ui.showHome('studio');
@@ -747,7 +749,7 @@ try{
   };
  });
 
- assert.equal(v5HomeMetrics.isV5,true,'ui.isV5 must be true when ?ui=v5');
+ assert.equal(v5HomeMetrics.isV5,true,'ui.isV5 must be true at the default URL');
  assert.ok(v5HomeMetrics.bodyClass.includes('immersive-v5'),'body must have immersive-v5 class');
  assert.equal(v5HomeMetrics.themeColor,'#141416','Theme color meta tag must be #141416 in V5 Home');
  assert.equal(v5HomeMetrics.v5TopVisible,true,'V5 topbar must be visible');

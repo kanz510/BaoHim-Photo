@@ -27,3 +27,37 @@ test('CJK and downloadable fonts are runtime-cached under GitHub Pages base path
  assert.equal(putCalls.length,1);
  assert.equal(putCalls[0].name,'pbs-fonts-v1');
 });
+
+test('production build publishes an explicit V5 release and unique bundle hash',async()=>{
+ const version=JSON.parse(await readFile(new URL('../dist/version.json',import.meta.url),'utf8'));
+ const html=await readFile(new URL('../dist/index.html',import.meta.url),'utf8');
+ assert.equal(version.version,'5.0.0');
+ assert.match(version.build,/^[a-zA-Z0-9._-]{5,64}$/);
+ assert.match(version.bundle,/^studio\.[a-f0-9]{12}\.js$/);
+ assert.ok(html.includes('name="app-version" content="5.0.0"'));
+ assert.ok(html.includes('name="app-build" content="'+version.build+'"'));
+ assert.ok(html.includes('src="./'+version.bundle+'"'));
+ assert.ok(!html.includes('__APP_VERSION__'));
+});
+
+test('release manifest checks are network-first and fall back offline',async()=>{
+ const online=worker();
+ assert.equal(await online.request('/version.json','cors'),'latest-v2');
+ assert.equal(online.stats.fetches,1,'online check must not return a stale cached version');
+ const offline=worker({offline:true});
+ assert.equal(await offline.request('/version.json','cors'),'cached-v2');
+});
+
+test('an installed update waits for explicit consent before replacing active clients',async()=>{
+ const handlers={};let skips=0,installed=null;
+ vm.runInNewContext(script,{
+  URL,Response,fetch:async()=>new Response('ok'),
+  caches:{open:async()=>({addAll:async()=>{}})},
+  self:{location:{origin:'https://beauty.test',pathname:'/service-worker.js'},addEventListener:(type,cb)=>handlers[type]=cb,skipWaiting:()=>{skips++;}}
+ });
+ handlers.install({waitUntil:p=>{installed=p;}});
+ await installed;
+ assert.equal(skips,0,'install must not interrupt an existing editing session');
+ handlers.message({data:{type:'SKIP_WAITING'}});
+ assert.equal(skips,1,'explicit update action activates the waiting worker');
+});

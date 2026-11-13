@@ -1,5 +1,5 @@
 {
-  "name": "BaoHim Photo — Chỉnh ảnh & Làm đẹp Pro",
+  "name": "BaoHim Photo V5 — Chỉnh ảnh & Làm đẹp",
   "short_name": "BaoHim Photo",
   "description": "Ứng dụng chỉnh ảnh chân dung, làm đẹp thủ công, màu film và sáng tạo trên thiết bị.",
   "lang": "vi",
@@ -7,8 +7,8 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#fdfbfa",
-  "theme_color": "#fdfbfa",
+  "background_color": "#141416",
+  "theme_color": "#141416",
   "icons": [
     {
       "src": "./assets/app-icon-192.png",

@@ -4,6 +4,7 @@ import {PremiumGestureRouter} from './premium-gestures.mjs';
 import {renderTypography} from './typography.mjs';
 import zoomView from '../libs/zoomView.js';
 import {installNativeMobile} from './native-mobile.mjs';
+import {startAppUpdates} from './app-updates.mjs';
 
 export async function initStudio(app){
  const {PremiumUI}=await import(/* webpackChunkName: "studio-ui" */ './premium-ui.mjs');
@@ -34,6 +35,6 @@ export async function initStudio(app){
   try{ui.renderPanel();await ui.showHome('studio');}catch{}
  }
  finally{document.getElementById('v2-launch').hidden=true;}
- if('serviceWorker'in navigator){navigator.serviceWorker.register('./service-worker.js').then(()=>navigator.serviceWorker.ready).then(()=>{const tag=document.querySelector('.offline-tag');if(tag)tag.innerHTML='<i></i>Sẵn sàng ngoại tuyến';}).catch(()=>{const tag=document.querySelector('.offline-tag');if(tag)tag.innerHTML='<i></i>Xử lý trên thiết bị';});}
+ startAppUpdates(ui);
  return window.Studio;
 }

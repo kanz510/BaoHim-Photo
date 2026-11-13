@@ -78,7 +78,7 @@ try {
     });
     const page = await context.newPage();
 
-    await page.goto(`${base}/index.html?ui=v5`, { waitUntil: 'networkidle' });
+    await page.goto(`${base}/index.html`, { waitUntil: 'networkidle' });
     await page.waitForFunction(() => window.Studio && window.StudioReady);
     await page.evaluate(() => window.StudioReady);
 
